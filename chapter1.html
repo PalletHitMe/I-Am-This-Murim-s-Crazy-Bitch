@@ -160,35 +160,77 @@
   <p>Along with a hefty mass that suddenly weighed on his upper body.</p>
 </main>
 
- <!-- Bottom Navigation -->
+  <!-- Bottom Navigation -->
   <div id="bottomNavigation"></div>
 
-  <!-- Load Navigations -->
+  <!-- Scripts -->
   <script>
-    // Load top navigation
+    // Load navigation HTML
     fetch('navigation.html')
       .then(res => res.text())
       .then(html => document.getElementById('navigation').innerHTML = html);
 
-    // Load bottom navigation
     fetch('navigationbottom.html')
       .then(res => res.text())
       .then(html => document.getElementById('bottomNavigation').innerHTML = html);
-  </script>
 
-  <!-- Font Size Script -->
-  <script>
+    // Load chapters.json and setup navigation
+    fetch('chapters.json')
+      .then(res => res.json())
+      .then(chapters => {
+        const currentFile = window.location.pathname.split('/').pop();
+        const currentIndex = chapters.findIndex(ch => ch.file === currentFile);
+
+        // Top nav
+        const topNav = document.getElementById('navigation');
+        if (topNav) {
+          const lastBtnTop = topNav.querySelector('#lastChapterBtn');
+          const nextBtnTop = topNav.querySelector('#nextChapterBtn');
+          const selectTop = topNav.querySelector('#chapterSelect');
+
+          if(lastBtnTop) lastBtnTop.href = currentIndex > 0 ? chapters[currentIndex-1].file : '#';
+          if(nextBtnTop) nextBtnTop.href = currentIndex < chapters.length-1 ? chapters[currentIndex+1].file : '#';
+          if(currentIndex === 0 && lastBtnTop) lastBtnTop.style.pointerEvents = 'none';
+          if(currentIndex === chapters.length-1 && nextBtnTop) nextBtnTop.style.pointerEvents = 'none';
+
+          if(selectTop){
+            chapters.forEach(ch => {
+              const opt = document.createElement('option');
+              opt.value = ch.file;
+              opt.textContent = ch.title;
+              selectTop.appendChild(opt);
+            });
+            selectTop.value = currentFile;
+            selectTop.addEventListener('change', () => {
+              if(selectTop.value) window.location.href = selectTop.value;
+            });
+          }
+        }
+
+        // Bottom nav
+        const bottomNav = document.getElementById('bottomNavigation');
+        if (bottomNav) {
+          const lastBtnBottom = bottomNav.querySelector('#lastChapterBtn');
+          const nextBtnBottom = bottomNav.querySelector('#nextChapterBtn');
+
+          if(lastBtnBottom) lastBtnBottom.href = currentIndex > 0 ? chapters[currentIndex-1].file : '#';
+          if(nextBtnBottom) nextBtnBottom.href = currentIndex < chapters.length-1 ? chapters[currentIndex+1].file : '#';
+          if(currentIndex === 0 && lastBtnBottom) lastBtnBottom.style.pointerEvents = 'none';
+          if(currentIndex === chapters.length-1 && nextBtnBottom) nextBtnBottom.style.pointerEvents = 'none';
+        }
+      })
+      .catch(err => console.error('Failed to load chapters.json', err));
+
+    // Font size
     const fontSizeSelect = document.getElementById('fontSizeSelect');
     const chapterContent = document.querySelector('.chapter-content');
 
-    // Load saved font size
     const savedFontSize = localStorage.getItem('chapterFontSize');
     if(savedFontSize){
       chapterContent.style.fontSize = savedFontSize;
       fontSizeSelect.value = savedFontSize;
     }
 
-    // Change font size
     fontSizeSelect.addEventListener('change', () => {
       const size = fontSizeSelect.value;
       chapterContent.style.fontSize = size;
