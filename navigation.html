@@ -1,50 +1,140 @@
-<div style="margin: 40px 0; text-align: center; font-family: sans-serif;">
-  <!-- Navigation Buttons -->
-  <div style="margin-bottom: 20px;">
-    <a href="index.html"
-       style="text-decoration: none; margin: 0 10px; padding: 12px 24px; 
-              background-color: #4CAF50; color: white; border-radius: 8px; 
-              font-weight: 700; transition: 0.3s; display: inline-block;">
-      ⬅ Back to Main Page
-    </a>
-    <a href="#" id="lastChapterBtn"
-       style="text-decoration: none; margin: 0 10px; padding: 12px 24px; 
-              background-color: #2196F3; color: white; border-radius: 8px; 
-              font-weight: 700; transition: 0.3s; display: inline-block;">
-      ⬅ Last Chapter
-    </a>
-    <a href="#" id="nextChapterBtn"
-       style="text-decoration: none; margin: 0 10px; padding: 12px 24px; 
-              background-color: #FF9800; color: white; border-radius: 8px; 
-              font-weight: 700; transition: 0.3s; display: inline-block;">
-      Next Chapter ➡
-    </a>
-  </div>
+/* ========= Base ========= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  <!-- Chapter Dropdown -->
-  <div>
-    <label for="chapterSelect" style="font-weight: 700; margin-right: 10px;">Jump to Chapter:</label>
-    <select id="chapterSelect" 
-            onchange="location = this.value;" 
-            style="padding: 10px 14px; border-radius: 6px; border: 1px solid #ccc; 
-                   font-size: 14px; font-weight: 500; background-color: #fff; cursor: pointer;">
-      <option value="">Select a chapter</option>
-      <option value="chapter1.html">Chapter 1: The First Step into Murim</option>
-      <option value="chapter2.html">Chapter 2: A Day In The Life Of A Second-Year Martial Artist (1)</option>
-      <option value="chapter3.html">Chapter 3: A Day In The Life Of A Second-Year Martial Artist (2)</option>
-      <option value="chapter4.html">Chapter 4: A Day In The Life Of A Second-Year Martial Artist (3)</option>
-      <option value="chapter5.html">Chapter 5: Friend (1)</option>
-      <option value="chapter6.html">Chapter 6: Friend (2)</option>
-    </select>
-  </div>
-</div>
+body {
+  font-family: 'Inter', sans-serif;
+  color: #1a1a1a;
+  background: #fafafa;
+  overflow-x: hidden;
+}
 
-<style>
-  a:hover {
-    opacity: 0.85;
+/* ========= Full Cover Hero ========= */
+.cover-hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: url('novelpic.jpg') center/cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.cover-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+}
+
+.cover-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 0 20px;
+  color: white;
+}
+
+.cover-content h1 {
+  font-family: 'Lora', serif;
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+  text-shadow: 0 6px 20px rgba(0,0,0,0.75);
+}
+
+.cover-content .author {
+  font-size: 1.3rem;
+  font-style: italic;
+  opacity: 0.9;
+  margin-bottom: 1rem;
+}
+
+.cover-content .tagline {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.read-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: #ff6b6b;
+  color: white;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.read-btn:hover {
+  background: #ff3b3b;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* ========= Chapter Section ========= */
+.chapters-container {
+  margin: 2rem auto 4rem;
+  padding: 2rem 1rem;
+  max-width: 960px;
+}
+
+.chapters-container h2 {
+  font-family: 'Lora', serif;
+  font-size: 2.4rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  justify-items: center;
+}
+
+.chapter-grid a {
+  text-decoration: none;
+  background: linear-gradient(135deg, #b83232, #ff6b6b);
+  color: white;
+  padding: 14px 26px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
+  transition: 0.25s ease;
+}
+
+.chapter-grid a:hover {
+  background: linear-gradient(135deg, #ff6b6b, #ff3b3b);
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+/* ========= Footer ========= */
+footer {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  font-size: 0.9rem;
+  color: #555;
+  border-top: 1px solid #ddd;
+}
+
+/* ========= Responsive ========= */
+@media (max-width: 600px) {
+  .cover-content h1 {
+    font-size: 2.6rem;
   }
-  select:hover {
-    border-color: #888;
+  .cover-content .tagline {
+    font-size: 1rem;
   }
-</style>
+  .chapter-grid a {
+    padding: 12px 20px;
+  }
+}
 
