@@ -171,6 +171,143 @@
   </div>
 
 </body>
+</html>    .cover-img {
+      flex-shrink: 0;
+      width: 250px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+
+    .cover-img img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .book-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .book-info h1 {
+      font-family: 'Lora', serif;
+      font-size: 2.4rem;
+      margin-bottom: 8px;
+    }
+    .book-info .author {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #555;
+    }
+    .book-info .meta {
+      font-size: 0.95rem;
+      color: #666;
+      margin-bottom: 15px;
+    }
+    .book-info .synopsis {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .tags span {
+      background: #eee;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #444;
+    }
+
+    /* Chapter list */
+    .chapters {
+      background: white;
+      margin-top: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      padding: 20px;
+    }
+    .chapters h2 {
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .chapter-list {
+      column-count: 2;
+      column-gap: 15px;
+      font-size: 1rem;
+    }
+    .chapter-list a {
+      display: block;
+      padding: 6px 0;
+      text-decoration: none;
+      color: #2c3e50;
+      transition: color 0.2s;
+    }
+    .chapter-list a:hover {
+      color: #e74c3c;
+    }
+
+    @media (max-width: 650px) {
+      .chapter-list { column-count: 1; }
+      .book-header { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Book Banner -->
+    <div class="book-header">
+      <div class="cover-img">
+        <img src="novelpic.jpg" alt="I Am This Murim's Crazy Bitch">
+      </div>
+
+      <div class="book-info">
+        <h1>I Am This Murim's Crazy Bitch</h1>
+        <p class="author">By PalletHitMe</p>
+        <p class="meta">Status: Ongoing • Genres: Martial Arts, Action, Adventure</p>
+
+        <p class="synopsis">
+          I became a female character in a martial arts world I’d always known from games...  
+          Struggling in Murim and questioning reality itself, she fights, laughs, and survives.
+        </p>
+
+        <div class="tags">
+          <span>Martial Arts</span>
+          <span>Gender Bender</span>
+          <span>Action</span>
+          <span>Adventure</span>
+          <span>Comedy</span>
+          <span>Transported</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chapter List -->
+    <div class="chapters">
+      <h2>Chapter List</h2>
+      <div class="chapter-list">
+        <a href="chapter1.html">Chapter 1: The First Step into Murim</a>
+        <a href="chapter2.html">Chapter 2: A Day In The Life (1)</a>
+        <a href="chapter3.html">Chapter 3: A Day In The Life (2)</a>
+        <a href="chapter4.html">Chapter 4: A Day In The Life (3)</a>
+        <a href="chapter5.html">Chapter 5: Friend (1)</a>
+        <a href="chapter6.html">Chapter 6: Friend (2)</a>
+      </div>
+    </div>
+
+  </div>
+
+</body>
 </html>    }
 
     .hero p.author {
@@ -296,4 +433,5 @@
 
 </body>
 </html>
+
 
