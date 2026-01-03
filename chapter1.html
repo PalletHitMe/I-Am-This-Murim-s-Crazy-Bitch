@@ -159,17 +159,37 @@
   <p>Along with a hefty mass that suddenly weighed on his upper body.</p>
 </main>
 
-<div class="chapter-nav">
-  <a href="index.html" id="lastChapterBtn">⬅ Last Chapter</a>
-  <a href="chapter2.html" id="nextChapterBtn">Next Chapter ➡</a>
+<!-- Last/Next Chapter Buttons (Dynamic) -->
+<div class="chapter-nav" style="text-align:center; margin: 20px 0;">
+  <a href="index.html" id="backToMainBtn">⬅ Back to Main Page</a>
+  <a href="#" id="lastChapterBtn">⬅ Last Chapter</a>
+  <a href="#" id="nextChapterBtn">Next Chapter ➡</a>
 </div>
-  
-<!-- Fetch dynamic navigation.html -->
+
+<!-- Fetch navigation.html -->
 <script>
 fetch('navigation.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('navigation').innerHTML = data;
+
+    // Auto-update Last/Next buttons
+    const currentFile = window.location.pathname.split('/').pop();
+    const match = currentFile.match(/chapter(\d+)\.html/);
+
+    if(match){
+      const current = parseInt(match[1]);
+      const lastBtn = document.getElementById('lastChapterBtn');
+      const nextBtn = document.getElementById('nextChapterBtn');
+
+      if(lastBtn) lastBtn.href = `chapter${current - 1}.html`;
+      if(nextBtn) nextBtn.href = `chapter${current + 1}.html`;
+
+      // Disable buttons if first or last chapter
+      if(current === 1 && lastBtn) lastBtn.style.pointerEvents = 'none';
+      // Example: assuming chapter 6 is last for now
+      if(current === 6 && nextBtn) nextBtn.style.pointerEvents = 'none';
+    }
   })
   .catch(err => console.error('Navigation fetch failed:', err));
 </script>
@@ -193,3 +213,6 @@ fontSizeSelect.addEventListener('change', () => {
   localStorage.setItem('chapterFontSize', size);
 });
 </script>
+
+</body>
+</html>
