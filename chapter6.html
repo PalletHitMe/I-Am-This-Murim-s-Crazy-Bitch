@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Friend (2)</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+body {
+font-family: Lora, serif;
+line-height: 1.7;
+}
+h1 {
+text-align: center;
+font-weight: 700;
+}
+</style>
+</head>
+<body>
+
+<div id="navigation"></div>
+
+<script>
+  fetch('navigation.html')
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById('navigation').innerHTML = data;
+
+      // Auto set Next and Last Chapter buttons
+      const currentFile = window.location.pathname.split('/').pop();
+      const match = currentFile.match(/chapter(\d+)\.html/);
+
+      if(match){
+        const current = parseInt(match[1]);
+        const nextBtn = document.getElementById('nextChapterBtn');
+        const lastBtn = document.getElementById('lastChapterBtn');
+
+        // Set links
+        if(nextBtn) nextBtn.href = `chapter${current + 1}.html`;
+        if(lastBtn) lastBtn.href = `chapter${current - 1}.html`;
+
+        // Disable buttons if at first or last chapter
+        if(current === 1 && lastBtn) lastBtn.style.pointerEvents = 'none';
+        if(current === 6 && nextBtn) nextBtn.style.pointerEvents = 'none'; // update 6 to max chapter
+      }
+    })
+    .catch(err => console.error('Navigation fetch failed:', err));
+</script>
+
+
+<h1>༺ Friend (2) ༻</h1>
+
+<p>Jade Qilin Peng Daesan. The Most Handsome Man Under the Heavens, Peng Daesan.</p>
+
+<p>Peng Daesan detested his moniker.</p>
+
+<p>He truly loathed it.</p>
+
+<p>It was just a title stuck to him for being handsome, for having a good face.</p>
+
+<p>Someone who received such a nickname and smiled about it was unworthy of being a martial artist.</p>
+
+<p>Peng Daesan was twenty-two years old.</p>
+
+<p>At the mere age of twenty-two, he had reached the Mid-Stage Peak Realm. Truly a martial arts genius bestowed by the heavens, as well as one of the most outstanding achievements in this era.</p>
+
+<p>But what? Jade Qilin? The Most Handsome Man Under the Heavens?</p>
+
+<p>Could there be a greater insult than this in the world?</p>
+
+<p>Just look at that bastard called Shinjae from the Namgung Clan.</p>
+
+<p>He had barely made it to the Early-Stage Peak Realm, but that bastard Namgung Shinjae’s title was the Young Sword King.</p>
+
+<p>It meant he was the next Sword King.</p>
+
+<p>And Namgung Shinjae was even a year older than Peng Daesan!</p>
+
+<p>To think he’s called the Young Sword King and I’m the Jade Qilin!</p>
+
+<p>So, Peng Daesan’s personality became twisted.</p>
+
+<p>But due to his fundamentally diligent nature, he didn’t stray too far.</p>
+
+<p>Instead, he completely forgot the concept of manners, especially towards women.</p>
+
+<p>In truth, it wasn’t entirely Peng Daesan’s fault.</p>
+
+<p>After all, he was the most eligible bachelor in the current era of Murim.</p>
+
+<p>Before all, he was handsome. Also, he had a good voice.</p>
+
+<p>He was the eldest son of one of the Five Noble Clans in the Central Plains.</p>
+
+<p>Moreover, the Peng Family was famous for being the only one among the Five Noble Clans to not engage in political marriages.</p>
+
+<p>Of course, it was also a family tradition that was being maintained because they enjoyed treating the other Noble Clans as ‘petty, despicable, naive, idiotic misers who used marriages as transactions’.</p>
+
+<p>For the Peng Family, such trivial, trifling matters were not needed in marriage except for true love!</p>
+
+<p>But looks like that’s not the case for you fools, huh? was what they said.</p>
+
+<p>Furthermore, Peng Daesan was an expert.</p>
+
+<p>And he was going to become an even greater expert in the future.</p>
+
+<p>After all, he possessed it all: looks, status, wealth, and skills.</p>
+
+<p>As a result, Peng Daesan received the attention of all women within his vicinity at every waking moment and occasionally, even in his sleep.</p>
+
+<p>And among them, the women who merely watched him were some of the better ones.</p>
+
+<p>Everywhere Peng Daesan went, all sorts of things were left discarded on the ground.</p>
+
+<p>From embroidered cloth fragments to incense pouches, cotton-clothed daggers, and even repulsive sokgots.</p>
+
+<p>Thus, Peng Daesan never bowed his head.</p>
+
+<p>He solely looked ahead and walked forward in a straight manner.</p>
+
+<p>More aggressive women even attempted chest bumps, flinging their bodies onto him.</p>
+
+<p>But it was a doomed endeavor from the very start to think that they could bump into a Peak Expert as if by accident.</p>
+
+<p>It was a grossly inflated sense of self to think that if they fell, he would catch them before they hit the ground.</p>
+
+<p>Peng Daesan was unsure whether to laugh or scoff at the women who flung themselves straight to the ground.</p>
+
+<p>At any rate, Daesan had been experiencing extreme difficulties with women ever since he was young.</p>
+
+<p>He was a female magnet that had reached its very extremity.</p>
+
+<p>So, in front of women, Peng Daesan became increasingly impolite.</p>
+
+<p>He lost all manners.</p>
+
+<p>In essence, it meant that he wasn’t interested, so they should get lost.</p>
+
+<p>Honestly, A-Qing’s approach was not all that surprising to Peng Daesan.</p>
+
+<p>He had experienced all sorts of bizarre incidents under the guise of differentiated dating strategies.</p>
+
+<p>As such, he even had a general classification system.</p>
+
+<p>If he was to classify A-Qing’s approach, it would be a mix of the ‘Bold Woman’ and ‘Funny Woman’ strategies.</p>
+
+<p>Successful cases of the ‘Funny Woman’ strategy were incredibly rare, so A-Qing’s move was somewhat commendable.</p>
+
+<p>He laughed for the first time in a while.</p>
+
+<p>He didn’t expect Asura at all.</p>
+
+<p>To think she would make such a sacrilegious joke.</p>
+
+<p>And then came the ‘Rough Woman’ strategy.</p>
+
+<p>It was just that the level was a bit…The guttural contents of her words seemed to belong more to a wretch from the back alley.</p>
+
+<p>But then he got hit in the mouth!</p>
+
+<p>What in the heavens was this?</p>
+
+<p>Was this some retarded love story like ‘You’re the first woman to have ever hit me’?</p>
+
+<p>As a result, Peng Daesan genuinely got pissed.</p>
+
+<p>His already low voice became even lower due to his wrath.</p>
+
+<p>“I’ve dealt with all kinds of crazy bitches, but.”</p>
+
+<p>His voice carried a subtle killing intent.</p>
+
+<p>Reacting to such a murderous aura, A-Qing’s Heavenly Slaughter opened its eyes from its slumber.</p>
+
+<p>A-Qing thought she saw blood as a way to relieve stress. And that stress relief was a way to protect her heart that was wounded by the matters of Murim.</p>
+
+<p>But in reality, once triggered, she became an actual crazy bitch, swayed by the killing intent of Heavenly Slaughtering.</p>
+
+<p>It was a passive impulse to massacre.</p>
+
+<p>Originally, if one was intoxicated by the killing intent of the Heavenly Slaughtering Star, one found pleasure in carnage and bloodshed.</p>
+
+<p>“Why you so pissed? Oive dalt wibb arr koinds wof cravy vitches, vut. But what? Does lowering your voice make you the shit or something? Hehe.”</p>
+
+<p>“Don’t copy me.”</p>
+
+<p>“Von’t coby vee. Then what? What you gonna do? Wanna hit me?”</p>
+
+<p>At the very least, when it came to irritating teasing and obnoxious banter, no people of any ethnicity in this world could keep up with modern Koreans.</p>
+
+<p>Peng Daesan trembled with rage.</p>
+
+<p>The burning anger consumed him.</p>
+
+<p>“I will not tolerate any more insults.”</p>
+
+<p>“Oi virr vot torevate vany mov irvul, hey!”</p>
+
+<p>Clang! The sound of a sword and a dao colliding sharply rang out.</p>
+
+<p>“You struck first, okay? This is self-defense, okay? You really wanna try me, yeah? That’s right, why should we blabber when we can use such nice swords?”</p>
+
+<p>“I will not kill you. But I shall definitely cut off that flippant tongue of yours.”</p>
+
+<p>“You think you have the ability to do that? Go on, then. Try. Cut it. Ehhhh-”</p>
+
+<p>A-Qing stuck out her tongue.</p>
+
+<p>Her unusually red tongue darted in and out mischievously.</p>
+
+<p>“Ehh-ehh-ehh-”</p>
+
+<p>But the tongue stayed out a bit too long.</p>
+
+<p>Seriously, she didn’t know when to stop.</p>
+
+<p>What kind of crazy bitch was this?</p>
+
+<p>At this point, it was rather Peng Daesan that felt defeated.</p>
+
+<p>Although he drew his sword in explosive anger, the sight of A-Qing making even more of a scene and causing chaos actually made him feel a sense of shame.</p>
+
+<p>But he couldn’t just lose to her like this.</p>
+
+<p>His pride as a Mid-Stage Peak Realm would not allow it.</p>
+
+<p>As such, he had to display just a hint of his realm’s strength……</p>
+
+<p>But right as he affirmed his resolve…</p>
+
+<p>Sword Qi surged in A-Qing’s sword.</p>
+
+<p>The swaying, lazy white threads were vivid.</p>
+
+<p>Sword Threads. It was a level of art and skill displayed by someone of the Late-Stage Peak Realm.</p>
+
+<p>Peng Daesan scrutinized A-Qing’s face.</p>
+
+<p>Her still shamefully darting tongue made Peng Daesan feel even more embarrassed.</p>
+
+<p>But looking at A-Qing’s young face, barely out of girlhood, he had another thought.</p>
+
+<p>If one broke through the wall beyond the Transcendent Realm, they reached the Creation Realm.</p>
+
+<p>And such an echelon was also called the Unrestrained Realm.</p>
+
+<p>When that happened, the body would regain its youth just once, practically traveling back in time. This was called Body Reconstruction.</p>
+
+<p>A martial artist who had undergone such Body Reconstruction was, in fact, a monster of the human world, merely donning human skin.</p>
+
+<p>A fight should be established among beings of the same kind.</p>
+
+<p>Humans and monsters could not fight.</p>
+
+<p>After all, it would not be called a fight but a one-sided violation.</p>
+
+<p>“Uh, could I perhaps know which faction’s Elder you are?”</p>
+
+<p>“What the hell. You’re stopping there? Geez, you’re the type to stop mid-shit.”</p>
+
+<p>How could this possibly be the language and behavior of a woman?</p>
+
+<p>However, if he thought of her as a Grandmaster who achieved Body Reconstruction, it made everything somehow plausible.</p>
+
+<p>Come to think of it, didn’t his Grandmother speak like that too?</p>
+
+<p>And when hearing her, he had thought, ‘Women must have a rougher manner of speaking as they age’.</p>
+
+<p>“I shall introduce myself again. I am Peng Daesan of the Peng Family.”</p>
+
+<p>“I’m A-Qing.”</p>
+
+<p>Suddenly, the tables had turned. The honorifics had reversed.</p>
+
+<p>A-Qing smiled in satisfaction and thought to herself.</p>
+
+<p>This fucker got scared shitless, huh.</p>
+
+<p>Indeed, in Murim, the strong were the law.</p>
+
+<p>----</p>
+
+<p>Peng Daesan’s misunderstanding did not last even a half hour.</p>
+
+<p>It was because A-Qing oozed ignorance every time she opened her mouth.</p>
+
+<p>Ignorance wasn’t really the issue, but rather a lack of basic common sense.</p>
+
+<p>For those who didn’t understand her circumstances though, it was practically the same thing.</p>
+
+<p>In fact, right now, Peng Daesan didn't even know why, what, or how he had misunderstood.</p>
+
+<p>As such, the misunderstanding was easily resolved.</p>
+
+<p>And then, Peng Daesan faced an entirely new crisis.</p>
+
+<p>So this lunatic of a woman was a greater Master than me?</p>
+
+<p>“If it’s not too impolite to ask, how old are you, Young Lady?”</p>
+
+<p>“Me? I’m……”</p>
+
+<p>A-Qing hesitated for a moment.</p>
+
+<p>It was a bit much to say she was in her mid-thirties.</p>
+
+<p>In the first place, even if she said so, no one would believe it.</p>
+
+<p>After all, there had to at least be someone who pretended to accept it, for her to claim such an age.</p>
+
+<p>But at the same time, it was also a bit much to treat someone who was no different from a mere baby as an elder.</p>
+
+<p>Baby.</p>
+
+<p>From the viewpoint of A-Qing’s true self, a young man in his early twenties was still a baby who hadn’t even been to the military.</p>
+
+<p>This was all too universal and obvious for modern Koreans.</p>
+
+<p>Besides, all he had to show was that he lived a bit well; he’s weaker than me, you know?</p>
+
+<p>“You first, Young Master Peng.”</p>
+
+<p>“I am twenty-two this year.”</p>
+
+<p>“I’m twenty-five.”</p>
+
+<p>“.......Truly? Is that correct?”</p>
+
+<p>Peng Daesan’s skeptical gaze pieced into her.</p>
+
+<p>“It’s because I look young for my age.”</p>
+
+<p>“Really?”</p>
+
+<p>“Mmm.”</p>
+
+<p>Lying also accumulated Evil Karma.</p>
+
+<p>Insisting that her age was in the mid-thirties was somewhat true in a way. So, she should be able to push forward her agenda shamelessly.</p>
+
+<p>Though no one would believe her anyway.</p>
+
+<p>But what if she had to state the age of this body?</p>
+
+<p>It wasn’t worth accumulating Evil Karma over this.</p>
+
+<p>As such, A-Qing answered honestly.</p>
+
+<p>“......Actually, I don’t know either. I think I’m around seventeen, but I don’t know whether I matured early or whether I’m really a twenty-five year old who looks young.”</p>
+
+<p>“How could you possibly not know your own a, I mean.”</p>
+
+<p>Peng Daesan was about to ask thoughtlessly but then waved his hand at a sudden thought.</p>
+
+<p>A-Qing meant a child who wore blue clothing.</p>
+
+<p>It was also the title of a peerless Master from the Spring and Autumn Period. The Yue Maiden.</p>
+
+<p>Wasn’t it said that the Yue Maiden only wore blue clothes?</p>
+
+<p>According to historical texts, it was said that she had appeared out of nowhere in the crisis-stricken State of Yue and taught them the Sword Art of the Yue Maiden.</p>
+
+<p>However, the Sword Arts was so mystical and complex that no one could properly master it.</p>
+
+<p>They only managed to create a sword manual based on the sword forms that were visible to the eye. But even that was a terrifying Divine Art.</p>
+
+<p>Armed with this Divine Art, the State of Yue attacked and destroyed the State of Wu.</p>
+
+<p>In the end, the character A-Qing in the story was an idol among the female martial artists of Jianghu.</p>
+
+<p>She was also an idol for women who dreamt of becoming a part of Jianghu.</p>
+
+<p>And here was a woman who had taken such a cliché name for herself.</p>
+
+<p>On top of that, she didn't even know her own age.</p>
+
+<p>If so…</p>
+
+<p>Peng Daesan started to misunderstand arbitrarily all over again.</p>
+
+<p>Could it be that she was a wandering woman with the background of an orphan?!</p>
+
+<p>But the misunderstanding that occurred this time was not as easy to resolve as before.</p>
+
+<p>After all, one could not just ask someone if they didn’t have a daddy and mommy.</p>
+
+<p>It was possible that she was sincere when she talked about something as absurd as Asura.</p>
+
+<p>A woman who grew up all in her lonesome might have had trouble answering questions about her lineage, founder, and ancestors.</p>
+
+<p>A surname was not just the very first word of a name, but the pride of one’s roots and kin.</p>
+
+<p>Apparently, she grew up not knowing any of such things.</p>
+
+<p>And that uneducated, vulgar behavior!</p>
+
+<p>That ignorance that was akin to that of a moron!</p>
+
+<p>“It is nothing. It was a slip of my tongue. I apologize.”</p>
+
+<p>“What in the world? Why do I suddenly feel offended……?”</p>
+
+<p>A-Qing cocked her head.</p>
+
+<p>For some inexplicable reason, she felt like shit.</p>
+
+<p>What’s going on? Is another status window seizure coming?</p>
+
+<p>“Whatever. Forget it. Anyway, since we seem to be peers, let’s just be friends.”</p>
+
+<p>“Peers, huh…….”</p>
+
+<p>Peng Daesan had never heard someone of his age call him a peer.</p>
+
+<p>Her choice of words was a bit…Right?</p>
+
+<p>Regardless of whatever he thought, A-Qing had her own calculations.</p>
+
+<p>It was so obvious that he was a rich family’s little darling boy.</p>
+
+<p>Being friends with him seemed like a perfect way to freeload.</p>
+
+<p>If she treated him like a little brother, she wouldn’t be able to leech off of him.</p>
+
+<p>But she couldn’t call a baby Elder Brother either.</p>
+
+<p>“Get it? Then we’re friends, okay? Understood, San?”</p>
+
+<p>Peng Daesan was flustered.</p>
+
+<p>Men and women should be distinct, yet she carelessly called him San?</p>
+
+<p>“Uh, Young Lady? Even if we’re friends, how could you call me San?”</p>
+
+<p>“If I say San! Then you have to say Qing! Just like that. San?”</p>
+
+<p>“But still, for a man and a woman to be on such intimate terms wi……”</p>
+
+<p>“Hey, why would there be things like men and women among friends?”</p>
+
+<p>“Isn’t that usually the opposite of what is said?”</p>
+
+<p>When he asked as such, A-Qing replied confidently.</p>
+
+<p>“Fine. Let’s say that friends don’t exist when it comes to relationships between men and women. Then, isn’t overcoming that what true friendship is about?”</p>
+
+<p>“Mm?”</p>
+
+<p>That kind of made sense.</p>
+
+<p>“You got it? San? San? San? San?”</p>
+
+<p>She was a very insistent and noisy woman.</p>
+
+<p>It was obvious that she intended to keep babbling until he responded.</p>
+
+<p>As such, Peng Daesan reluctantly agreed.</p>
+
+<p>“.......Qing.”</p>
+
+<p>“Your voice is too soft! Again! San?”</p>
+
+<p>“...Qing.”</p>
+
+<p>“I can’t hear you? San?”</p>
+
+<p>“Qing.”</p>
+
+<p>“San?”</p>
+
+<p>“QING! Qing! I get it, so please stop pestering! Please!”</p>
+
+<p>Peng Daesan finally shouted out loud.</p>
+
+<p>A-Qing grinned in satisfaction.</p>
+
+</body>
+</html>
+

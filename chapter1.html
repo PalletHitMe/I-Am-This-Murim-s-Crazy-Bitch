@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The First Step into Murim</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+body {
+font-family: Lora, serif;
+line-height: 1.7;
+}
+h1 {
+text-align: center;
+font-weight: 700;
+}
+</style>
+</head>
+<body>
+
+<div id="navigation"></div>
+
+<script>
+  fetch('navigation.html')
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById('navigation').innerHTML = data;
+
+      // Auto set Next and Last Chapter buttons
+      const currentFile = window.location.pathname.split('/').pop();
+      const match = currentFile.match(/chapter(\d+)\.html/);
+
+      if(match){
+        const current = parseInt(match[1]);
+        const nextBtn = document.getElementById('nextChapterBtn');
+        const lastBtn = document.getElementById('lastChapterBtn');
+
+        // Set links
+        if(nextBtn) nextBtn.href = `chapter${current + 1}.html`;
+        if(lastBtn) lastBtn.href = `chapter${current - 1}.html`;
+
+        // Disable buttons if at first or last chapter
+        if(current === 1 && lastBtn) lastBtn.style.pointerEvents = 'none';
+        if(current === 6 && nextBtn) nextBtn.style.pointerEvents = 'none'; // update 6 to max chapter
+      }
+    })
+    .catch(err => console.error('Navigation fetch failed:', err));
+</script>
+
+<h1>༺ The First Step into Murim ༻</h1>
+
+<p>For factories workers at small and medium companies, playing games was a basic skill.</p>
+
+<p>Of course, depending on the person, there were some that they didn’t acknowledge what he played as games. By that, they meant mobile phone applications that only involved automatic hunting, in-app purchases, and gacha could not be recognized as an actual game.</p>
+
+<p>However, for factory workers, these games held a value beyond just being games.</p>
+
+<p>Weren’t they the reliable genre that allowed one to level up solidly even while the phone was running inside a cabinet?</p>
+
+<p>While one's salary might not increase, the joy of leveling up was still by their side.</p>
+
+<p>Moreover, these games accounted for over 70% of the conversation among team members, so it could be said that it was more akin to their modern social life than mere gaming.</p>
+
+<p>However, when limited to PC or console games, gaming was a somewhat distant hobby for factory workers. Their hobbies were usually drinking alcohol (casually, with a meal), drinking alcohol (company dinners), drinking alcohol (with women), and if it wasn’t any of that, then at most, fishing. That was mainstream.</p>
+
+<p>In that sense, his hobby of gaming was quite uncommon.</p>
+
+<p>He was a diligent gamer.</p>
+
+<p>The nature of his job in a factory meant that a basic two-shift system was in place, with short cycles of day and night shifts, granting short vacations of 2 nights and 2 days or 1 night and 2 days.</p>
+
+<p>During these breaks, he would first sleep like the dead, then sit in front of his monitor with a cold beer in a thermos, sipping as he spent his vacation time.</p>
+
+<p>He wasn’t particularly picky about his games.</p>
+
+<p>In the games, he enjoyed many different characters. Sometimes, he lived the life of an outlaw of the wastelands, traversing the West, and at other times, as a commander with superhuman abilities, stopping alien invasions and destroying several planets before ultimately saving one.</p>
+
+<p>He also found it quite enjoyable to be the rebellious Son of God, who had ultimately killed God.</p>
+
+<p>However, most of his gaming experiences involved playing as a knight or a wizard in a somewhat medieval, Western cultural setting.</p>
+
+<p>And amidst his fun, someone commented on his post asking for game comments.</p>
+
+<p>ㄴtry out the Murim Chronicles: A Tale of Life and Death it’s hella fun</p>
+
+<p>ㄴshitty ching chong game fuck off</p>
+
+<p>ㄴno listen;; it’s seriously hella fun;; there’s even a korean patch. hey try it try it</p>
+
+<p>Murim, huh…</p>
+
+<p>His knowledge of Murim was limited to a few Stephen Chow movies. Like Shaolin Soccer.</p>
+
+<p>Wasn’t the ultimate technique thingy that appeared in Kung Fu Hustle called Buddha’s Palm or something?</p>
+
+<p>Now that he thought of it, his curiosity was piqued.</p>
+
+<p>He didn’t hesitate to buy the game.</p>
+
+<p>After all, the wallet of a factory worker living alone was honestly quite thick, so what reason was there not to?</p>
+
+<p>While it was downloading, he searched for information about the game.</p>
+
+<p>It was an open-world RPG made in China (Unofficial Korean Patch: 99.6% translated) with high degrees of freedom.</p>
+
+<p>The fact that there was a user-created Korean patch guaranteed that there was at least some level of enjoyment. After all, who would go through the trouble of translating a boring game?</p>
+
+<p>One could freely farm and grow until they reached a certain amount of Fame. Then, major events called Early-Game Crisis, Midgame Crisis, and Endgame Crisis would randomly start.</p>
+
+<p>If one overcame these, they could see the ending. Additionally, they could keep playing afterward or finish and play another round as a descendant. The game offered multiple endings based on the content chosen.</p>
+
+<p>He wasn’t aware of the unfamiliar genre that was martial arts games, but upon searching, it seemed quite popular.</p>
+
+<p>He was someone who preferred munchkin play, where he could wipe out enemies without reserve rather than overcoming difficult challenges. He liked to follow the strongest validated build and enjoy the game comfortably.</p>
+
+<p>As he looked up character-making and build recommendation posts, he pondered how to grow his character.</p>
+
+<p>Since he already had a feeling that it would be fun, he looked forward to it with a satisfied smile.</p>
+
+<p>Soon the game installation was completed and he overlaid the Korean patch file.</p>
+
+<p>And then, it was time for the long-awaited start of the game.</p>
+
+<p>Using the knowledge from the posts he had read just before, he proceeded quickly with the character creation.</p>
+
+<p>The difficulty would be Traveler of Tasteful Leisure (Easy Difficulty).</p>
+
+<p>Since the game supported multiple rounds, he thought if it was fun, he could raise the difficulty in the second round.</p>
+
+<p>The Constitution of the character would be Blood Poison, known to make gameplay much more comfortable.</p>
+
+<p>The Star of Destiny would be the Heavenly Slaughtering Star.</p>
+
+<p>And without any hesitation, the gender would be female.</p>
+
+<p>He firmly believed that in any game where female characters were playable, one must always choose them.</p>
+
+<p>Unfortunately, customization was not supported.</p>
+
+<p>He had no choice but to choose an illustration with big breasts from the given presets of appearance.</p>
+
+<p>After all, shouldn’t he at least show a well-formed figure in-game?</p>
+
+<p>When he took a break, smoking a cigarette and drinking beer, it was his guilty pleasure to enjoy the view of a female character with a big chest.</p>
+
+<p>It was also a privilege of a single man.</p>
+
+<p>And as for the character’s name…</p>
+
+<p>Ctrl+V.</p>
+
+<p>阿靑 (A-Qing)</p>
+
+<p>The pre-copied Hanja characters were entered.</p>
+
+<p>It was incomprehensible how someone’s name could be A-Qing.</p>
+
+<p>But it was something mentioned in the recommendation post.</p>
+
+<p>After all, entering this would start him off with one of the game’s most overpowered martial arts, the Sword Art of the Yue Maiden, in its true form.</p>
+
+<p>Now, the character creation was done.</p>
+
+<p>Before pressing the Start Murim Journey button, he brought up a guide post on his smartphone that organized the route he needed to take in order to farm quickly before advancing to the early-game story.</p>
+
+<p>After all, if it was an open-world game, wasn’t it a rule of thumb to farm generously as soon as it started before proceeding seriously?</p>
+
+<p>However, in the end, the preparation was useless.</p>
+
+<p>The moment he pressed the Start Murim Journey button-</p>
+
+<p>He was standing in a chilly cave…</p>
+
+<p>Along with a hefty mass that suddenly weighed on his upper body.</p>
+
+
+
+</body>
+</html>
+

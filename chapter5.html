@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Friend (1)</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+body {
+font-family: Lora, serif;
+line-height: 1.7;
+}
+h1 {
+text-align: center;
+font-weight: 700;
+}
+</style>
+</head>
+<body>
+
+<div id="navigation"></div>
+
+<script>
+  fetch('navigation.html')
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById('navigation').innerHTML = data;
+
+      // Auto set Next and Last Chapter buttons
+      const currentFile = window.location.pathname.split('/').pop();
+      const match = currentFile.match(/chapter(\d+)\.html/);
+
+      if(match){
+        const current = parseInt(match[1]);
+        const nextBtn = document.getElementById('nextChapterBtn');
+        const lastBtn = document.getElementById('lastChapterBtn');
+
+        // Set links
+        if(nextBtn) nextBtn.href = `chapter${current + 1}.html`;
+        if(lastBtn) lastBtn.href = `chapter${current - 1}.html`;
+
+        // Disable buttons if at first or last chapter
+        if(current === 1 && lastBtn) lastBtn.style.pointerEvents = 'none';
+        if(current === 6 && nextBtn) nextBtn.style.pointerEvents = 'none'; // update 6 to max chapter
+      }
+    })
+    .catch(err => console.error('Navigation fetch failed:', err));
+</script>
+
+
+<h1>༺ Friend (1) ༻</h1>
+
+<p>A-Qing was truly happy until recently.</p>
+
+<p>It was because she had money.</p>
+
+<p>If life felt unenjoyable, one should try thinking about how much wealth they had first. After all, it was a common trait of those who found intentional travel fun but domestic travel boring to save money in their own country.</p>
+
+<p>The purse of that guy named Ugly Devil or whatever was enormous and plundering had been the right of the victor since ancient times.</p>
+
+<p>It was the first time in A-Qing’s Murim life that she had accumulated wealth exceeding even a gold piece.</p>
+
+<p>She also turned in the head of the evil-doer.</p>
+
+<p>After all, the higher the Evil Karma they held, the heftier the bounty.</p>
+
+<p>To exaggerate a bit, her moneybag was so heavy that even walking straight became difficult due to its weight.</p>
+
+<p>As such, A-Qing enjoyed the finest culinary delights of Jianghu as much as she desired..</p>
+
+<p>She bid farewell to her old Moonlight Sword (No. 5) which was like a lover to her and welcomed the new, young, and lovely Moonlight Sword (No. 6).</p>
+
+<p>It was her first time actually buying a new sword, as she had always picked up others’ discarded ones.</p>
+
+<p>A sword untouched by others. One that was truly hers.</p>
+
+<p>She felt a newfound affection for it.</p>
+
+<p>I’ll take good care of you.</p>
+
+<p>The previous Moonlight Sword (No. 5) was so poorly maintained that it had rusted from inside out.</p>
+
+<p>When the metal shop refused to even pay the price of scrap metal for it, she casually tossed it away by the roadside.</p>
+
+<p>Then she bought new, sturdy, and affordable clothes.</p>
+
+<p>A-Qing had a major realization.</p>
+
+<p>If you had money, even this damned Murim world could be enjoyable!</p>
+
+<p>She could even casually ignore the status window thanks to this. Her mood, elevated by her culinary adventures, remained unshaken even from the status window’s kicks.</p>
+
+<p>A-Qing’s spending habits were as follows.</p>
+
+<p>Those who couldn’t see their future did not save, a behavior common among youth in all countries of her homeworld.</p>
+
+<p>Thanks to her having the same exact trait, she became broke in no time.</p>
+
+<p>Ah. Those were good days.</p>
+
+<p>All that remained was Moonlight Sword (No. 6).</p>
+
+<p>A swordsman's lover, the sword.</p>
+
+<p>A luxury item she bought at the cost of half a gold piece.</p>
+
+<p>Let's be together for life, Moonlight Sword, okay?</p>
+
+<p>This was the reason for a person to splurge.</p>
+
+<p>At least the splurged items remained by their side, even when they were a step away from poverty.</p>
+
+<p>“Your order is ready.”</p>
+
+<p>Thud. The server placed the dish down without care nor sincerity.</p>
+
+<p>Three dumplings. One soup.</p>
+
+<p>If you bought at least three dumplings, you would get a free bowl of soup; a wisdom she learned from her two years of Murim life.</p>
+
+<p>Contrary to modern common sense, dumplings in Murim were the most basic food, made of playing dough without any filling. Usually costing one coin or two in pricier inns, they were the cheapest food in Jianghu.</p>
+
+<p>Dumplings with meat were called meat dumplings and cost a whopping fifteen to twenty coins.</p>
+
+<p>Another piece of wisdom learned from her two years living in Murim.</p>
+
+<p>When dumplings were too dry, it was good to soak them in soup.</p>
+
+<p>If her throat felt dry, then it was good to drink the soup.</p>
+
+<p>Looking at her suddenly humble meal, A-Qing glanced down at her beloved sword, Moonlight Sword (No. 6).</p>
+
+<p>I wonder… How much would I get if I sold this?</p>
+
+<p>It’s practically new… It hasn’t even been used that many times.</p>
+
+<p>But let us not forget, this was only the wisdom of someone two years into her Murim life.</p>
+
+<p>She couldn’t really understand the depreciation and second-hand pricing of swords, so she decided to keep it for now.</p>
+
+<p>But seriously. I really need to make money.</p>
+
+<p>What should I do?</p>
+
+<p>A-Qing opened the Martial Arts Window from her Status Window.</p>
+
+<p>Every time she saw it, she felt like shit, but she needed to check her accumulated Free Practice Points.</p>
+
+<p>Free Practice Points allowed instant mastery of martial arts and could be a lifesaver in critical situations.</p>
+
+<p>Her Sword Art of the Yue Maiden (True Form), Yue Maiden Cultivation Technique (True Form), and Yue Maiden Footwork (True Form), the Qinggong Technique she possessed, had all reached Twelve Stars.</p>
+
+<p>Twelve Stars meant the highest achievement one could hold in that martial art.</p>
+
+<p>Usually when people say they had accomplished the Grand Star, it means they had mastered the martial art in question up to such a point.</p>
+
+<p>Of course, to A-Qing, who learned martial arts through the Status Window, this was a completely different concept from what martial arts meant by Grand Star.</p>
+
+<p>For her, the Twelve Stars that made up the Grand Star meant that all moves were imprinted in her memory and she gained additional Ability Points and Special Skills for each martial art.</p>
+
+<p>Aside from those, the rest of the martial arts listed were just from casually touching manuals in bookstores.</p>
+
+<p>All of them were martial arts with a White Border.</p>
+
+<p>In Murim Chronicles: A Tale of Life and Death, martial arts were classified by colors: White Border for the lowest, followed by Blue, Red, Gold, and the highest, Purple Border.</p>
+
+<p>The producer didn’t really name the grades, so people usually referred to them as White Martial Arts, Blue Martial Arts, and so on.</p>
+
+<p>For reference, the True Form of the Sword Art of the Yue Maiden was a Purple Martial Art.</p>
+
+<p>It was said to be one of the greatest cheat codes in the game, but she couldn’t be sure since she hadn’t learned any other martial arts.</p>
+
+<p>After all, comparisons required a reference group.</p>
+
+<p>And now, it was time to add a Purple Martial Art.</p>
+
+<p>After a year of hardship, A-Qing had accumulated over five hundred points of Righteous Karma.</p>
+
+<p>It was truly a long, humiliating time.</p>
+
+<p>Righteous Karma was very useful.</p>
+
+<p>Why? Because of Righteous Rewards.</p>
+
+<p>It was a system inside the game that allowed her to select and master a desired martial art whenever Righteous Karma reached a certain level.</p>
+
+<p>And the first round of such an exchange happened at five hundred points of Righteous Karma.</p>
+
+<p>Evil Karma, on the other hand, was utterly useless.</p>
+
+<p>Accumulated by committing Evil Deeds, they typically provided ample Practice Points during the process.</p>
+
+<p>The pursuit of Righteous Karma, choosing only to kill the wicked, was a structure where one might struggle to accumulate Practice Points but could exchange Righteous Karma for desired martial arts.</p>
+
+<p>A-Qing did not have a single ounce of hesitation.</p>
+
+<p>It was because she had a target in mind from the very beginning.</p>
+
+<p>She was initially tempted by the Divine Arts of the Heavenly Demon, but after doing a search during the game download, she discovered that the Heavenly Demon was treated as a gag character, so she quickly lost interest.</p>
+
+<p>These days, the Heavenly Demon ran a restaurant, a bakery, and even a conglomerate. Oh, and played baseball.</p>
+
+<p>Even in traditional martial arts novels, they were merely a third concubine to the main character, so the Divine Arts of the Heavenly Demon sounded flashy but was probably insignificant.</p>
+
+<p>A-Qing immediately received her Righteous Reward.</p>
+
+<p>Instantly, phrases, the form and essence of the martial art, and the appearance of moves invaded her brain, rampaging and overturning it to their liking.</p>
+
+<p>In spite of herself, she made foolish sounds.</p>
+
+<p>“Urgh……Eugh, uek……”</p>
+
+<p>It was a terrible and filthy experience, indescribable in words. The closest description of it was like someone had inserted their hand into her brain and kneaded it.</p>
+
+<p>And then, there was always a severe aftermath.</p>
+
+<p>How does this make any sense?</p>
+
+<p>Who the hell learns martial arts like this?</p>
+
+<p>Isn’t this truly a world inside a game?</p>
+
+<p>Am I moving based completely on my own judgment and my own standard of correctness?</p>
+
+<p>What if someone is actually controlling me beyond the sky on a transparent screen, typing on a keyboard and jiggling a mouse?</p>
+
+<p>Then what am I…?</p>
+
+<p>No. Stop. No bad thoughts.</p>
+
+<p>A-Qing forcibly redirected her train of thought.</p>
+
+<p>In times like these, she had to talk about silly things.</p>
+
+<p>She desperately groped for memories of her existence as a modern person, as a living entity.</p>
+
+<p>Who am I? Bud.dha’s.Pa.lm. Owner.</p>
+
+<p>Move aside, Stephen Chow. The K-Buddha’s Palm is coming.</p>
+
+<p>Wrap Buddha’s Palm in kimchi and try it.</p>
+
+<p>The K-Buddha’s Palm which shocked Trump and made Xi Jinping jealous, this martial art is now mine.</p>
+
+<p>After all, Buddha’s Palm is drawn in Soo Bahk Do….</p>
+
+<p>Do you have a problem with that? Chinese people? Then consult the Cultural Revolution of that Red Army over there.</p>
+
+<p>Oh, nothing happened, you say?</p>
+
+<p>Perhaps thanks to her desperate nonsense, she avoided feeling even filthier than she already was.</p>
+
+<p>However, she no longer had the courage to look at the status window.</p>
+
+<p>Nor the courage to look at people.</p>
+
+<p>Now was not the time to look at numbers over people’s heads.</p>
+
+<p>A-Qing clenched eyes shut and bowed her head.</p>
+
+<p>She chewed the dumplings thoroughly.</p>
+
+<p>Yet even despite this, for some reason, her throat felt hot and something felt like it was caught in the middle.</p>
+
+<p>She forcibly shifted her focus.</p>
+
+<p>When she closed her eyes, the conversations around her became audible.</p>
+
+<p>Given that A-Qing had achieved the Grand Star in one Inner Qi Cultivation Technique, her physical abilities were nearly superhuman; merely paying a bit of attention allowed her to hear every conversation in the inn.</p>
+
+<p>Among them, a particular voice caught her ear.</p>
+
+<p>“Hey, you. Escort Leader. I heard you’re going to Yongseong.”</p>
+
+<p>“Ah! May I have the honor of knowing Young Expert’s name?”</p>
+
+<p>“Peng Daesan.”</p>
+
+<p>“The Jade Qilin! My goodness, aren’t you the eldest son of the Peng Family? What an honor! If you’re going to Yongseong, does that mean you’re going all the way to Mount Hua?”</p>
+
+<p>“Escort Leader does not need to know any more than that.”</p>
+
+<p>“Aha! Of course, of course. It’s an honor to serve you, Great Expert! Oh my, please sit here. Hey, server! Prepare a meal big enough to break this table!”</p>
+
+<p>An incomparably arrogant tone and a suddenly sycophantic voice made up the conversation.</p>
+
+<p>A-Qing’s depressive mood flew away in an instant.</p>
+
+<p>So a Master could get treated like that just by joining an escort convoy!</p>
+
+<p>Oh my gosh, unbelievable!</p>
+
+<p>It was a whole new world.</p>
+
+<p>A-Qing had been wandering around looking for villains to kill whenever she ran out of money.</p>
+
+<p>Her knowledge of martial arts novels was nothing more than the miserable life of a pauper, having learned from rolling around in the dirt for a little over a year. And a few scenes from Stephen Chow movies.</p>
+
+<p>So, it was natural that A-Qing did not know the Peng Clan of Hebei.</p>
+
+<p>The eldest son of one of the Five Noble Clans under Heaven had a higher status than most princes of royalty, especially after the Esteemed Senior, Celestial Martial Emperor, flipped the Imperial Palace over its head.</p>
+
+<p>Kunpeng Escort Group was a fairly substantial convoy business, handling distribution for two castles, but was still no match for the reputation of the Peng Clan.</p>
+
+<p>A-Qing, unaware of this fact, simply thought that all Masters received such treatment.</p>
+
+<p>A-Qing, who was only needlessly remarkable at carrying out actions, abruptly stood up.</p>
+
+<p>“Excuse me. Escort Leader, I heard you say that you are heading to Yongseong, is that correct?”</p>
+
+<p>A-Qing addressed the Escort Leader.</p>
+
+<p>It was the confident attitude of a Master.</p>
+
+<p>“Uh, um. Young Lady, you are…”</p>
+
+<p>The Escort Leader’s face soured.</p>
+
+<p>What kind of moment was this?</p>
+
+<p>It was a moment to host a person of great importance, a diamond among golden connections.</p>
+
+<p>In Chinese characters, it was called 關係, also read as Guanxi by Chinese people, a traditional opportunity to foster connections.</p>
+
+<p>Wouldn’t anyone’s expression darken when someone suddenly interrupts such a valuable occasion?</p>
+
+<p>“My name is A-Qing.”</p>
+
+<p>“A-Qing?”</p>
+
+<p>A response came from the side.</p>
+
+<p>It was the majestic, ultra low-frequency voice of that rude bastard from before, Peng Daesan.</p>
+
+<p>The son of the Peng Family had a voice so low it would make almost any woman melt, but it did not affect A-Qing.</p>
+
+<p>Peng Daesan was seated with his back turned, so A-Qing had to turn her head to see his face.</p>
+
+<p>Woah! How can someone be so handsome?</p>
+
+<p>The moniker Jade Qilin was a tradition passed down through generations, a special title given to the most handsome among promising young prodigies.</p>
+
+<p>And this generation’s Jade Qilin, Peng Daesan, was praised for having the most handsome features in the long history of the Central Plains. Seeing as how his unofficial title was the Most Handsome Man Under the Heavens, was there anything more that needed to be said?</p>
+
+<p>But A-Qing was only mimicking a woman but was essentially a man.</p>
+
+<p>As such, she was not swayed by the man’s appearance.</p>
+
+<p>She was simply astonished.</p>
+
+<p>Woah! What is that face? He’s so handsome! I’m jealous!</p>
+
+<p>What is going on? Why is there a surreal sight right before my eyes?</p>
+
+<p>Is this actually the face of a man that exists in this world?</p>
+
+<p>If all the men in the world, past and future, were lined up by appearance, he would surely take first place, even if time was measured by an eternity.</p>
+
+<p>That was the extent of A-Qing’s surprise, who was a man at heart.</p>
+
+<p>In truth, women who encountered Jade Qilin’s striking face unprepared usually fainted or collapsed on the spot.</p>
+
+<p>As A-Qing gaped in admiration at his beauty, Peng Daesan spoke bluntly.</p>
+
+<p>“A-Qing. Do you perhaps also use the Sword Art of the Yue Maiden?”</p>
+
+<p>“Wow. You know about the Sword Art of the Yue Maiden, huh! Could it be-”</p>
+
+<p>“Ha. Tsk. This is a bit new.”</p>
+
+<p>Peng Daesan interrupted A-Qing with a snort.</p>
+
+<p>What the fuck? What’s with this rude bastard’s attitude?</p>
+
+<p>Is he acting all high and mighty just because he’s a bit handsome?</p>
+
+<p>A-Qing frowned, clearly annoyed.</p>
+
+<p>“A-Qing is your real name, you say?”</p>
+
+<p>“Yeah. And?”</p>
+
+<p>“I have never heard of that surname before. Then, who is the founder of your clan?”</p>
+
+<p>“Uh, um. Well, about that.”</p>
+
+<p>How should I know?</p>
+
+<p>But saying I don’t know might be too suspicious.</p>
+
+<p>In truth, A-Qing mostly wandered alone.</p>
+
+<p>The only company she ever had were the fellow poor.</p>
+
+<p>As they said, birds of a feather flock together.</p>
+
+<p>So, she knew nothing about the formalities of the well-dressed upper class.</p>
+
+<p>She just assumed that bastards who were well off even inquired about ancestors.</p>
+
+<p>A-Qing racked her brain.</p>
+
+<p>Who was a known person with the surname ‘A’ that she could use?</p>
+
+<p>“Why can’t you answer?”</p>
+
+<p>“I was about to, okay?”</p>
+
+<p>“So, who is your founder?”</p>
+
+<p>“Uh… Asura?”</p>
+
+<p>Was this right?</p>
+
+<p>It came out spontaneously, but Asura didn’t seem quite right.</p>
+
+<p>A-Qing, the 17th Descendant of Asura. Hm, it might be okay.</p>
+
+<p>“Keuk, kekek, kehAHAHAHA….!”</p>
+
+<p>But then, Peng Daesan burst into laughter, out of the blue.</p>
+
+<p>It seemed that it wasn’t quite right after all.</p>
+
+<p>“Good. Very refreshing. You get 27 points.”</p>
+
+<p>“For what?”</p>
+
+<p>“Your face is plain, so 0 points. Your figure is decent, but you’re tall, so points deducted. You look indecent because your chest is so big, so points deducted once more. That makes 7 points. But you made me laugh, so 20 bonus points for a total of 27.”</p>
+
+<p>What the? How can he be so confident while committing sexual harassment?</p>
+
+<p>It was so severe that it was clear this attitude was definitely not the culture of Murim’s upper class.</p>
+
+<p>Other women might have run away in humiliation and sorrow, but it didn’t hurt A-Qing’s feelings at all.</p>
+
+<p>Instead, it enraged her.</p>
+
+<p>This rude piece of shit could not be forgiven.</p>
+
+<p>“Hey, you. Do you think your mouth has a hole so that you could shit out nonsense from it? Is it a mouth or an asshole? Fucking spewing crap out, huh. I get 27 points? Fine, I’ll give you a hundred points. Want me to stamp you with a thick ‘Well Done’ for that?”</p>
+
+<p>“I don’t know what you’re saying, but it sounds like you wish to hit me.”</p>
+
+<p>Peng Daesan did not hide his mocking smile.</p>
+
+<p>“Very well then. Hit me. Do it.”</p>
+
+<p>But there was one thing Peng Daesan did not know.</p>
+
+<p>After starting her Murim journey, A-Qing rarely held back.</p>
+
+<p>She was filled with existential anxiety, unsure whether she was in a game or reality.</p>
+
+<p>Basically, she lacked the patience and luxury to restrain her impulses.</p>
+
+<p>Moreover, when provoked to strike, she did not hesitate.</p>
+
+<p>As such, A-Qing clenched her fist tightly.</p>
+
+<p>And firmly punched Peng Daesan’s smooth cheek with a resounding Bam!</p>
+
+<p>At that sight, the Escort Leader’s face turned utterly pale.</p>
+
+</body>
+</html>
+
