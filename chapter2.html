@@ -1,34 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>A Day In The Life Of A Second-Year Martial Artist (1)</title>
+  <meta charset="UTF-8">
+  <title>A Day In The Life Of A Second-Year Martial Artist (1)</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 
-<!-- Link to your main CSS -->
-<link rel="stylesheet" href="style.css">
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- Navigation -->
-<div id="navigation"></div>
+  <!-- Top Navigation -->
+  <div id="navigation"></div>
 
-<div id="fontSizeControls" style="margin: 10px 0; text-align: center;">
-  <label for="fontSizeSelect">Font size: </label>
-  <select id="fontSizeSelect">
-    <option value="16px">Smallest</option>
-    <option value="18px" selected>Very Small</option>
-    <option value="20px">Smaller</option>
-    <option value="22px">Small</option>
-    <option value="24px">Normal</option>
-    <option value="26px">Large</option>
-    <option value="28px">Larger</option>
-    <option value="30px">Very Large</option>
-    <option value="32px">Largest</option>
-  </select>
-</div>
+  <!-- Font Size Controls -->
+  <div id="fontSizeControls" style="margin: 10px 0; text-align: center;">
+    <label for="fontSizeSelect">Font size: </label>
+    <select id="fontSizeSelect">
+      <option value="16px">Smallest</option>
+      <option value="18px" selected>Very Small</option>
+      <option value="20px">Smaller</option>
+      <option value="22px">Small</option>
+      <option value="24px">Normal</option>
+      <option value="26px">Large</option>
+      <option value="28px">Larger</option>
+      <option value="30px">Very Large</option>
+      <option value="32px">Largest</option>
+    </select>
+  </div>
 
 <!-- Chapter Content -->
 <main class="chapter-content">
@@ -343,56 +344,83 @@
   <p>Then, they lunged forward all at once.</p>
 </main>
 
-<div class="chapter-nav">
-  <a href="chapter1.html" id="lastChapterBtn">⬅ Last Chapter</a>
-  <a href="chapter3.html" id="nextChapterBtn">Next Chapter ➡</a>
-</div>
+ <!-- Bottom Navigation -->
+  <div id="bottomNavigation"></div>
 
-<!-- Fetch Navigation and Auto-set Chapter Buttons -->
-<script>
-fetch('navigation.html')
-  .then(res => res.text())
-  .then(data => {
-    document.getElementById('navigation').innerHTML = data;
+  <!-- Scripts -->
+  <script>
+    // Load navigation HTML
+    fetch('navigation.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('navigation').innerHTML = html);
 
-    const currentFile = window.location.pathname.split('/').pop();
-    const match = currentFile.match(/chapter(\d+)\.html/);
+    fetch('navigationbottom.html')
+      .then(res => res.text())
+      .then(html => document.getElementById('bottomNavigation').innerHTML = html);
 
-    if(match){
-      const current = parseInt(match[1]);
-      const nextBtn = document.getElementById('nextChapterBtn');
-      const lastBtn = document.getElementById('lastChapterBtn');
+    // Load chapters.json and setup navigation
+    fetch('chapters.json')
+      .then(res => res.json())
+      .then(chapters => {
+        const currentFile = window.location.pathname.split('/').pop();
+        const currentIndex = chapters.findIndex(ch => ch.file === currentFile);
 
-      if(nextBtn) nextBtn.href = `chapter${current + 1}.html`;
-      if(lastBtn) lastBtn.href = `chapter${current - 1}.html`;
+        // Top nav
+        const topNav = document.getElementById('navigation');
+        if (topNav) {
+          const lastBtnTop = topNav.querySelector('#lastChapterBtn');
+          const nextBtnTop = topNav.querySelector('#nextChapterBtn');
+          const selectTop = topNav.querySelector('#chapterSelect');
 
-      if(current === 1 && lastBtn) lastBtn.style.pointerEvents = 'none';
-      if(current === 6 && nextBtn) nextBtn.style.pointerEvents = 'none';
+          if(lastBtnTop) lastBtnTop.href = currentIndex > 0 ? chapters[currentIndex-1].file : '#';
+          if(nextBtnTop) nextBtnTop.href = currentIndex < chapters.length-1 ? chapters[currentIndex+1].file : '#';
+          if(currentIndex === 0 && lastBtnTop) lastBtnTop.style.pointerEvents = 'none';
+          if(currentIndex === chapters.length-1 && nextBtnTop) nextBtnTop.style.pointerEvents = 'none';
+
+          if(selectTop){
+            chapters.forEach(ch => {
+              const opt = document.createElement('option');
+              opt.value = ch.file;
+              opt.textContent = ch.title;
+              selectTop.appendChild(opt);
+            });
+            selectTop.value = currentFile;
+            selectTop.addEventListener('change', () => {
+              if(selectTop.value) window.location.href = selectTop.value;
+            });
+          }
+        }
+
+        // Bottom nav
+        const bottomNav = document.getElementById('bottomNavigation');
+        if (bottomNav) {
+          const lastBtnBottom = bottomNav.querySelector('#lastChapterBtn');
+          const nextBtnBottom = bottomNav.querySelector('#nextChapterBtn');
+
+          if(lastBtnBottom) lastBtnBottom.href = currentIndex > 0 ? chapters[currentIndex-1].file : '#';
+          if(nextBtnBottom) nextBtnBottom.href = currentIndex < chapters.length-1 ? chapters[currentIndex+1].file : '#';
+          if(currentIndex === 0 && lastBtnBottom) lastBtnBottom.style.pointerEvents = 'none';
+          if(currentIndex === chapters.length-1 && nextBtnBottom) nextBtnBottom.style.pointerEvents = 'none';
+        }
+      })
+      .catch(err => console.error('Failed to load chapters.json', err));
+
+    // Font size
+    const fontSizeSelect = document.getElementById('fontSizeSelect');
+    const chapterContent = document.querySelector('.chapter-content');
+
+    const savedFontSize = localStorage.getItem('chapterFontSize');
+    if(savedFontSize){
+      chapterContent.style.fontSize = savedFontSize;
+      fontSizeSelect.value = savedFontSize;
     }
-  })
-  .catch(err => console.error('Navigation fetch failed:', err));
-</script>
 
-<script>
-  const fontSizeSelect = document.getElementById('fontSizeSelect');
-  const chapterContent = document.querySelector('.chapter-content');
-
-  // Load saved font size from localStorage if available
-  const savedFontSize = localStorage.getItem('chapterFontSize');
-  if (savedFontSize) {
-    chapterContent.style.fontSize = savedFontSize;
-    fontSizeSelect.value = savedFontSize;
-  }
-
-  // Change font size on user selection
-  fontSizeSelect.addEventListener('change', () => {
-    const size = fontSizeSelect.value;
-    chapterContent.style.fontSize = size;
-    localStorage.setItem('chapterFontSize', size); // Save preference
-  });
-</script>
+    fontSizeSelect.addEventListener('change', () => {
+      const size = fontSizeSelect.value;
+      chapterContent.style.fontSize = size;
+      localStorage.setItem('chapterFontSize', size);
+    });
+  </script>
 
 </body>
 </html>
-
-
