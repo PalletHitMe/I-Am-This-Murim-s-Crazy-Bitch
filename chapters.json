@@ -1,13 +1,13 @@
 [
-  { "file": "chapter1.html", "title": "Chapter 1: The First Step into Murim", "name": "The  First Step into Murim" },
-  { "file": "chapter2.html", "title": "Chapter 2: A Day In The Life Of A Second-Year Martial Artist (1)", "name": "A Day In The Life Of A Second-Year Martial Artist (1)" },
-  { "file": "chapter3.html", "title": "Chapter 3: A Day In The Life Of A Second-Year Martial Artist (2)", "name": "A Day In The Life Of A Second-Year Martial Artist (2)" },
-  { "file": "chapter4.html", "title": "Chapter 4: A Day In The Life Of A Second-Year Martial Artist (3)", "name": "A Day In The Life Of A Second-Year Martial Artist (3)" },
-  { "file": "chapter5.html", "title": "Chapter 5: Friend (1)", "name": "Friend (1)" },
-  { "file": "chapter6.html", "title": "Chapter 6: Friend (2)", "name": "Friend (2)" },
-  { "file": "chapter7.html", "title": "Chapter 7: Friend (3)", "name": "Friend (3)" },
-  { "file": "chapter8.html", "title": "Chapter 8: Friend (4)", "name": "Friend (4)" },
-  { "file": "chapter9.html", "title": "Chapter 9: Friend (5)", "name": "Friend (5)" },
-  { "file": "chapter10.html", "title": "Chapter 10: Friend (6)", "name": "Friend (6)" }
+  { "file": "chapter001.html", "title": "Chapter 1: The First Step into Murim", "name": "The  First Step into Murim" },
+  { "file": "chapter002.html", "title": "Chapter 2: A Day In The Life Of A Second-Year Martial Artist (1)", "name": "A Day In The Life Of A Second-Year Martial Artist (1)" },
+  { "file": "chapter003.html", "title": "Chapter 3: A Day In The Life Of A Second-Year Martial Artist (2)", "name": "A Day In The Life Of A Second-Year Martial Artist (2)" },
+  { "file": "chapter004.html", "title": "Chapter 4: A Day In The Life Of A Second-Year Martial Artist (3)", "name": "A Day In The Life Of A Second-Year Martial Artist (3)" },
+  { "file": "chapter005.html", "title": "Chapter 5: Friend (1)", "name": "Friend (1)" },
+  { "file": "chapter006.html", "title": "Chapter 6: Friend (2)", "name": "Friend (2)" },
+  { "file": "chapter007.html", "title": "Chapter 7: Friend (3)", "name": "Friend (3)" },
+  { "file": "chapter008.html", "title": "Chapter 8: Friend (4)", "name": "Friend (4)" },
+  { "file": "chapter009.html", "title": "Chapter 9: Friend (5)", "name": "Friend (5)" },
+  { "file": "chapter010.html", "title": "Chapter 10: Friend (6)", "name": "Friend (6)" }
   
 ]
