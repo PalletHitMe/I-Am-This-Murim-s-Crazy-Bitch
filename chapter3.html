@@ -3,457 +3,445 @@
 <head>
 <meta charset="UTF-8">
 <title>A Day In The Life Of A Second-Year Martial Artist (2)</title>
-<link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
-<style>
-  body {
-    font-family: 'Lora', serif;
-    line-height: 1.7;
-  }
-  h1 {
-text-align: center;
-font-weight: 700;
-}
-</style>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Link to your main CSS -->
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<!-- Navigation -->
 <div id="navigation"></div>
 
-<script>
-  fetch('navigation.html')
-    .then(res => res.text())
-    .then(data => {
-      document.getElementById('navigation').innerHTML = data;
-
-      // Auto set Next and Last Chapter buttons
-      const currentFile = window.location.pathname.split('/').pop();
-      const match = currentFile.match(/chapter(\d+)\.html/);
-
-      if(match){
-        const current = parseInt(match[1]);
-        const nextBtn = document.getElementById('nextChapterBtn');
-        const lastBtn = document.getElementById('lastChapterBtn');
-
-        // Set links
-        if(nextBtn) nextBtn.href = `chapter${current + 1}.html`;
-        if(lastBtn) lastBtn.href = `chapter${current - 1}.html`;
-
-        // Disable buttons if at first or last chapter
-        if(current === 1 && lastBtn) lastBtn.style.pointerEvents = 'none';
-        if(current === 6 && nextBtn) nextBtn.style.pointerEvents = 'none'; // update 6 to max chapter
-      }
-    })
-    .catch(err => console.error('Navigation fetch failed:', err));
-</script>
-
-<h1>༺ A Day In The Life Of A Second-Year Martial Artist (2) ༻</h1>
-
-<p>[Regarding the Effects of the 14 Stars of Destiny.araboja]</p>
-
-<p>(Stars of Destiny Selection Screen Screenshot.)</p>
-
-<p>(Image of a star with a red tail among the nebulae)</p>
-
-<p>An impure starlight that foretells the massacre of all under Heaven, the world.</p>
-
-<p>An extraordinary murderer, the Killing Star, inherent with a thirst for blood.</p>
-
-<p>The one destined to become the Heavenly Slaughterer must be killed.</p>
-
-<p>When the Heavenly Slaughtering Star rises, kill every child born under the same moon, otherwise the world will be submerged in endless rivers of blood.</p>
-
-<p>the star of destiny just has some text that seems like a dark souls ripoff without actually explaining what effect it has, so u dont(?) know, yea?</p>
-
-<p>that’s why the developer went to the steam community and posted the effects directly, but since u won’t understand ching chong, i translated it for u</p>
-
-<p>Great Purple Star (North Star)</p>
-
-<p>Starts with a unique royal background.</p>
-
-<p>Possible to choose two Golden Martial Arts from the Martial Vault of the Imperial Palace.</p>
-
-<p>Endgame Crisis is difficult+++ Fixed to the Struggle of the Yellow Dragon route.</p>
-
-<p>Celestial Dog Star (Sirius)Required points for practicing Orthodox Martial Arts decreased by 33%</p>
-
-<p>Required points for practicing Unorthodox Martial Arts increased by 33%</p>
-
-<p>Required points for practicing Demonic Martial Arts increased by 50%</p>
-
-<p>The closer the tendency is to being Orthodox, the stronger the power of the user’s Martial Arts</p>
-
-<p>Blazing Chaotic Star (Mars)</p>
-
-<p>Required points for practicing Unorthodox Martial Arts decreased by 22%</p>
-
-<p>Required points for practicing Foreign Martial Arts decreased by 25%</p>
-
-<p>Required points for practicing Demonic Martial Arts increased by 50%</p>
-
-<p>The closer the tendency is to Unorthodox, the stronger the power of Martial Arts</p>
-
-<p>Domineering Morning Star (Venus)</p>
-
-<p>Required points for practicing Demonic Martial Arts decreased by 33%</p>
-
-<p>Required points for practicing Orthodox Martial Arts increased by 33%</p>
-
-<p>Required points for practicing Unorthodox Martial Arts increased by 50%</p>
-
-<p>The closer the tendency is to ruling by force, the stronger the power of Martial Arts</p>
-
-<p>Windswept Mystic Star (Arcturus) (Trash)</p>
-
-<p>Required points for practicing Left-Hand Path Branch decreased by 75%</p>
-
-<p>Start with the Purple Sorcery Manual, Way of Peace (Trash)</p>
-
-<p>Eternal Lone Star (Mimosa)</p>
-
-<p>Acquisition Rate of Free Practice Points increased by 5%</p>
-
-<p>Required points for practicing all Martial Arts decreased by 5%</p>
-
-<p>Upon Solitary Jianghu (Party Play X) effects increased by 5 times.</p>
-
-<p>For each companion, the power of Martial Arts decreased by 5%</p>
-
-<p>…</p>
-
-<p>…</p>
-
-<p>…</p>
-
-<p>Heavenly Slaughtering Star (Comet)</p>
-
-<p>Upon entering combat, goes into a Berserk state (increased power of Martial Arts, increased Health Damage received, impossible to run away)</p>
-
-<p>The higher the kill count, the stronger the power of Martial Arts</p>
-
-<p>this is the very reason why i recommend heavenly slaughtering star</p>
-
-<p>either way, starting from the midgame, u’ll use defensive qi arts since u’ll get beaten the shit out of anyway, so ur internal force gets cut down first</p>
-
-<p>the increased health damage received isn’t really a penalty</p>
-
-<p>even if ur unable to run away, u can still escape when ur at the brink of death since when ur basically half dead, the berserk state wears off</p>
-
-<p>the downside is having to fight every fodder one by one, but if u want to increase ur kill count, u have to massacre them anyway…….</p>
-
-<p>----</p>
-
-<p>A-Qing had a bright, beaming smile for the first time in a long while.</p>
-
-<p>A genuine smile without a hint of shadow.</p>
-
-<p>Anyone who saw it would inadvertently smile back like a doting dad, moved by its pure and innocent honesty.</p>
-
-<p>A-Qing tended to display all her emotions on her face, so it meant she was that happy at the moment.</p>
-
-<p>Now then, what about the something sweet and sour chicken whatchamacallit?</p>
-
-<p>It exceeded A-Qing’s expectations just from its appearance.</p>
-
-<p>The golden-brown fried crust was visually delightful and the still sizzling oil, the rich aroma wafting up and tickling her nose, seemed to penetrate her very heart.</p>
-
-<p>Gourmet was the art of all five senses.</p>
-
-<p>Seeing, hearing, smelling, and tasting.</p>
-
-<p>But wait. Why were there only four?</p>
-
-<p>Though the identity of the last sense was uncertain, one thing was crystal clear; it was now time to enjoy with the tongue.</p>
-
-<p>A-Qing bit into the chicken leg she had grabbed.</p>
-
-<p>The crispy skin contrasted with the tender, well-cooked meat from which the juices flowed freely; it practically melted off its bones.</p>
-
-<p>The very definition of delicious!</p>
-
-<p>After a single bite, even the King of Cooking would start banging on the ground and tear off his sleeve in resignation, acknowledging he was dogshit instead of the superior being he thought he was.</p>
-
-<p>Ah, this is what I’m talking about.</p>
-
-<p>After all, life was tough and strenuous, but people could get comfort and gain strength from eating delicious food.</p>
-
-<p>Just when A-Qing was comforting herself…</p>
-
-<p>The ceiling collapsed with a crash.</p>
-
-<p>Something fell and shattered the dining table. Clang! In an instant, a wave of heat swept over along with the commotion.</p>
-
-<p>Her face was covered in hot, sticky liquid and bright red blood dripped down her forehead.</p>
-
-<p>The fragrant scent of blood was so intense it made her nose tingle.</p>
-
-<p>Was this actually reality?</p>
-
-<p>A-Qing doubted her eyes.</p>
-
-<p>The table, the meal, and even the scent that she hadn’t had the chance to properly enjoy were no more.</p>
-
-<p>All that was left was the chicken leg she held tightly to her chest in surprise.</p>
-
-<p>Yes, that’s right! At least there’s the chicken leg!</p>
-
-<p>A-Qing quickly checked the condition of her meat.</p>
-
-<p>It was crimson.</p>
-
-<p>Bright red fresh blood was dripping down.</p>
-
-<p>The dish was well-cooked to a golden brown, so it couldn’t have been an odd phenomenon where undercooked meat was oozing chicken blood.</p>
-
-<p>A-Qing wiped her face with a troubled expression.</p>
-
-<p>She couldn’t get herself to let go of the chicken leg, so she used her left hand.</p>
-
-<p>Maybe this was how a singer felt while performing in a downpour.</p>
-
-<p>The bright red fresh blood kept trickling down into her palm, falling drop by drop.</p>
-
-<p>Of course, this wasn’t A-Qing’s blood.</p>
-
-<p>The owner of it was mingling with the debris of the shattered table and the poor uneaten meal at the foot of A-Qing.</p>
-
-<p>He was spewing blood with every breath, gurgling with a rhythm that seemed as if air was leaking from his lungs, and then proceeded to tremble.</p>
-
-<p>Hm. Just another ordinary day in Murim.</p>
-
-<p>The same fucked up, shitty, piece of garbage, Murim. Just as it had always been.</p>
-
-<p>Why am I never given a single chance to be happy?</p>
-
-<p>Why is it always me?</p>
-
-<p>A-Qing’s gaze swept over the inn.</p>
-
-<p>Those who were terrified.</p>
-
-<p>Those who continued to eat as if nothing had happened.</p>
-
-<p>Those who made a fuss, calling for a doctor.</p>
-
-<p>Those who screamed.</p>
-
-<p>Those who looked over with intrigued eyes.</p>
-
-<p>Everyone's reactions were diverse.</p>
-
-<p>And so were the numbers floating above their heads.</p>
-
-<p>They were numbers representing the karma each person held.</p>
-
-<p>Doing righteous deeds would increase it and committing evil deeds would decrease it, so A-Qing could judge a person by this number alone.</p>
-
-<p>Of course, in all of the Central Plains, A-Qing was the only one who could see karma.</p>
-
-<p>Solely A-Qing. In the entire world.</p>
-
-<p>And even the way of practicing martial arts was different for her.</p>
-
-<p>A-Qing accumulated Practice Points by using martial arts and moved up one stage after the required points were fulfilled.</p>
-
-<p>At the same time, Free Practice Points were also accumulated, which could be freely invested to improve certain attainments without the use of other martial arts.</p>
-
-<p>It was a completely different growth method from the martial artists of Murim, who progressed through endless practice and study.</p>
-
-<p>Moreover, what about acquiring martial arts?</p>
-
-<p>As soon as an intact scripture touched her body, it was pre-registered in the Martial Arts Window.</p>
-
-<p>These pre-registered martial arts could be learned at any time by investing the Free Practice Points.</p>
-
-<p>Was this really a normal way of training?</p>
-
-<p>It was like the growth method of a game character.</p>
-
-<p>Not of a martial artist. No, it wasn’t even a method used by a human.</p>
-
-<p>Then what am I?</p>
-
-<p>Am I really human? Or am I a game character?</p>
-
-<p>Are all my actions, all my decisions, really based on my own judgment?</p>
-
-<p>Or am I just being manipulated by electrical signals from a keyboard and mouse somewhere on the screen?</p>
-
-<p>Then what about these emotions I’m feeling?</p>
-
-<p>Where in the world am I?</p>
-
-<p>Is this the real world?</p>
-
-<p>Or is it just a part of the game?</p>
-
-<p>[Sudden Mission Occurrence - Inn Turmoil]</p>
-
-<p>[Chaos has broken out in the inn.]</p>
-
-<p>Actions for additional Free Practice Points</p>
-
-<p>Righteous Karma) Help the Virtuous Quartet of Qinghe and eliminate the Ugly Devil of Zhengyou</p>
-
-<p>Evil Karma) Help the Ugly Devil of Zhengyou and eliminate the Virtuous Quartet of Qinghe</p>
-
-<p>Evil Karma) Take advantage of the chaos and rob the inn of its silver and gold</p>
-
-<p>Heavenly Slaughtering Star) Kill everyone and set the inn on fire</p>
-
-<p>“Ha……”</p>
-
-<p>It was a terrible feeling.</p>
-
-<p>A feeling too terrible to be fully expressed in words.</p>
-
-<p>A-Qing clenched her teeth.</p>
-
-<p>It felt like she was left alone in the world.</p>
-
-<p>This damned status window.</p>
-
-<p>The most terrible thing in the world.</p>
-
-<p>Gurgle. With a sound akin to a death rattle, the middle-aged man at her feet finally stopped moving.</p>
-
-<p>It was the moment when the body (alive) became a body (dead).</p>
-
-<p>As the sphincter of the dead relaxed, a horrible smell arose from the stained trousers of the corpse, pricking the nose.</p>
-
-<p>At the same time, the words written in the semi-transparent window in the corner of her vision flickered and then changed the content.</p>
-
-<p>Righteous Karma) Help the Virtuous Trio of Qinghe and eliminate the Ugly Devil of Zhengyou</p>
-
-<p>Ah. It’s the Virtuous Trio now? Because one died?</p>
-
-<p>A-Qing snorted with laughter.</p>
-
-<p>The blood smeared on her face oozed between her teeth.</p>
-
-<p>The fishy, salty, and thickly condensed stink of blood brought an almost euphoric sensation, making her feel as if she was floating.</p>
-
-<p>Alright, fine. Then let’s eliminate him.</p>
-
-<p>After all, shouldn’t I accumulate Righteous Karma?</p>
-
-<p>It was uncertain whether this was ancient China, an otherworld merely imitating Murim, or just a part of a game; what was certain was that the world couldn’t get more fucked up than this.</p>
-
-<p>But still, there was one thing about it that A-Qing liked.</p>
-
-<p>In this world, there was no need to suppress and let the surging anger rot inside. After all, it was the era of the blade, a world where one could deal with inner resentment in the most primal way.</p>
-
-<p>Rolling on the floor, A-Qing picked up her sword, which had been leaning against the table.</p>
-
-<p>The commotion was still ongoing upstairs with a Crash Boom Clang.</p>
-
-<p>And now, she was about to add to that chaos.</p>
-
-<p>With a smile as savage as blood, A-Qing headed to the stairs, holding the tassel tied to the end of the sword and dragging it along.</p>
-
-<p>----</p>
-
-<p>When explaining the realm of martial arts, the sword was often the standard benchmark.</p>
-
-<p>This was unfair to knife-wielders and fist fighters.</p>
-
-<p>But since half of the martial artists used swords, everyone in Murim agreed that the sword was the most common weapon.</p>
-
-<p>And traditionally, the higher the number of people, the louder the voice.</p>
-
-<p>The art of channeling Qi into the sword to control its strength was called Qi Infusion.</p>
-
-<p>Those capable of Qi Infusion were considered First-Rate martial artists.</p>
-
-<p>When one could use it as naturally as breathing, they were roughly classified as Late-Stage First-Rate.</p>
-
-<p>When one surpassed the level of Qi Infusion, they could emit Qi outside of the weapon, forming visible shapes.</p>
-
-<p>This was called Human Shaped Sword Qi, but since four words were too long, the last two words were wholly omitted, calling it Sword Qi.</p>
-
-<p>Those who could use Sword Qi were considered Peak Realm Masters.</p>
-
-<p>The difference between the Late-Stage First-Rate and Early-Stage Peak Realm was just one step, but up to First-Rate, they were merely martial artists. Starting from the Peak Realm, they were called Masters.</p>
-
-<p>The reason for this was because it was the first wall a martial artist faced.</p>
-
-<p>That was also why reaching the Peak Realm was described as climbing over a wall.</p>
-
-<p>But, unlike in the past when the sight of a Peak Realm Master was astonishing, Murim had continuously developed to this day.</p>
-
-<p>Therefore, Peak Realm Masters were actually more common than one would expect.</p>
-
-<p>After the incident where the zenith of the generation before the last, the Celestial Martial Emperor, flipped the Imperial Palace over its head, the power of the authorities weakened, leading to the revival of Murim.</p>
-
-<p>Murim grew without the checks and suppression of the authorities, leading to the advancement of martial arts.</p>
-
-<p>Unlike before, it was a common theory that if a talented person sincerely learned proper martial arts, they could reach the Peak Realm before their death.</p>
-
-<p>Perhaps because of this, compared to the past, the trend of taking those in the Peak Realm lightly had emerged.</p>
-
-<p>Especially those who were in the Late-Stage First-Rate.</p>
-
-<p>If several attacked together, they could handle an Early-Stage Peak Realm, right?</p>
-
-<p>Wouldn’t it be easy to defeat just one when four launched a surprise attack at them? Right?</p>
-
-<p>However, underestimating the enemy had always been a taboo that all strategists from ancient times unanimously emphasized not to do.</p>
-
-<p>The Virtuous Quartet of Qinghe paid the price for forgetting this taboo.</p>
-
-<p>As such the Quartet became the Trio, and it was becoming more likely by the second for them to become the Duo or even just a Solo.</p>
-
-<p>The Virtuous Gale of Qinghe, Jo Gaksan, swallowed in regret.</p>
-
-<p>‘Damn it! Was the gap this big?! Or perhaps…?! Could it be that he hid the fact that he’s in the Mid-Stage of the Peak Realm?! What a sly and despicable bastard!’</p>
-
-<p>If the Ugly Devil of Zhengyou heard this, he would definitely feel wronged. After all, Ahn Seon-il was indeed in the Early-Stage of the Peak Realm.</p>
-
-<p>How did he handle one person so quickly, you ask?</p>
-
-<p>He just sensed the ambush in advance.</p>
-
-<p>Demonic Adepts always lived with a looming threat over their lives.</p>
-
-<p>It was because they were considered worthless even if they died, so being stabbed to death on the roadside was treated as a natural death.</p>
-
-<p>As such, long-lived Demonic Adepts were fundamentally sensitive.</p>
-
-<p>At the same time, those at the table, who usually created a ruckus, calling each other brothers and sisters and talking about the peace of Murim and whatnot, suddenly went quiet.</p>
-
-<p>Wouldn’t it obviously have been suspicious?</p>
-
-<p>From that moment onwards, Ahn Seongil was on high alert and his readiness paid off.</p>
-
-<p>He deflected the oncoming blade with his left hand and drew his sword to cut one of their throats.</p>
-
-<p>He stomped on the ground with all his might to deploy Qinggong, avoiding the three others rushing at him.</p>
-
-<p>But the weak floor collapsed, causing him to lose his balance, so he rather chose to execute the Naryeotagon move.</p>
-
-<p>For reference, this move meant rolling on the floor unsightly.</p>
-
-<p>Martial artists, who staked their lives on their reputation, often said they would never use it, even if it meant their death. However, since there was not a single person who actually kept their word, the words of martial artists were mostly just bravado and lies.</p>
-
-<p>Regardless, he managed to save his life at the expense of his dignity.</p>
-
-<p>Ahn Seon-il shouted loudly.</p>
-
-<p>“Who dares to target the back of this swordsman of Zhengyou! Are you not afraid of the repercussions from the Zhengyou Martial Hall!”</p>
-
-<p>To put it simply, it basically meant whether they would be able to handle the consequences.</p>
-
-<p>“Shut up! You villain! Who here doesn’t know that you’re the hideous demon called the Ugly Devil of Zhengyou! Today, I will cut off your head and restore justice to the world!”</p>
-
-<p>Basically, it meant he was not going to reveal his name. Just in case.</p>
-
-<p>For martial artists, fighting was a part of their social life, so it was necessary to understand the implications accurately.</p>
-
-<p>After this, there was no need for further verbal arguments.</p>
-
-<p>After all, there was no reason to waste words when there was a perfectly fine weapon in their hands.</p>
-
-<p>That was the way of Murim.</p>
+<div id="fontSizeControls" style="margin: 10px 0; text-align: center;">
+  <label for="fontSizeSelect">Font size: </label>
+  <select id="fontSizeSelect">
+    <option value="16px">Smallest</option>
+    <option value="18px" selected>Very Small</option>
+    <option value="20px">Smaller</option>
+    <option value="22px">Small</option>
+    <option value="24px">Normal</option>
+    <option value="26px">Large</option>
+    <option value="28px">Larger</option>
+    <option value="30px">Very Large</option>
+    <option value="32px">Largest</option>
+  </select>
+</div>
+
+<!-- Chapter Content -->
+<main class="chapter-content">
+
+  <h1>༺ A Day In The Life Of A Second-Year Martial Artist (2) ༻</h1>
+  
+  <p>[Regarding the Effects of the 14 Stars of Destiny.araboja]</p>
+  
+  <p>(Stars of Destiny Selection Screen Screenshot.)</p>
+  
+  <p>(Image of a star with a red tail among the nebulae)</p>
+  
+  <p>An impure starlight that foretells the massacre of all under Heaven, the world.</p>
+  
+  <p>An extraordinary murderer, the Killing Star, inherent with a thirst for blood.</p>
+  
+  <p>The one destined to become the Heavenly Slaughterer must be killed.</p>
+  
+  <p>When the Heavenly Slaughtering Star rises, kill every child born under the same moon, otherwise the world will be submerged in endless rivers of blood.</p>
+  
+  <p>the star of destiny just has some text that seems like a dark souls ripoff without actually explaining what effect it has, so u dont(?) know, yea?</p>
+  
+  <p>that’s why the developer went to the steam community and posted the effects directly, but since u won’t understand ching chong, i translated it for u</p>
+  
+  <p>Great Purple Star (North Star)</p>
+  
+  <p>Starts with a unique royal background.</p>
+  
+  <p>Possible to choose two Golden Martial Arts from the Martial Vault of the Imperial Palace.</p>
+  
+  <p>Endgame Crisis is difficult+++ Fixed to the Struggle of the Yellow Dragon route.</p>
+  
+  <p>Celestial Dog Star (Sirius)Required points for practicing Orthodox Martial Arts decreased by 33%</p>
+  
+  <p>Required points for practicing Unorthodox Martial Arts increased by 33%</p>
+  
+  <p>Required points for practicing Demonic Martial Arts increased by 50%</p>
+  
+  <p>The closer the tendency is to being Orthodox, the stronger the power of the user’s Martial Arts</p>
+  
+  <p>Blazing Chaotic Star (Mars)</p>
+  
+  <p>Required points for practicing Unorthodox Martial Arts decreased by 22%</p>
+  
+  <p>Required points for practicing Foreign Martial Arts decreased by 25%</p>
+  
+  <p>Required points for practicing Demonic Martial Arts increased by 50%</p>
+  
+  <p>The closer the tendency is to Unorthodox, the stronger the power of Martial Arts</p>
+  
+  <p>Domineering Morning Star (Venus)</p>
+  
+  <p>Required points for practicing Demonic Martial Arts decreased by 33%</p>
+  
+  <p>Required points for practicing Orthodox Martial Arts increased by 33%</p>
+  
+  <p>Required points for practicing Unorthodox Martial Arts increased by 50%</p>
+  
+  <p>The closer the tendency is to ruling by force, the stronger the power of Martial Arts</p>
+  
+  <p>Windswept Mystic Star (Arcturus) (Trash)</p>
+  
+  <p>Required points for practicing Left-Hand Path Branch decreased by 75%</p>
+  
+  <p>Start with the Purple Sorcery Manual, Way of Peace (Trash)</p>
+  
+  <p>Eternal Lone Star (Mimosa)</p>
+  
+  <p>Acquisition Rate of Free Practice Points increased by 5%</p>
+  
+  <p>Required points for practicing all Martial Arts decreased by 5%</p>
+  
+  <p>Upon Solitary Jianghu (Party Play X) effects increased by 5 times.</p>
+  
+  <p>For each companion, the power of Martial Arts decreased by 5%</p>
+  
+  <p>…</p>
+  
+  <p>…</p>
+  
+  <p>…</p>
+  
+  <p>Heavenly Slaughtering Star (Comet)</p>
+  
+  <p>Upon entering combat, goes into a Berserk state (increased power of Martial Arts, increased Health Damage received, impossible to run away)</p>
+  
+  <p>The higher the kill count, the stronger the power of Martial Arts</p>
+  
+  <p>this is the very reason why i recommend heavenly slaughtering star</p>
+  
+  <p>either way, starting from the midgame, u’ll use defensive qi arts since u’ll get beaten the shit out of anyway, so ur internal force gets cut down first</p>
+  
+  <p>the increased health damage received isn’t really a penalty</p>
+  
+  <p>even if ur unable to run away, u can still escape when ur at the brink of death since when ur basically half dead, the berserk state wears off</p>
+  
+  <p>the downside is having to fight every fodder one by one, but if u want to increase ur kill count, u have to massacre them anyway…….</p>
+  
+  <p>----</p>
+  
+  <p>A-Qing had a bright, beaming smile for the first time in a long while.</p>
+  
+  <p>A genuine smile without a hint of shadow.</p>
+  
+  <p>Anyone who saw it would inadvertently smile back like a doting dad, moved by its pure and innocent honesty.</p>
+  
+  <p>A-Qing tended to display all her emotions on her face, so it meant she was that happy at the moment.</p>
+  
+  <p>Now then, what about the something sweet and sour chicken whatchamacallit?</p>
+  
+  <p>It exceeded A-Qing’s expectations just from its appearance.</p>
+  
+  <p>The golden-brown fried crust was visually delightful and the still sizzling oil, the rich aroma wafting up and tickling her nose, seemed to penetrate her very heart.</p>
+  
+  <p>Gourmet was the art of all five senses.</p>
+  
+  <p>Seeing, hearing, smelling, and tasting.</p>
+  
+  <p>But wait. Why were there only four?</p>
+  
+  <p>Though the identity of the last sense was uncertain, one thing was crystal clear; it was now time to enjoy with the tongue.</p>
+  
+  <p>A-Qing bit into the chicken leg she had grabbed.</p>
+  
+  <p>The crispy skin contrasted with the tender, well-cooked meat from which the juices flowed freely; it practically melted off its bones.</p>
+  
+  <p>The very definition of delicious!</p>
+  
+  <p>After a single bite, even the King of Cooking would start banging on the ground and tear off his sleeve in resignation, acknowledging he was dogshit instead of the superior being he thought he was.</p>
+  
+  <p>Ah, this is what I’m talking about.</p>
+  
+  <p>After all, life was tough and strenuous, but people could get comfort and gain strength from eating delicious food.</p>
+  
+  <p>Just when A-Qing was comforting herself…</p>
+  
+  <p>The ceiling collapsed with a crash.</p>
+  
+  <p>Something fell and shattered the dining table. Clang! In an instant, a wave of heat swept over along with the commotion.</p>
+  
+  <p>Her face was covered in hot, sticky liquid and bright red blood dripped down her forehead.</p>
+  
+  <p>The fragrant scent of blood was so intense it made her nose tingle.</p>
+  
+  <p>Was this actually reality?</p>
+  
+  <p>A-Qing doubted her eyes.</p>
+  
+  <p>The table, the meal, and even the scent that she hadn’t had the chance to properly enjoy were no more.</p>
+  
+  <p>All that was left was the chicken leg she held tightly to her chest in surprise.</p>
+  
+  <p>Yes, that’s right! At least there’s the chicken leg!</p>
+  
+  <p>A-Qing quickly checked the condition of her meat.</p>
+  
+  <p>It was crimson.</p>
+  
+  <p>Bright red fresh blood was dripping down.</p>
+  
+  <p>The dish was well-cooked to a golden brown, so it couldn’t have been an odd phenomenon where undercooked meat was oozing chicken blood.</p>
+  
+  <p>A-Qing wiped her face with a troubled expression.</p>
+  
+  <p>She couldn’t get herself to let go of the chicken leg, so she used her left hand.</p>
+  
+  <p>Maybe this was how a singer felt while performing in a downpour.</p>
+  
+  <p>The bright red fresh blood kept trickling down into her palm, falling drop by drop.</p>
+  
+  <p>Of course, this wasn’t A-Qing’s blood.</p>
+  
+  <p>The owner of it was mingling with the debris of the shattered table and the poor uneaten meal at the foot of A-Qing.</p>
+  
+  <p>He was spewing blood with every breath, gurgling with a rhythm that seemed as if air was leaking from his lungs, and then proceeded to tremble.</p>
+  
+  <p>Hm. Just another ordinary day in Murim.</p>
+  
+  <p>The same fucked up, shitty, piece of garbage, Murim. Just as it had always been.</p>
+  
+  <p>Why am I never given a single chance to be happy?</p>
+  
+  <p>Why is it always me?</p>
+  
+  <p>A-Qing’s gaze swept over the inn.</p>
+  
+  <p>Those who were terrified.</p>
+  
+  <p>Those who continued to eat as if nothing had happened.</p>
+  
+  <p>Those who made a fuss, calling for a doctor.</p>
+  
+  <p>Those who screamed.</p>
+  
+  <p>Those who looked over with intrigued eyes.</p>
+  
+  <p>Everyone's reactions were diverse.</p>
+  
+  <p>And so were the numbers floating above their heads.</p>
+  
+  <p>They were numbers representing the karma each person held.</p>
+  
+  <p>Doing righteous deeds would increase it and committing evil deeds would decrease it, so A-Qing could judge a person by this number alone.</p>
+  
+  <p>Of course, in all of the Central Plains, A-Qing was the only one who could see karma.</p>
+  
+  <p>Solely A-Qing. In the entire world.</p>
+  
+  <p>And even the way of practicing martial arts was different for her.</p>
+  
+  <p>A-Qing accumulated Practice Points by using martial arts and moved up one stage after the required points were fulfilled.</p>
+  
+  <p>At the same time, Free Practice Points were also accumulated, which could be freely invested to improve certain attainments without the use of other martial arts.</p>
+  
+  <p>It was a completely different growth method from the martial artists of Murim, who progressed through endless practice and study.</p>
+  
+  <p>Moreover, what about acquiring martial arts?</p>
+  
+  <p>As soon as an intact scripture touched her body, it was pre-registered in the Martial Arts Window.</p>
+  
+  <p>These pre-registered martial arts could be learned at any time by investing the Free Practice Points.</p>
+  
+  <p>Was this really a normal way of training?</p>
+  
+  <p>It was like the growth method of a game character.</p>
+  
+  <p>Not of a martial artist. No, it wasn’t even a method used by a human.</p>
+  
+  <p>Then what am I?</p>
+  
+  <p>Am I really human? Or am I a game character?</p>
+  
+  <p>Are all my actions, all my decisions, really based on my own judgment?</p>
+  
+  <p>Or am I just being manipulated by electrical signals from a keyboard and mouse somewhere on the screen?</p>
+  
+  <p>Then what about these emotions I’m feeling?</p>
+  
+  <p>Where in the world am I?</p>
+  
+  <p>Is this the real world?</p>
+  
+  <p>Or is it just a part of the game?</p>
+  
+  <p>[Sudden Mission Occurrence - Inn Turmoil]</p>
+  
+  <p>[Chaos has broken out in the inn.]</p>
+  
+  <p>Actions for additional Free Practice Points</p>
+  
+  <p>Righteous Karma) Help the Virtuous Quartet of Qinghe and eliminate the Ugly Devil of Zhengyou</p>
+  
+  <p>Evil Karma) Help the Ugly Devil of Zhengyou and eliminate the Virtuous Quartet of Qinghe</p>
+  
+  <p>Evil Karma) Take advantage of the chaos and rob the inn of its silver and gold</p>
+  
+  <p>Heavenly Slaughtering Star) Kill everyone and set the inn on fire</p>
+  
+  <p>“Ha……”</p>
+  
+  <p>It was a terrible feeling.</p>
+  
+  <p>A feeling too terrible to be fully expressed in words.</p>
+  
+  <p>A-Qing clenched her teeth.</p>
+  
+  <p>It felt like she was left alone in the world.</p>
+  
+  <p>This damned status window.</p>
+  
+  <p>The most terrible thing in the world.</p>
+  
+  <p>Gurgle. With a sound akin to a death rattle, the middle-aged man at her feet finally stopped moving.</p>
+  
+  <p>It was the moment when the body (alive) became a body (dead).</p>
+  
+  <p>As the sphincter of the dead relaxed, a horrible smell arose from the stained trousers of the corpse, pricking the nose.</p>
+  
+  <p>At the same time, the words written in the semi-transparent window in the corner of her vision flickered and then changed the content.</p>
+  
+  <p>Righteous Karma) Help the Virtuous Trio of Qinghe and eliminate the Ugly Devil of Zhengyou</p>
+  
+  <p>Ah. It’s the Virtuous Trio now? Because one died?</p>
+  
+  <p>A-Qing snorted with laughter.</p>
+  
+  <p>The blood smeared on her face oozed between her teeth.</p>
+  
+  <p>The fishy, salty, and thickly condensed stink of blood brought an almost euphoric sensation, making her feel as if she was floating.</p>
+  
+  <p>Alright, fine. Then let’s eliminate him.</p>
+  
+  <p>After all, shouldn’t I accumulate Righteous Karma?</p>
+  
+  <p>It was uncertain whether this was ancient China, an otherworld merely imitating Murim, or just a part of a game; what was certain was that the world couldn’t get more fucked up than this.</p>
+  
+  <p>But still, there was one thing about it that A-Qing liked.</p>
+  
+  <p>In this world, there was no need to suppress and let the surging anger rot inside. After all, it was the era of the blade, a world where one could deal with inner resentment in the most primal way.</p>
+  
+  <p>Rolling on the floor, A-Qing picked up her sword, which had been leaning against the table.</p>
+  
+  <p>The commotion was still ongoing upstairs with a Crash Boom Clang.</p>
+  
+  <p>And now, she was about to add to that chaos.</p>
+  
+  <p>With a smile as savage as blood, A-Qing headed to the stairs, holding the tassel tied to the end of the sword and dragging it along.</p>
+  
+  <p>----</p>
+  
+  <p>When explaining the realm of martial arts, the sword was often the standard benchmark.</p>
+  
+  <p>This was unfair to knife-wielders and fist fighters.</p>
+  
+  <p>But since half of the martial artists used swords, everyone in Murim agreed that the sword was the most common weapon.</p>
+  
+  <p>And traditionally, the higher the number of people, the louder the voice.</p>
+  
+  <p>The art of channeling Qi into the sword to control its strength was called Qi Infusion.</p>
+  
+  <p>Those capable of Qi Infusion were considered First-Rate martial artists.</p>
+  
+  <p>When one could use it as naturally as breathing, they were roughly classified as Late-Stage First-Rate.</p>
+  
+  <p>When one surpassed the level of Qi Infusion, they could emit Qi outside of the weapon, forming visible shapes.</p>
+  
+  <p>This was called Human Shaped Sword Qi, but since four words were too long, the last two words were wholly omitted, calling it Sword Qi.</p>
+  
+  <p>Those who could use Sword Qi were considered Peak Realm Masters.</p>
+  
+  <p>The difference between the Late-Stage First-Rate and Early-Stage Peak Realm was just one step, but up to First-Rate, they were merely martial artists. Starting from the Peak Realm, they were called Masters.</p>
+  
+  <p>The reason for this was because it was the first wall a martial artist faced.</p>
+  
+  <p>That was also why reaching the Peak Realm was described as climbing over a wall.</p>
+  
+  <p>But, unlike in the past when the sight of a Peak Realm Master was astonishing, Murim had continuously developed to this day.</p>
+  
+  <p>Therefore, Peak Realm Masters were actually more common than one would expect.</p>
+  
+  <p>After the incident where the zenith of the generation before the last, the Celestial Martial Emperor, flipped the Imperial Palace over its head, the power of the authorities weakened, leading to the revival of Murim.</p>
+  
+  <p>Murim grew without the checks and suppression of the authorities, leading to the advancement of martial arts.</p>
+  
+  <p>Unlike before, it was a common theory that if a talented person sincerely learned proper martial arts, they could reach the Peak Realm before their death.</p>
+  
+  <p>Perhaps because of this, compared to the past, the trend of taking those in the Peak Realm lightly had emerged.</p>
+  
+  <p>Especially those who were in the Late-Stage First-Rate.</p>
+  
+  <p>If several attacked together, they could handle an Early-Stage Peak Realm, right?</p>
+  
+  <p>Wouldn’t it be easy to defeat just one when four launched a surprise attack at them? Right?</p>
+  
+  <p>However, underestimating the enemy had always been a taboo that all strategists from ancient times unanimously emphasized not to do.</p>
+  
+  <p>The Virtuous Quartet of Qinghe paid the price for forgetting this taboo.</p>
+  
+  <p>As such the Quartet became the Trio, and it was becoming more likely by the second for them to become the Duo or even just a Solo.</p>
+  
+  <p>The Virtuous Gale of Qinghe, Jo Gaksan, swallowed in regret.</p>
+  
+  <p>‘Damn it! Was the gap this big?! Or perhaps…?! Could it be that he hid the fact that he’s in the Mid-Stage of the Peak Realm?! What a sly and despicable bastard!’</p>
+  
+  <p>If the Ugly Devil of Zhengyou heard this, he would definitely feel wronged. After all, Ahn Seon-il was indeed in the Early-Stage of the Peak Realm.</p>
+  
+  <p>How did he handle one person so quickly, you ask?</p>
+  
+  <p>He just sensed the ambush in advance.</p>
+  
+  <p>Demonic Adepts always lived with a looming threat over their lives.</p>
+  
+  <p>It was because they were considered worthless even if they died, so being stabbed to death on the roadside was treated as a natural death.</p>
+  
+  <p>As such, long-lived Demonic Adepts were fundamentally sensitive.</p>
+  
+  <p>At the same time, those at the table, who usually created a ruckus, calling each other brothers and sisters and talking about the peace of Murim and whatnot, suddenly went quiet.</p>
+  
+  <p>Wouldn’t it obviously have been suspicious?</p>
+  
+  <p>From that moment onwards, Ahn Seongil was on high alert and his readiness paid off.</p>
+  
+  <p>He deflected the oncoming blade with his left hand and drew his sword to cut one of their throats.</p>
+  
+  <p>He stomped on the ground with all his might to deploy Qinggong, avoiding the three others rushing at him.</p>
+  
+  <p>But the weak floor collapsed, causing him to lose his balance, so he rather chose to execute the Naryeotagon move.</p>
+  
+  <p>For reference, this move meant rolling on the floor unsightly.</p>
+  
+  <p>Martial artists, who staked their lives on their reputation, often said they would never use it, even if it meant their death. However, since there was not a single person who actually kept their word, the words of martial artists were mostly just bravado and lies.</p>
+  
+  <p>Regardless, he managed to save his life at the expense of his dignity.</p>
+  
+  <p>Ahn Seon-il shouted loudly.</p>
+  
+  <p>“Who dares to target the back of this swordsman of Zhengyou! Are you not afraid of the repercussions from the Zhengyou Martial Hall!”</p>
+  
+  <p>To put it simply, it basically meant whether they would be able to handle the consequences.</p>
+  
+  <p>“Shut up! You villain! Who here doesn’t know that you’re the hideous demon called the Ugly Devil of Zhengyou! Today, I will cut off your head and restore justice to the world!”</p>
+  
+  <p>Basically, it meant he was not going to reveal his name. Just in case.</p>
+  
+  <p>For martial artists, fighting was a part of their social life, so it was necessary to understand the implications accurately.</p>
+  
+  <p>After this, there was no need for further verbal arguments.</p>
+  
+  <p>After all, there was no reason to waste words when there was a perfectly fine weapon in their hands.</p>
+  
+  <p>That was the way of Murim.</p>
 
 </body>
 </html>
+
 
