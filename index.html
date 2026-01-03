@@ -23,7 +23,7 @@
       <p class="tagline">
         I became a female character in a martial arts game I've never played before. But I know nothing about martial arts.
       </p>
-      <a id="startReadingBtn" href="allchapters/chapter1.html" class="read-btn">Start Reading</a>
+      <a id="startReadingBtn" href="#" class="read-btn">Start Reading</a>
     </div>
   </section>
 
@@ -46,9 +46,9 @@
     fetch('chapters.json')
       .then(res => res.json())
       .then(chapters => {
-        if(chapters.length === 0) return;
+        if (chapters.length === 0) return;
 
-        // Set "Start Reading" to the first chapter
+        // Set Start Reading button to first chapter
         startReadingBtn.href = chapters[0].file;
 
         // Generate chapter cards
@@ -69,5 +69,3 @@
 
 </body>
 </html>
-
-
