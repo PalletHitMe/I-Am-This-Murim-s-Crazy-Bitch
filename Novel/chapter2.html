@@ -17,14 +17,34 @@ font-weight: 700;
 </head>
 <body>
 
-<div id="chapter-nav-placeholder"></div>
+<div id="navigation"></div>
+
 <script>
-  fetch('/navigation.html')
+  fetch('navigation.html')
     .then(res => res.text())
-    .then(html => document.getElementById('chapter-nav-placeholder').innerHTML = html);
+    .then(data => {
+      document.getElementById('navigation').innerHTML = data;
+
+      // Auto set Next and Last Chapter buttons
+      const currentFile = window.location.pathname.split('/').pop();
+      const match = currentFile.match(/chapter(\d+)\.html/);
+
+      if(match){
+        const current = parseInt(match[1]);
+        const nextBtn = document.getElementById('nextChapterBtn');
+        const lastBtn = document.getElementById('lastChapterBtn');
+
+        // Set links
+        if(nextBtn) nextBtn.href = `chapter${current + 1}.html`;
+        if(lastBtn) lastBtn.href = `chapter${current - 1}.html`;
+
+        // Disable buttons if at first or last chapter
+        if(current === 1 && lastBtn) lastBtn.style.pointerEvents = 'none';
+        if(current === 6 && nextBtn) nextBtn.style.pointerEvents = 'none'; // update 6 to max chapter
+      }
+    })
+    .catch(err => console.error('Navigation fetch failed:', err));
 </script>
-
-
 
 <h1>༺ A Day In The Life Of A Second-Year Martial Artist (1) ༻</h1>
 
@@ -338,3 +358,4 @@ font-weight: 700;
 
 </body>
 </html>
+
