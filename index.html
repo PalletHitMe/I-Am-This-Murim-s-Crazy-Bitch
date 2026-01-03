@@ -5,172 +5,189 @@
   <title>I Am This Murim's Crazy Bitch</title>
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: #fafafa;
-      color: #111;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: auto;
-    }
-
-    /* Banner / Book Info */
-    .book-header {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      margin-bottom: 30px;
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-
-    .cover-img {
-      flex-shrink: 0;
-      width: 250px;
-      border-radius: 10px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    }
-
-    .cover-img img {
-      width: 100%;
-      border-radius: 10px;
-    }
-
-    .book-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .book-info h1 {
       font-family: 'Lora', serif;
-      font-size: 2.4rem;
-      margin-bottom: 8px;
-    }
-    .book-info .author {
-      font-size: 1.1rem;
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: #555;
-    }
-    .book-info .meta {
-      font-size: 0.95rem;
-      color: #666;
-      margin-bottom: 15px;
-    }
-    .book-info .synopsis {
-      font-size: 1rem;
-      line-height: 1.6;
-      margin-bottom: 15px;
+      background: radial-gradient(circle at top, #fdfcfb 0%, #e6d5c3 60%, #d9c2a3 100%);
+      color: #1a1a1a;
+      min-height: 100vh;
     }
 
-    .tags {
+    /* =========================
+       HERO SECTION
+       ========================= */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem;
+      background: url('novelpic.jpg') no-repeat center/cover;
+      position: relative;
+      color: #fff;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        rgba(0,0,0,0.65),
+        rgba(0,0,0,0.35),
+        rgba(0,0,0,0.65)
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 800px;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-family: 'Lora', serif;
+      font-size: 3.5rem;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    }
+
+    .hero .author {
+      font-style: italic;
+      font-size: 1.3rem;
+      opacity: 0.9;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero .tagline {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      opacity: 0.95;
+    }
+
+    /* =========================
+       CHAPTER SECTION
+       ========================= */
+    .chapters {
+      max-width: 960px;
+      margin: -4rem auto 4rem;
+      padding: 3rem 2.5rem;
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      box-shadow:
+        0 15px 40px rgba(0,0,0,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.6);
+      backdrop-filter: blur(6px);
+    }
+
+    .chapters h2 {
+      font-family: 'Lora', serif;
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 2.5rem;
+      color: #2a2a2a;
+    }
+
+    .chapter-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-    .tags span {
-      background: #eee;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      color: #444;
+      justify-content: center;
+      gap: 16px;
     }
 
-    /* Chapter list */
-    .chapters {
-      background: white;
-      margin-top: 30px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      padding: 20px;
-    }
-    .chapters h2 {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .chapter-list {
-      column-count: 2;
-      column-gap: 15px;
-      font-size: 1rem;
-    }
     .chapter-list a {
-      display: block;
-      padding: 6px 0;
       text-decoration: none;
-      color: #2c3e50;
-      transition: color 0.2s;
-    }
-    .chapter-list a:hover {
-      color: #e74c3c;
+      background: linear-gradient(135deg, #b83232, #ff6b6b);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 1rem;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+      transition: all 0.25s ease;
     }
 
-    @media (max-width: 650px) {
-      .chapter-list { column-count: 1; }
-      .book-header { flex-direction: column; }
+    .chapter-list a:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+      background: linear-gradient(135deg, #ff6b6b, #ff3b3b);
+    }
+
+    /* =========================
+       FOOTER
+       ========================= */
+    footer {
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+      font-size: 0.9rem;
+      color: #444;
+      opacity: 0.8;
+    }
+
+    /* =========================
+       MOBILE
+       ========================= */
+    @media (max-width: 600px) {
+      .hero {
+        padding: 4rem 1.5rem;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .chapters {
+        margin: -3rem 1rem 3rem;
+        padding: 2rem 1.5rem;
+      }
+
+      .chapter-list a {
+        width: 100%;
+        text-align: center;
+      }
     }
   </style>
 </head>
+
 <body>
 
-  <div class="container">
-
-    <!-- Book Banner -->
-    <div class="book-header">
-      <div class="cover-img">
-        <img src="novelpic.jpg" alt="I Am This Murim's Crazy Bitch">
-      </div>
-
-      <div class="book-info">
-        <h1>I Am This Murim's Crazy Bitch</h1>
-        <p class="author">By PalletHitMe</p>
-        <p class="meta">Status: Ongoing • Genres: Martial Arts, Action, Adventure</p>
-
-        <p class="synopsis">
-          I became a female character in a martial arts world I’d always known from games...  
-          Struggling in Murim and questioning reality itself, she fights, laughs, and survives.
-        </p>
-
-        <div class="tags">
-          <span>Martial Arts</span>
-          <span>Gender Bender</span>
-          <span>Action</span>
-          <span>Adventure</span>
-          <span>Comedy</span>
-          <span>Transmigration</span>
-        </div>
-      </div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>I Am This Murim's Crazy Bitch</h1>
+      <p class="author">By PalletHitMe</p>
+      <p class="tagline">
+        A ruthless journey through Murim, where martial arts, money, and madness collide.
+      </p>
     </div>
+  </section>
 
-    <!-- Chapter List -->
-    <div class="chapters">
-      <h2>Chapter List</h2>
-      <div class="chapter-list">
-        <a href="chapter1.html">Chapter 1: The First Step into Murim</a>
-        <a href="chapter2.html">Chapter 2: A Day In The Life Of A Second-Year Martial Artist (1)</a>
-        <a href="chapter3.html">Chapter 3: A Day In The Life Of A Second-Year Martial Artist (2)</a>
-        <a href="chapter4.html">Chapter 4: A Day In The Life Of A Second-Year Martial Artist (3)</a>
-        <a href="chapter5.html">Chapter 5: Friend (1)</a>
-        <a href="chapter6.html">Chapter 6: Friend (2)</a>
-      </div>
+  <!-- CHAPTERS -->
+  <section class="chapters">
+    <h2>Chapters</h2>
+    <div class="chapter-list">
+      <a href="chapter1.html">Chapter 1: The First Step into Murim</a>
+      <a href="chapter2.html">Chapter 2: A Day In The Life Of A Second-Year Martial Artist (1)</a>
+      <a href="chapter3.html">Chapter 3: A Day In The Life Of A Second-Year Martial Artist (2)</a>
+      <a href="chapter4.html">Chapter 4: A Day In The Life Of A Second-Year Martial Artist (3)</a>
+      <a href="chapter5.html">Chapter 5: Friend (1)</a>
+      <a href="chapter6.html">Chapter 6: Friend (2)</a>
     </div>
+  </section>
 
-  </div>
+  <!-- FOOTER -->
+  <footer>
+    © 2026 PalletHitMe. All rights reserved.
+  </footer>
 
 </body>
 </html>
-
-
