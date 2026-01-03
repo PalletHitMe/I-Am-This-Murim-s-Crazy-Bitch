@@ -1,36 +1,40 @@
-<div class="chapter-nav" style="text-align:center; margin: 20px 0;">
-  <a href="index.html" id="backToMainBtn" style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-     background-color: #4CAF50; color: white; border-radius: 8px;
-     font-weight: 700; transition: 0.3s; display: inline-block;">
+<div style="text-align: center; margin: 20px 0; font-family: sans-serif;">
+  <a href="index.html"
+     style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
+            background-color: #4CAF50; color: white; border-radius: 8px;
+            font-weight: 700; transition: 0.3s; display: inline-block;">
     Back to Main Page
   </a>
-  <a href="#" id="lastChapterBtn" style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-     background-color: #ff6b6b; color: white; border-radius: 8px;
-     font-weight: 700; transition: 0.3s; display: inline-block;">
+  <a href="#" id="lastChapterBtn"
+     style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
+            background-color: #ff6b6b; color: white; border-radius: 8px;
+            font-weight: 700; transition: 0.3s; display: inline-block;">
     ⬅ Last Chapter
   </a>
-  <a href="#" id="nextChapterBtn" style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-     background-color: #ff6b6b; color: white; border-radius: 8px;
-     font-weight: 700; transition: 0.3s; display: inline-block;">
+  <a href="#" id="nextChapterBtn"
+     style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
+            background-color: #ff6b6b; color: white; border-radius: 8px;
+            font-weight: 700; transition: 0.3s; display: inline-block;">
     Next Chapter ➡
   </a>
 </div>
 
 <script>
-fetch('chapters.json')
-  .then(res => res.json())
-  .then(chapters => {
-    const lastBtn = document.getElementById('lastChapterBtn');
-    const nextBtn = document.getElementById('nextChapterBtn');
-    const currentFile = window.location.pathname.split('/').pop();
-    const currentIndex = chapters.findIndex(ch => ch.file === currentFile);
+  fetch('chapters.json')
+    .then(res => res.json())
+    .then(chapters => {
+      const currentFile = window.location.pathname.split('/').pop();
+      const currentIndex = chapters.findIndex(ch => ch.file === currentFile);
 
-    if(currentIndex >= 0){
-      if(lastBtn) lastBtn.href = currentIndex > 0 ? chapters[currentIndex-1].file : '#';
-      if(nextBtn) nextBtn.href = currentIndex < chapters.length-1 ? chapters[currentIndex+1].file : '#';
+      const lastBtn = document.getElementById('lastChapterBtn');
+      const nextBtn = document.getElementById('nextChapterBtn');
 
-      if(currentIndex === 0 && lastBtn) lastBtn.style.pointerEvents = 'none';
-      if(currentIndex === chapters.length-1 && nextBtn) nextBtn.style.pointerEvents = 'none';
-    }
-  });
+      if(currentIndex >= 0){
+        if(lastBtn) lastBtn.href = currentIndex > 0 ? chapters[currentIndex-1].file : '#';
+        if(nextBtn) nextBtn.href = currentIndex < chapters.length-1 ? chapters[currentIndex+1].file : '#';
+        if(currentIndex === 0 && lastBtn) lastBtn.style.pointerEvents = 'none';
+        if(currentIndex === chapters.length-1 && nextBtn) nextBtn.style.pointerEvents = 'none';
+      }
+    })
+    .catch(err => console.error('Failed to load chapters.json', err));
 </script>
