@@ -1,4 +1,5 @@
 <div style="margin: 40px 0; text-align: center; font-family: sans-serif;">
+
   <!-- Navigation Buttons -->
   <div style="margin-bottom: 20px;">
     <a href="index.html"
@@ -30,6 +31,7 @@
       <option value="">Select a chapter</option>
     </select>
   </div>
+
 </div>
 
 <style>
@@ -43,7 +45,7 @@
 </style>
 
 <script>
-  // Define chapters here
+  // Define all chapters
   const chapters = [
     {file: 'chapter1.html', title: 'Chapter 1: The First Step into Murim'},
     {file: 'chapter2.html', title: 'Chapter 2: A Day In The Life Of A Second-Year Martial Artist (1)'},
@@ -51,7 +53,7 @@
     {file: 'chapter4.html', title: 'Chapter 4: A Day In The Life Of A Second-Year Martial Artist (3)'},
     {file: 'chapter5.html', title: 'Chapter 5: Friend (1)'},
     {file: 'chapter6.html', title: 'Chapter 6: Friend (2)'},
-    {file: 'chapter7.html', title: 'Chapter 7: Friend (3)'} // Add new chapters here
+    {file: 'chapter7.html', title: 'Chapter 7: Friend (3)'}
   ];
 
   const chapterSelect = document.getElementById('chapterSelect');
@@ -66,14 +68,14 @@
     chapterSelect.appendChild(option);
   });
 
-  // Auto-detect current chapter
+  // Detect current chapter
   const currentFile = window.location.pathname.split('/').pop();
   const currentIndex = chapters.findIndex(ch => ch.file === currentFile);
 
   if(currentIndex >= 0){
     chapterSelect.value = chapters[currentIndex].file;
 
-    // Set previous and next buttons
+    // Set Previous and Next buttons
     lastBtn.href = currentIndex > 0 ? chapters[currentIndex-1].file : '#';
     nextBtn.href = currentIndex < chapters.length-1 ? chapters[currentIndex+1].file : '#';
 
@@ -87,5 +89,4 @@
     if(chapterSelect.value) window.location.href = chapterSelect.value;
   });
 </script>
-
 
