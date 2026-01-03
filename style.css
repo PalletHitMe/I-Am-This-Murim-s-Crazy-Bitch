@@ -87,34 +87,58 @@ body {
   font-family: 'Lora', serif;
   font-size: 2.4rem;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   color: #333;
 }
 
+/* Two-column chapter grid */
 .chapter-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 16px;
-  justify-items: center;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
 }
 
-.chapter-grid a {
-  text-decoration: none;
+/* Chapter cards */
+.chapter-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px; /* equal two-line spacing */
+  padding: 18px 22px;
   background: linear-gradient(135deg, #b83232, #ff6b6b);
   color: white;
-  padding: 14px 26px;
-  border-radius: 10px;
-  font-weight: 700;
-  text-align: center;
-  width: 100%;
-  transition: 0.25s ease;
+  border-radius: 14px;
+  text-decoration: none;
+  min-height: 96px; /* enforces equal height */
+  font-weight: 600;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.chapter-grid a:hover {
-  background: linear-gradient(135deg, #ff6b6b, #ff3b3b);
-  transform: translateY(-4px) scale(1.03);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+.chapter-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 26px rgba(0,0,0,0.25);
 }
+
+/* Chapter text */
+.chapter-number {
+  font-size: 0.85rem;
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.chapter-title {
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+/* ========= Responsive ========= */
+@media (max-width: 700px) {
+  .chapter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 /* ========= Footer ========= */
 footer {
