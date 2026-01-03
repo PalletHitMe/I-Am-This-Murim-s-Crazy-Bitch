@@ -3,84 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <title>I Am This Murim's Crazy Bitch</title>
-  <!-- Lora font -->
-  <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    /* Reset & base */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Lora', serif;
-      line-height: 1.6;
-      margin: 2rem;
-      background-color: #fefefe;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #fefefe, #f5f5f5);
       color: #111;
+      line-height: 1.6;
+      min-height: 100vh;
     }
 
+    a { text-decoration: none; color: inherit; }
+
+    /* Header / Banner */
+    header {
+      text-align: center;
+      padding: 60px 20px 40px 20px;
+      background: linear-gradient(90deg, #ff6b6b, #f94d6a);
+      color: white;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      font-family: 'Lora', serif;
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+    header p {
+      font-size: 1.2rem;
+      font-style: italic;
+      font-weight: 600;
+    }
+
+    /* Cover Image */
     .cover-container {
       display: flex;
       justify-content: center;
-      margin-bottom: 2rem;
+      margin: 40px 0;
     }
-
     .cover {
-      width: auto;
-      max-width: 100%;
-      height: 600px; /* adjust as desired */
-      object-fit: contain;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      transition: transform 0.3s;
+    }
+    .cover:hover {
+      transform: scale(1.03);
     }
 
-    h1, h2 {
+    /* Chapter Grid */
+    .chapters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      max-width: 1000px;
+      margin: 0 auto 60px auto;
+      padding: 0 20px;
+    }
+    .chapter-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      padding: 25px;
       text-align: center;
-    }
-
-    ul {
-      list-style-type: none;
-      padding: 0;
-      text-align: center;
-    }
-
-    ul li {
-      margin: 0.5rem 0;
-    }
-
-    ul li a {
-      text-decoration: none;
+      transition: transform 0.3s, box-shadow 0.3s;
+      font-weight: 600;
       color: #333;
-      font-weight: bold;
+    }
+    .chapter-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .chapter-card a {
+      display: block;
       font-size: 1.2rem;
+      color: #ff4d6a;
+    }
+    .chapter-card a:hover {
+      text-decoration: underline;
     }
 
-    ul li a:hover {
-      color: #900;
-    }
-
-    .author {
+    /* Footer */
+    footer {
       text-align: center;
-      margin-bottom: 2rem;
-      font-style: italic;
-      font-size: 1rem;
+      padding: 30px 20px;
+      font-size: 0.9rem;
+      color: #777;
+      border-top: 1px solid #ddd;
+      background-color: #fefefe;
+    }
+
+    /* Responsive Typography */
+    @media (max-width: 600px) {
+      header h1 { font-size: 2.2rem; }
+      .cover { max-width: 90%; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Header -->
+  <header>
+    <h1>I Am This Murim's Crazy Bitch</h1>
+    <p>By PalletHitMe</p>
+  </header>
 
   <!-- Cover Image -->
   <div class="cover-container">
     <img src="novelpic.jpg" alt="Cover Image" class="cover">
   </div>
 
-  <h1>I Am This Murim's Crazy Bitch</h1>
-  <p class="author">By PalletHitMe</p>
+  <!-- Chapters Grid -->
+  <div class="chapters">
+    <div class="chapter-card"><a href="chapter1.html">Chapter 1: The First Step into Murim</a></div>
+    <div class="chapter-card"><a href="chapter2.html">Chapter 2: A Day In The Life Of A Second-Year Martial Artist (1)</a></div>
+    <div class="chapter-card"><a href="chapter3.html">Chapter 3: A Day In The Life Of A Second-Year Martial Artist (2)</a></div>
+    <div class="chapter-card"><a href="chapter4.html">Chapter 4: A Day In The Life Of A Second-Year Martial Artist (3)</a></div>
+    <div class="chapter-card"><a href="chapter5.html">Chapter 5: Friend (1)</a></div>
+    <div class="chapter-card"><a href="chapter6.html">Chapter 6: Friend (2)</a></div>
+  </div>
 
-  <h2>Table of Contents</h2>
-  <ul>
-    <li><a href="chapter1.html">Chapter 1</a></li>
-    <li><a href="chapter2.html">Chapter 2</a></li>
-    <li><a href="chapter3.html">Chapter 3</a></li>
-    <li><a href="chapter4.html">Chapter 4</a></li>
-    <li><a href="chapter5.html">Chapter 5</a></li>
-    <li><a href="chapter6.html">Chapter 6</a></li>
-  </ul>
+  <!-- Footer -->
+  <footer>
+    © 2026 PalletHitMe. All Rights Reserved.
+  </footer>
 
 </body>
 </html>
+
