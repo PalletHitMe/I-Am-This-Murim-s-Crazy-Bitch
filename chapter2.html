@@ -373,6 +373,26 @@ fetch('navigation.html')
   .catch(err => console.error('Navigation fetch failed:', err));
 </script>
 
+<script>
+  const fontSizeSelect = document.getElementById('fontSizeSelect');
+  const chapterContent = document.querySelector('.chapter-content');
+
+  // Load saved font size from localStorage if available
+  const savedFontSize = localStorage.getItem('chapterFontSize');
+  if (savedFontSize) {
+    chapterContent.style.fontSize = savedFontSize;
+    fontSizeSelect.value = savedFontSize;
+  }
+
+  // Change font size on user selection
+  fontSizeSelect.addEventListener('change', () => {
+    const size = fontSizeSelect.value;
+    chapterContent.style.fontSize = size;
+    localStorage.setItem('chapterFontSize', size); // Save preference
+  });
+</script>
+
 </body>
 </html>
+
 
