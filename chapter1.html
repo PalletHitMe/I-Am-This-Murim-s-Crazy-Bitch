@@ -10,6 +10,36 @@
 <!-- Link to your main CSS -->
 <link rel="stylesheet" href="style.css">
 
+<style>
+/* Red accent for navigation buttons */
+.chapter-nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 2rem 0;
+}
+
+.chapter-nav a {
+  display: inline-block;
+  padding: 10px 24px;
+  background-color: #ff6b6b; /* red accent */
+  color: white;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
+
+.chapter-nav a:hover {
+  background-color: #ff3b3b;
+  transform: translateY(-2px);
+}
+
+.chapter-nav a.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+</style>
 </head>
 <body>
 
@@ -45,7 +75,7 @@
     .catch(err => console.error('Navigation fetch failed:', err));
 </script>
 
-<!-- Chapter Navigation Buttons -->
+<!-- Chapter Navigation Buttons (only at top) -->
 <div class="chapter-nav">
   <a href="#" id="lastChapterBtn">⬅ Last Chapter</a>
   <a href="#" id="nextChapterBtn">Next Chapter ➡</a>
@@ -62,16 +92,6 @@
   <p>However, for factory workers, these games held a value beyond just being games.</p>
 
   <p>Weren’t they the reliable genre that allowed one to level up solidly even while the phone was running inside a cabinet?</p>
-
-  <p>While one's salary might not increase, the joy of leveling up was still by their side.</p>
-
-  <p>Moreover, these games accounted for over 70% of the conversation among team members, so it could be said that it was more akin to their modern social life than mere gaming.</p>
-
-  <p>However, when limited to PC or console games, gaming was a somewhat distant hobby for factory workers. Their hobbies were usually drinking alcohol (casually, with a meal), drinking alcohol (company dinners), drinking alcohol (with women), and if it wasn’t any of that, then at most, fishing. That was mainstream.</p>
-
-  <p>In that sense, his hobby of gaming was quite uncommon.</p>
-
-  <p>He was a diligent gamer.</p>
 
   <!-- rest of your chapter content... -->
 
