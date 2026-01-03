@@ -349,5 +349,14 @@ fetch('navigation.html')
       const lastBtn = document.getElementById('lastChapterBtn');
 
       if(nextBtn) nextBtn.href = `chapter${current + 1}.html`;
-      if(lastBtn) lastBtn.href = `chapter
+      if(lastBtn) lastBtn.href = `chapter${current - 1}.html`;
 
+      if(current === 1 && lastBtn) lastBtn.style.pointerEvents = 'none';
+      if(current === 6 && nextBtn) nextBtn.style.pointerEvents = 'none';
+    }
+  })
+  .catch(err => console.error('Navigation fetch failed:', err));
+</script>
+
+</body>
+</html>
