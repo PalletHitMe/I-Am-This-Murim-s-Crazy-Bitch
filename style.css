@@ -216,4 +216,34 @@ footer {
   }
 }
 
-/* Navigation buttons hover effect already handled in style.css */
+/* ========= Chapter Navigation Buttons ========= */
+.chapter-nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.chapter-nav a {
+  text-decoration: none;
+  padding: 12px 28px;
+  font-weight: 700;
+  border-radius: 10px;
+  background: #ff6b6b;   /* red accent */
+  color: #fff;
+  transition: 0.25s ease;
+}
+
+.chapter-nav a:hover {
+  background: #ff3b3b;  /* darker red on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+}
+
+.chapter-nav a.disabled {
+  background: #a33;      /* muted red for disabled */
+  pointer-events: none;
+  opacity: 0.6;
+}
+
