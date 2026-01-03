@@ -7,7 +7,7 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <!-- Link to external CSS -->
+  <!-- Main CSS -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -17,11 +17,13 @@
     <div class="cover-img">
       <img src="novelpic.jpg" alt="I Am This Murim's Crazy Bitch Cover">
     </div>
+
     <div class="info">
       <h1>I Am This Murim’s Crazy Bitch</h1>
       <p class="author">By 정통무협조와요</p>
       <p class="tagline">
-        I became a female character in a martial arts game I've never played before. But I know nothing about martial arts.
+        I became a female character in a martial arts game I've never played before.
+        But I know nothing about martial arts.
       </p>
       <a id="startReadingBtn" href="#" class="read-btn">Start Reading</a>
     </div>
@@ -38,7 +40,7 @@
     &copy; 2026 PalletHitMe. All rights reserved.
   </footer>
 
-  <!-- JS for dynamically loading chapters -->
+  <!-- Load Chapters -->
   <script>
     const chapterGrid = document.getElementById("chapterGrid");
     const startReadingBtn = document.getElementById("startReadingBtn");
@@ -46,26 +48,30 @@
     fetch('chapters.json')
       .then(res => res.json())
       .then(chapters => {
-        if (chapters.length === 0) return;
+        if (!chapters || chapters.length === 0) return;
 
-        // Set Start Reading button to first chapter
+        // Start Reading → first chapter
         startReadingBtn.href = chapters[0].file;
 
         // Generate chapter cards
         chapters.forEach((ch, index) => {
           const a = document.createElement("a");
-          a.href = ch.file; // e.g., "allchapters/chapter1.html"
+          a.href = ch.file;
           a.className = "chapter-card";
 
           a.innerHTML = `
             <span class="chapter-number">Chapter ${index + 1}</span>
             <span class="chapter-title">${ch.title}</span>
           `;
+
           chapterGrid.appendChild(a);
         });
       })
-      .catch(err => console.error("Failed to load chapters:", err));
+      .catch(err => {
+        console.error("Failed to load chapters.json:", err);
+      });
   </script>
 
 </body>
 </html>
+
