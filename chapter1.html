@@ -7,8 +7,9 @@
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 
-<!-- Main stylesheet -->
+<!-- Link to your main CSS -->
 <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
 
@@ -16,50 +17,66 @@
 <div id="navigation"></div>
 
 <script>
-fetch('navigation.html')
-  .then(res => res.text())
-  .then(data => {
-    document.getElementById('navigation').innerHTML = data;
+  fetch('navigation.html')
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById('navigation').innerHTML = data;
 
-    // Auto set Next and Last Chapter buttons
-    const currentFile = window.location.pathname.split('/').pop();
-    const match = currentFile.match(/chapter(\d+)\.html/);
+      // Auto set Next and Last Chapter buttons
+      const currentFile = window.location.pathname.split('/').pop();
+      const match = currentFile.match(/chapter(\d+)\.html/);
 
-    if(match){
-      const current = parseInt(match[1]);
-      const nextBtn = document.getElementById('nextChapterBtn');
-      const lastBtn = document.getElementById('lastChapterBtn');
+      if(match){
+        const current = parseInt(match[1]);
+        const nextBtn = document.getElementById('nextChapterBtn');
+        const lastBtn = document.getElementById('lastChapterBtn');
 
-      if(nextBtn) nextBtn.href = `chapter${current + 1}.html`;
-      if(lastBtn) lastBtn.href = `chapter${current - 1}.html`;
+        if(nextBtn) {
+          nextBtn.href = `chapter${current + 1}.html`;
+          if(current === 6) nextBtn.classList.add('disabled'); // max chapter
+        }
 
-      if(current === 1 && lastBtn) lastBtn.classList.add('disabled');
-      if(current === 6 && nextBtn) nextBtn.classList.add('disabled'); // adjust max chapters
-    }
-  })
-  .catch(err => console.error('Navigation fetch failed:', err));
+        if(lastBtn) {
+          lastBtn.href = `chapter${current - 1}.html`;
+          if(current === 1) lastBtn.classList.add('disabled'); // first chapter
+        }
+      }
+    })
+    .catch(err => console.error('Navigation fetch failed:', err));
 </script>
 
+<!-- Chapter Navigation Buttons -->
+<div class="chapter-nav">
+  <a href="#" id="lastChapterBtn">⬅ Last Chapter</a>
+  <a href="#" id="nextChapterBtn">Next Chapter ➡</a>
+</div>
+
 <!-- Chapter Content -->
-<section class="chapters-container">
+<main class="chapter-content">
+  <h1>༺ The First Step into Murim ༻</h1>
 
-  <!-- Chapter Navigation -->
-  <div class="chapter-nav">
-    <a href="#" id="lastChapterBtn">⬅ Last Chapter</a>
-    <a href="#" id="nextChapterBtn">Next Chapter ➡</a>
-  </div>
+  <p>For factories workers at small and medium companies, playing games was a basic skill.</p>
 
-  <div class="chapter-content">
-    <h1>༺ The First Step into Murim ༻</h1>
+  <p>Of course, depending on the person, there were some that they didn’t acknowledge what he played as games. By that, they meant mobile phone applications that only involved automatic hunting, in-app purchases, and gacha could not be recognized as an actual game.</p>
 
-    <p>For factories workers at small and medium companies, playing games was a basic skill.</p>
-    <p>Of course, depending on the person, there were some that they didn’t acknowledge what he played as games...</p>
+  <p>However, for factory workers, these games held a value beyond just being games.</p>
 
-    <!-- Rest of chapter text goes here -->
-  </div>
-</section>
+  <p>Weren’t they the reliable genre that allowed one to level up solidly even while the phone was running inside a cabinet?</p>
+
+  <p>While one's salary might not increase, the joy of leveling up was still by their side.</p>
+
+  <p>Moreover, these games accounted for over 70% of the conversation among team members, so it could be said that it was more akin to their modern social life than mere gaming.</p>
+
+  <p>However, when limited to PC or console games, gaming was a somewhat distant hobby for factory workers. Their hobbies were usually drinking alcohol (casually, with a meal), drinking alcohol (company dinners), drinking alcohol (with women), and if it wasn’t any of that, then at most, fishing. That was mainstream.</p>
+
+  <p>In that sense, his hobby of gaming was quite uncommon.</p>
+
+  <p>He was a diligent gamer.</p>
+
+  <!-- rest of your chapter content... -->
+
+</main>
 
 </body>
 </html>
-
 
