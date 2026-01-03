@@ -12,9 +12,6 @@
 </head>
 <body>
 
-  <!-- Top Navigation -->
-  <div id="navigation"></div>
-
   <!-- Cover + Info Section -->
   <section class="cover-info">
     <div class="cover-img">
@@ -41,6 +38,7 @@
     &copy; 2026 PalletHitMe. All rights reserved.
   </footer>
 
+  <!-- JS for dynamically loading chapters -->
   <script>
     // Fetch chapters.json to populate chapter grid
     fetch('chapters.json')
@@ -58,35 +56,6 @@
           `;
           chapterGrid.appendChild(a);
         });
-
-        // Populate top navigation but disable Last/Next buttons on homepage
-        const navigationDiv = document.getElementById('navigation');
-        navigationDiv.innerHTML = `
-          <div style="margin: 40px 0; text-align: center; font-family: sans-serif;">
-            <div style="margin-bottom: 20px;">
-              <a href="index.html"
-                 style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-                        background-color: #4CAF50; color: white; border-radius: 8px;
-                        font-weight: 700; transition: 0.3s; display: inline-block;">
-                Back to Main Page
-              </a>
-              <a href="#" id="lastChapterBtn"
-                 style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-                        background-color: #ff6b6b; color: white; border-radius: 8px;
-                        font-weight: 700; transition: 0.3s; display: inline-block;
-                        pointer-events: none; opacity: 0.5;">
-                ⬅ Last Chapter
-              </a>
-              <a href="#" id="nextChapterBtn"
-                 style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-                        background-color: #ff6b6b; color: white; border-radius: 8px;
-                        font-weight: 700; transition: 0.3s; display: inline-block;
-                        pointer-events: none; opacity: 0.5;">
-                Next Chapter ➡
-              </a>
-            </div>
-          </div>
-        `;
       })
       .catch(err => console.error('Failed to load chapters.json', err));
   </script>
