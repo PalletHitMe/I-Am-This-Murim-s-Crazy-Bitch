@@ -1,70 +1,71 @@
 <div style="margin: 40px 0; text-align: center; font-family: sans-serif;">
-  <!-- Navigation Buttons -->
   <div style="margin-bottom: 20px;">
-    <a href="index.html" style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-       background-color: #4CAF50; color: white; border-radius: 8px;
-       font-weight: 700; transition: 0.3s; display: inline-block;">
+    <a href="index.html"
+       style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
+              background-color: #4CAF50; color: white; border-radius: 8px;
+              font-weight: 700; transition: 0.3s; display: inline-block;">
       Back to Main Page
     </a>
-    <a href="#" id="lastChapterBtn" style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-       background-color: #ff6b6b; color: white; border-radius: 8px;
-       font-weight: 700; transition: 0.3s; display: inline-block;">
+    <a href="#" id="lastChapterBtn"
+       style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
+              background-color: #ff6b6b; color: white; border-radius: 8px;
+              font-weight: 700; transition: 0.3s; display: inline-block;">
       ⬅ Last Chapter
     </a>
-    <a href="#" id="nextChapterBtn" style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-       background-color: #ff6b6b; color: white; border-radius: 8px;
-       font-weight: 700; transition: 0.3s; display: inline-block;">
+    <a href="#" id="nextChapterBtn"
+       style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
+              background-color: #ff6b6b; color: white; border-radius: 8px;
+              font-weight: 700; transition: 0.3s; display: inline-block;">
       Next Chapter ➡
     </a>
   </div>
 
-  <!-- Chapter Dropdown -->
   <div>
     <label for="chapterSelect" style="font-weight: 700; margin-right: 10px;">Jump to Chapter:</label>
-    <select id="chapterSelect" style="padding: 10px 14px; border-radius: 6px; border: 1px solid #ccc;
-       font-size: 14px; font-weight: 500; background-color: #fff; cursor: pointer;">
+    <select id="chapterSelect"
+            style="padding: 10px 14px; border-radius: 6px; border: 1px solid #ccc;
+                   font-size: 14px; font-weight: 500; background-color: #fff; cursor: pointer;">
       <option value="">Select a chapter</option>
     </select>
   </div>
 </div>
 
-<style>
-  a:hover { opacity: 0.85; transform: translateY(-2px); }
-  select:hover { border-color: #888; }
-</style>
-
 <script>
-fetch('chapters.json')
-  .then(res => res.json())
-  .then(chapters => {
-    window.chapters = chapters; // global reference
+  fetch('chapters.json')
+    .then(res => res.json())
+    .then(chapters => {
+      const currentFile = window.location.pathname.split('/').pop();
+      const currentIndex = chapters.findIndex(ch => ch.file === currentFile);
 
-    const chapterSelect = document.getElementById('chapterSelect');
-    const lastBtn = document.getElementById('lastChapterBtn');
-    const nextBtn = document.getElementById('nextChapterBtn');
-    const currentFile = window.location.pathname.split('/').pop();
-    const currentIndex = chapters.findIndex(ch => ch.file === currentFile);
+      const lastBtn = document.getElementById('lastChapterBtn');
+      const nextBtn = document.getElementById('nextChapterBtn');
+      const chapterSelect = document.getElementById('chapterSelect');
 
-    // Populate dropdown
-    chapters.forEach(ch => {
-      const option = document.createElement('option');
-      option.value = ch.file;
-      option.textContent = ch.title;
-      chapterSelect.appendChild(option);
-    });
+      // Populate dropdown
+      chapters.forEach(ch => {
+        const option = document.createElement('option');
+        option.value = ch.file;
+        option.textContent = ch.title;
+        chapterSelect.appendChild(option);
+      });
 
-    if(currentIndex >= 0){
-      chapterSelect.value = currentFile;
+      if(currentIndex >= 0){
+        // Set buttons
+        if(lastBtn) lastBtn.href = currentIndex > 0 ? chapters[currentIndex-1].file : '#';
+        if(nextBtn) nextBtn.href = currentIndex < chapters.length-1 ? chapters[currentIndex+1].file : '#';
+        if(currentIndex === 0 && lastBtn) lastBtn.style.pointerEvents = 'none';
+        if(currentIndex === chapters.length-1 && nextBtn) nextBtn.style.pointerEvents = 'none';
 
-      if(lastBtn) lastBtn.href = currentIndex > 0 ? chapters[currentIndex-1].file : '#';
-      if(nextBtn) nextBtn.href = currentIndex < chapters.length-1 ? chapters[currentIndex+1].file : '#';
+        // Set dropdown
+        if(chapterSelect) chapterSelect.value = chapters[currentIndex].file;
+      }
 
-      if(currentIndex === 0 && lastBtn) lastBtn.style.pointerEvents = 'none';
-      if(currentIndex === chapters.length-1 && nextBtn) nextBtn.style.pointerEvents = 'none';
-    }
-
-    chapterSelect.addEventListener('change', () => {
-      if(chapterSelect.value) window.location.href = chapterSelect.value;
-    });
-  });
+      // Jump to chapter on select
+      if(chapterSelect){
+        chapterSelect.addEventListener('change', () => {
+          if(chapterSelect.value) window.location.href = chapterSelect.value;
+        });
+      }
+    })
+    .catch(err => console.error('Failed to load chapters.json', err));
 </script>
