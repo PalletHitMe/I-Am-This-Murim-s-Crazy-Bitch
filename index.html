@@ -23,7 +23,7 @@
       <p class="tagline">
         I became a female character in a martial arts game I've never played before. But I know nothing about martial arts.
       </p>
-      <a href="chapter1.html" class="read-btn">Start Reading</a>
+      <a id="startReadingBtn" href="#" class="read-btn">Start Reading</a>
     </div>
   </section>
 
@@ -39,31 +39,34 @@
   </footer>
 
   <!-- JS for dynamically loading chapters -->
-<script>
-const chapterGrid = document.getElementById("chapterGrid");
+  <script>
+    const chapterGrid = document.getElementById("chapterGrid");
+    const startReadingBtn = document.getElementById("startReadingBtn");
 
-fetch('chapters.json')
-  .then(res => res.json())
-  .then(chapters => {
-    chapters.forEach((ch, index) => {
-      const a = document.createElement("a");
-      a.href = ch.file; // already includes "allchapters/"
-      a.className = "chapter-card";
+    fetch('chapters.json')
+      .then(res => res.json())
+      .then(chapters => {
+        if(chapters.length === 0) return;
 
-      a.innerHTML = `
-        <span class="chapter-number">Chapter ${index + 1}</span>
-        <span class="chapter-title">${ch.title}</span>
-      `;
-      chapterGrid.appendChild(a);
-    });
-  })
-  .catch(err => console.error("Failed to load chapters:", err));
- </script>
+        // Set "Start Reading" to the first chapter
+        startReadingBtn.href = chapters[0].file;
 
+        // Generate chapter cards
+        chapters.forEach((ch, index) => {
+          const a = document.createElement("a");
+          a.href = ch.file; // e.g., "allchapters/chapter1.html"
+          a.className = "chapter-card";
 
+          a.innerHTML = `
+            <span class="chapter-number">Chapter ${index + 1}</span>
+            <span class="chapter-title">${ch.title}</span>
+          `;
+          chapterGrid.appendChild(a);
+        });
+      })
+      .catch(err => console.error("Failed to load chapters:", err));
+  </script>
 
 </body>
 </html>
-
-
 
