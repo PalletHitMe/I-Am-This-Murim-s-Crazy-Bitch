@@ -16,7 +16,7 @@ body {
 .cover-info {
   display: flex;
   flex-wrap: wrap;
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 3rem auto;
   background: #1e1e1e;
   border-radius: 15px;
@@ -82,7 +82,7 @@ body {
 .chapters-container {
   margin: 3rem auto 4rem;
   padding: 2rem 1rem;
-  max-width: 1200px;
+  max-width: 1440px;
 }
 
 .chapters-container h2 {
