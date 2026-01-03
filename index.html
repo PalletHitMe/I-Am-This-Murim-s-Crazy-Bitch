@@ -12,8 +12,29 @@
 
 <style>
 /* ========= Base ========= */
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; transition: 0.3s ease; }
 body { font-family: 'Inter', sans-serif; color: #1a1a1a; background: #fafafa; }
+
+/* ========= Dark Mode ========= */
+body.dark {
+  background: #121212;
+  color: #f0f0f0;
+}
+
+body.dark .chapter-card {
+  background: linear-gradient(135deg, #b83232, #ff6b6b);
+  color: #fff;
+}
+
+body.dark .chapter-card:hover {
+  background: linear-gradient(135deg, #ff6b6b, #ff3b3b);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+}
+
+body.dark .cover-details .description,
+body.dark .cover-details .tagline {
+  color: #ddd;
+}
 
 /* ========= Cover Layout ========= */
 .cover-container {
@@ -53,6 +74,7 @@ body { font-family: 'Inter', sans-serif; color: #1a1a1a; background: #fafafa; }
 .cover-details .tagline {
   font-size: 1.1rem;
   margin-bottom: 1.5rem;
+  color: #333;
 }
 
 .cover-details .description {
@@ -80,6 +102,26 @@ body { font-family: 'Inter', sans-serif; color: #1a1a1a; background: #fafafa; }
   box-shadow: 0 6px 15px rgba(0,0,0,0.2);
 }
 
+/* Dark Mode Toggle Button */
+.dark-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 18px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+body.dark .dark-toggle {
+  background: #f0f0f0;
+  color: #111;
+}
+
 /* ========= Chapter Section ========= */
 .chapters-container {
   margin: 2rem auto 4rem;
@@ -93,6 +135,10 @@ body { font-family: 'Inter', sans-serif; color: #1a1a1a; background: #fafafa; }
   text-align: center;
   margin-bottom: 2rem;
   color: #333;
+}
+
+body.dark .chapters-container h2 {
+  color: #f0f0f0;
 }
 
 .chapter-grid {
@@ -112,7 +158,7 @@ body { font-family: 'Inter', sans-serif; color: #1a1a1a; background: #fafafa; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 80px; /* equal spacing for 2 lines */
+  min-height: 80px;
 }
 
 .chapter-card:hover {
@@ -121,15 +167,8 @@ body { font-family: 'Inter', sans-serif; color: #1a1a1a; background: #fafafa; }
   box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 
-.chapter-number {
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
-  opacity: 0.85;
-}
-
-.chapter-title {
-  font-size: 1rem;
-}
+.chapter-number { font-size: 1rem; margin-bottom: 0.25rem; opacity: 0.85; }
+.chapter-title { font-size: 1rem; }
 
 /* ========= Footer ========= */
 footer {
@@ -140,6 +179,8 @@ footer {
   border-top: 1px solid #ddd;
 }
 
+body.dark footer { color: #ccc; border-top: 1px solid #444; }
+
 /* ========= Responsive ========= */
 @media (max-width: 800px) {
   .cover-container { flex-direction: column; align-items: center; text-align: center; gap: 25px; }
@@ -149,6 +190,9 @@ footer {
 </style>
 </head>
 <body>
+
+<!-- Dark Mode Toggle -->
+<button class="dark-toggle">Dark Mode</button>
 
 <!-- Cover Section -->
 <section class="cover-container">
@@ -175,7 +219,7 @@ footer {
   &copy; 2026 PalletHitMe. All rights reserved.
 </footer>
 
-<!-- Auto-generate chapter cards -->
+<!-- Auto-generate chapter cards & Dark Mode Script -->
 <script>
 const chapters = [
   "The First Step into Murim",
@@ -187,7 +231,6 @@ const chapters = [
 ];
 
 const chapterGrid = document.getElementById('chapterGrid');
-
 chapters.forEach((title, index) => {
   const chapterNumber = index + 1;
   const card = document.createElement('a');
@@ -199,7 +242,15 @@ chapters.forEach((title, index) => {
   `;
   chapterGrid.appendChild(card);
 });
+
+// Dark Mode Toggle
+const toggleBtn = document.querySelector('.dark-toggle');
+toggleBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark');
+  toggleBtn.textContent = document.body.classList.contains('dark') ? 'Light Mode' : 'Dark Mode';
+});
 </script>
 
 </body>
 </html>
+
