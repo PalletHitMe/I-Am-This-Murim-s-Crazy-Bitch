@@ -30,22 +30,23 @@
 </style>
 
 <script>
-  // Load chapters from JSON
+  const lastBtn = document.getElementById('lastChapterBtn');
+  const nextBtn = document.getElementById('nextChapterBtn');
+
   fetch('chapters.json')
     .then(res => res.json())
     .then(chapters => {
-      const lastBtn = document.getElementById('lastChapterBtn');
-      const nextBtn = document.getElementById('nextChapterBtn');
-
       const currentFile = window.location.pathname.split('/').pop();
-      const currentIndex = chapters.findIndex(ch => ch.file === currentFile);
+      const currentIndex = chapters.findIndex(ch => ch.file.endsWith(currentFile));
 
       if (currentIndex >= 0) {
-        lastBtn.href = currentIndex > 0 ? chapters[currentIndex - 1].file : '#';
-        nextBtn.href = currentIndex < chapters.length - 1 ? chapters[currentIndex + 1].file : '#';
+        // Previous / Next buttons
+        if(lastBtn) lastBtn.href = currentIndex > 0 ? chapters[currentIndex - 1].file : '#';
+        if(nextBtn) nextBtn.href = currentIndex < chapters.length - 1 ? chapters[currentIndex + 1].file : '#';
 
-        if (currentIndex === 0) lastBtn.style.pointerEvents = 'none';
-        if (currentIndex === chapters.length - 1) nextBtn.style.pointerEvents = 'none';
+        // Disable buttons at start/end
+        if(currentIndex === 0 && lastBtn) lastBtn.style.pointerEvents = 'none';
+        if(currentIndex === chapters.length - 1 && nextBtn) nextBtn.style.pointerEvents = 'none';
       }
     })
     .catch(err => console.error('Failed to load chapters:', err));
