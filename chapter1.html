@@ -160,31 +160,30 @@
   <p>Along with a hefty mass that suddenly weighed on his upper body.</p>
 </main>
 
-  <!-- Bottom Navigation -->
+ <!-- Bottom Navigation -->
   <div id="bottomNavigation"></div>
 
   <!-- Scripts -->
   <script>
-    // Load top navigation
+    // Load navigation HTML
     fetch('navigation.html')
       .then(res => res.text())
       .then(html => document.getElementById('navigation').innerHTML = html);
 
-    // Load bottom navigation
     fetch('navigationbottom.html')
       .then(res => res.text())
       .then(html => document.getElementById('bottomNavigation').innerHTML = html);
 
-    // Load chapters.json and setup navigation links
+    // Load chapters.json and setup navigation
     fetch('chapters.json')
       .then(res => res.json())
       .then(chapters => {
         const currentFile = window.location.pathname.split('/').pop();
-        const currentIndex = chapters.findIndex(ch => ch.file.endsWith(currentFile));
+        const currentIndex = chapters.findIndex(ch => ch.file === currentFile);
 
-        // Top navigation
+        // Top nav
         const topNav = document.getElementById('navigation');
-        if(topNav) {
+        if (topNav) {
           const lastBtnTop = topNav.querySelector('#lastChapterBtn');
           const nextBtnTop = topNav.querySelector('#nextChapterBtn');
           const selectTop = topNav.querySelector('#chapterSelect');
@@ -208,9 +207,9 @@
           }
         }
 
-        // Bottom navigation
+        // Bottom nav
         const bottomNav = document.getElementById('bottomNavigation');
-        if(bottomNav) {
+        if (bottomNav) {
           const lastBtnBottom = bottomNav.querySelector('#lastChapterBtn');
           const nextBtnBottom = bottomNav.querySelector('#nextChapterBtn');
 
@@ -219,11 +218,10 @@
           if(currentIndex === 0 && lastBtnBottom) lastBtnBottom.style.pointerEvents = 'none';
           if(currentIndex === chapters.length-1 && nextBtnBottom) nextBtnBottom.style.pointerEvents = 'none';
         }
-
       })
       .catch(err => console.error('Failed to load chapters.json', err));
 
-    // Font size controls
+    // Font size
     const fontSizeSelect = document.getElementById('fontSizeSelect');
     const chapterContent = document.querySelector('.chapter-content');
 
@@ -242,3 +240,4 @@
 
 </body>
 </html>
+
