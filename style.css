@@ -7,55 +7,56 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  color: #1a1a1a;
-  background: #fafafa;
+  color: #eee;
+  background: #121212;
   overflow-x: hidden;
 }
 
-/* ========= Full Cover Hero ========= */
-.cover-hero {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  background: url('novelpic.jpg') center/cover no-repeat;
+/* ========= Cover + Info ========= */
+.cover-info {
   display: flex;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 3rem auto;
+  background: #1e1e1e;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
+
+.cover-img img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+.info {
+  flex: 1;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  text-align: center;
 }
 
-.cover-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.55);
-}
-
-.cover-content {
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-  padding: 0 20px;
-  color: white;
-}
-
-.cover-content h1 {
+.info h1 {
   font-family: 'Lora', serif;
-  font-size: 4rem;
+  font-size: 2.8rem;
   margin-bottom: 0.5rem;
-  letter-spacing: 0.05em;
-  text-shadow: 0 6px 20px rgba(0,0,0,0.75);
+  color: #ff6b6b;
 }
 
-.cover-content .author {
-  font-size: 1.3rem;
+.info .author {
   font-style: italic;
-  opacity: 0.9;
   margin-bottom: 1rem;
+  color: #ccc;
 }
 
-.cover-content .tagline {
+.info .tagline {
   font-size: 1.1rem;
   margin-bottom: 2rem;
+  color: #ddd;
 }
 
 .read-btn {
@@ -68,6 +69,7 @@ body {
   border-radius: 10px;
   text-decoration: none;
   transition: 0.3s ease;
+  width: max-content;
 }
 
 .read-btn:hover {
@@ -78,7 +80,7 @@ body {
 
 /* ========= Chapter Section ========= */
 .chapters-container {
-  margin: 2rem auto 4rem;
+  margin: 3rem auto 4rem;
   padding: 2rem 1rem;
   max-width: 960px;
 }
@@ -88,76 +90,81 @@ body {
   font-size: 2.4rem;
   text-align: center;
   margin-bottom: 2rem;
-  color: #333;
+  color: #ff6b6b;
 }
 
-/* Two-column chapter grid */
 .chapter-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+  gap: 16px;
+  justify-items: stretch;
 }
 
-/* Chapter cards */
-.chapter-card {
+.chapter-grid a {
+  text-decoration: none;
+  background: #2c2c2c;
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-align: left;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 10px; /* equal two-line spacing */
-  padding: 18px 22px;
-  background: linear-gradient(135deg, #b83232, #ff6b6b);
-  color: white;
-  border-radius: 14px;
-  text-decoration: none;
-  min-height: 96px; /* enforces equal height */
-  font-weight: 600;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition: 0.25s ease;
 }
 
-.chapter-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 26px rgba(0,0,0,0.25);
+.chapter-grid a:hover {
+  background: #ff6b6b;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
 }
 
-/* Chapter text */
 .chapter-number {
-  font-size: 0.85rem;
   font-weight: 700;
-  opacity: 0.85;
+  margin-bottom: 4px;
 }
 
 .chapter-title {
-  font-size: 1.05rem;
+  font-weight: 400;
   line-height: 1.4;
+  font-size: 0.95rem;
 }
-
-/* ========= Responsive ========= */
-@media (max-width: 700px) {
-  .chapter-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 
 /* ========= Footer ========= */
 footer {
   text-align: center;
   padding: 2.5rem 1rem;
   font-size: 0.9rem;
-  color: #555;
-  border-top: 1px solid #ddd;
+  color: #aaa;
+  border-top: 1px solid #333;
 }
 
 /* ========= Responsive ========= */
+@media (max-width: 900px) {
+  .cover-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .cover-img img {
+    max-width: 80%;
+  }
+
+  .info {
+    padding: 1.5rem;
+  }
+}
+
 @media (max-width: 600px) {
-  .cover-content h1 {
-    font-size: 2.6rem;
+  .info h1 {
+    font-size: 2rem;
   }
-  .cover-content .tagline {
-    font-size: 1rem;
+
+  .chapter-grid {
+    grid-template-columns: 1fr;
   }
+
   .chapter-grid a {
-    padding: 12px 20px;
+    padding: 12px 16px;
   }
 }
