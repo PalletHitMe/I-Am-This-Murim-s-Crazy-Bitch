@@ -39,28 +39,31 @@
   </footer>
 
   <!-- JS for dynamically loading chapters -->
-  <script>
-    // Fetch chapters.json to populate chapter grid
-    fetch('chapters.json')
-      .then(res => res.json())
-      .then(chapters => {
-        const chapterGrid = document.getElementById('chapterGrid');
+<script>
+const chapterGrid = document.getElementById("chapterGrid");
 
-        chapters.forEach((ch, index) => {
-          const a = document.createElement('a');
-          a.href = ch.file;
-          a.className = 'chapter-card';
-          a.innerHTML = `
-            <span class="chapter-number">Chapter ${index + 1}</span>
-            <span class="chapter-title">${ch.title}</span>
-          `;
-          chapterGrid.appendChild(a);
-        });
-      })
-      .catch(err => console.error('Failed to load chapters.json', err));
-  </script>
+fetch('chapters.json')
+  .then(res => res.json())
+  .then(chapters => {
+    chapters.forEach((ch, index) => {
+      const a = document.createElement("a");
+      a.href = ch.file; // already includes "allchapters/"
+      a.className = "chapter-card";
+
+      a.innerHTML = `
+        <span class="chapter-number">Chapter ${index + 1}</span>
+        <span class="chapter-title">${ch.title}</span>
+      `;
+      chapterGrid.appendChild(a);
+    });
+  })
+  .catch(err => console.error("Failed to load chapters:", err));
+ </script>
+
+
 
 </body>
 </html>
+
 
 
