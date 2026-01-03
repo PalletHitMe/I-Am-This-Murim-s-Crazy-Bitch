@@ -1,9 +1,9 @@
 [
-  { "file": "chapter1.html", "title": "Chapter 1: The First Step into Murim" },
-  { "file": "chapter2.html", "title": "Chapter 2: A Day In The Life Of A Second-Year Martial Artist (1)" },
-  { "file": "chapter3.html", "title": "Chapter 3: A Day In The Life Of A Second-Year Martial Artist (2)" },
-  { "file": "chapter4.html", "title": "Chapter 4: A Day In The Life Of A Second-Year Martial Artist (3)" },
-  { "file": "chapter5.html", "title": "Chapter 5: Friend (1)" },
-  { "file": "chapter6.html", "title": "Chapter 6: Friend (2)" },
-  { "file": "chapter7.html", "title": "Chapter 7: Friend (3)" }
+  {"file": "allchapters/chapter1.html", "title": "Chapter 1: The First Step into Murim"},
+  {"file": "allchapters/chapter2.html", "title": "Chapter 2: A Day In The Life Of A Second-Year Martial Artist (1)"},
+  {"file": "allchapters/chapter3.html", "title": "Chapter 3: A Day In The Life Of A Second-Year Martial Artist (2)"},
+  {"file": "allchapters/chapter4.html", "title": "Chapter 4: A Day In The Life Of A Second-Year Martial Artist (3)"},
+  {"file": "allchapters/chapter5.html", "title": "Chapter 5: Friend (1)"},
+  {"file": "allchapters/chapter6.html", "title": "Chapter 6: Friend (2)"},
+  {"file": "allchapters/chapter7.html", "title": "Chapter 7: Friend (3)"}
 ]
