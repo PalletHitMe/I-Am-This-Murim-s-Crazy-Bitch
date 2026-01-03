@@ -159,7 +159,6 @@
   <p>Along with a hefty mass that suddenly weighed on his upper body.</p>
 </main>
 
-<!-- Last/Next Chapter Buttons (Dynamic) -->
 <div class="chapter-nav" style="text-align:center; margin: 20px 0;">
   <a href="index.html" id="backToMainBtn"
      style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
@@ -180,6 +179,28 @@
     Next Chapter ➡
   </a>
 </div>
+
+<script>
+  // Auto-set last and next chapter buttons
+  const currentFile = window.location.pathname.split('/').pop();
+  const match = currentFile.match(/chapter(\d+)\.html/);
+
+  const lastBtn = document.getElementById('lastChapterBtn');
+  const nextBtn = document.getElementById('nextChapterBtn');
+
+  if(match){
+    const current = parseInt(match[1]);
+
+    // Set hrefs
+    lastBtn.href = `chapter${current - 1}.html`;
+    nextBtn.href = `chapter${current + 1}.html`;
+
+    // Disable if out of range
+    if(current === 1) lastBtn.style.pointerEvents = 'none';
+    if(current === 6) nextBtn.style.pointerEvents = 'none'; // change 6 to your last chapter number
+  }
+</script>
+
 
 <!-- Fetch navigation.html -->
 <script>
@@ -231,5 +252,6 @@ fontSizeSelect.addEventListener('change', () => {
 
 </body>
 </html>
+
 
 
