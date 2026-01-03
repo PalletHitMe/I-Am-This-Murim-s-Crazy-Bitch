@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>The First Step into Murim</title>
+  <meta charset="UTF-8">
+  <title>The First Step into Murim</title>
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 
-<!-- Link to your main CSS -->
-<link rel="stylesheet" href="style.css">
+  <!-- Link to your main CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- Navigation -->
-<div id="navigation"></div>
+  <!-- Top Navigation -->
+  <div id="navigation"></div>
 
-<!-- Font size controls -->
-<div id="fontSizeControls" style="margin: 10px 0; text-align: center;">
-  <label for="fontSizeSelect">Font size: </label>
-  <select id="fontSizeSelect">
-    <option value="16px">Smallest</option>
-    <option value="18px" selected>Very Small</option>
-    <option value="20px">Smaller</option>
-    <option value="22px">Small</option>
-    <option value="24px">Normal</option>
-    <option value="26px">Large</option>
-    <option value="28px">Larger</option>
-    <option value="30px">Very Large</option>
-    <option value="32px">Largest</option>
-  </select>
-</div>
+  <!-- Font size controls -->
+  <div id="fontSizeControls" style="margin: 10px 0; text-align: center;">
+    <label for="fontSizeSelect">Font size: </label>
+    <select id="fontSizeSelect">
+      <option value="16px">Smallest</option>
+      <option value="18px" selected>Very Small</option>
+      <option value="20px">Smaller</option>
+      <option value="22px">Small</option>
+      <option value="24px">Normal</option>
+      <option value="26px">Large</option>
+      <option value="28px">Larger</option>
+      <option value="30px">Very Large</option>
+      <option value="32px">Largest</option>
+    </select>
+  </div>
 
 <!-- Chapter Content -->
 <main class="chapter-content">
@@ -160,105 +160,48 @@
   <p>Along with a hefty mass that suddenly weighed on his upper body.</p>
 </main>
 
+  <!-- Bottom Navigation (dynamic via fetch) -->
+  <div id="bottomNavigation"></div>
 
-<!-- Bottom Navigation (dynamic) -->
-<div class="chapter-nav" style="text-align:center; margin: 20px 0;">
-  <a href="index.html" id="backToMainBtn"
-     style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-            background-color: #4CAF50; color: white; border-radius: 8px;
-            font-weight: 700; transition: 0.3s; display: inline-block;">
-    Back to Main Page
-  </a>
-  <a href="#" id="lastChapterBtn"
-     style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-            background-color: #ff6b6b; color: white; border-radius: 8px;
-            font-weight: 700; transition: 0.3s; display: inline-block;">
-    ⬅ Last Chapter
-  </a>
-  <a href="#" id="nextChapterBtn"
-     style="text-decoration: none; margin: 0 10px; padding: 12px 24px;
-            background-color: #ff6b6b; color: white; border-radius: 8px;
-            font-weight: 700; transition: 0.3s; display: inline-block;">
-    Next Chapter ➡
-  </a>
-</div>
+  <!-- Fetch top navigation -->
+  <script>
+    fetch('navigation.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('navigation').innerHTML = data;
+      })
+      .catch(err => console.error('Top navigation fetch failed:', err));
+  </script>
 
-<!-- Fetch navigation.html and populate dynamic chapter dropdown -->
-<script>
-  const navigationDiv = document.getElementById('navigation');
-  fetch('navigation.html')
-    .then(res => res.text())
-    .then(data => {
-      navigationDiv.innerHTML = data;
+  <!-- Fetch bottom navigation -->
+  <script>
+    fetch('navigationbottom.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('bottomNavigation').innerHTML = data;
+      })
+      .catch(err => console.error('Bottom navigation fetch failed:', err));
+  </script>
 
-      // Define all chapters (add new chapters here)
-      const chapters = [
-        {file: 'chapter1.html', title: 'Chapter 1: The First Step into Murim'},
-        {file: 'chapter2.html', title: 'Chapter 2: A Day In The Life Of A Second-Year Martial Artist (1)'},
-        {file: 'chapter3.html', title: 'Chapter 3: A Day In The Life Of A Second-Year Martial Artist (2)'},
-        {file: 'chapter4.html', title: 'Chapter 4: A Day In The Life Of A Second-Year Martial Artist (3)'},
-        {file: 'chapter5.html', title: 'Chapter 5: Friend (1)'},
-        {file: 'chapter6.html', title: 'Chapter 6: Friend (2)'},
-        {file: 'chapter7.html', title: 'Chapter 7: Friend (3)'}
-      ];
+  <!-- Font size script -->
+  <script>
+    const fontSizeSelect = document.getElementById('fontSizeSelect');
+    const chapterContent = document.querySelector('.chapter-content');
 
-      const chapterSelect = document.getElementById('chapterSelect');
-      const lastBtn = document.getElementById('lastChapterBtn');
-      const nextBtn = document.getElementById('nextChapterBtn');
+    // Load saved font size
+    const savedFontSize = localStorage.getItem('chapterFontSize');
+    if(savedFontSize){
+      chapterContent.style.fontSize = savedFontSize;
+      fontSizeSelect.value = savedFontSize;
+    }
 
-      // Populate dropdown
-      chapters.forEach(ch => {
-        const option = document.createElement('option');
-        option.value = ch.file;
-        option.textContent = ch.title;
-        chapterSelect.appendChild(option);
-      });
-
-      // Detect current chapter
-      const currentFile = window.location.pathname.split('/').pop();
-      const currentIndex = chapters.findIndex(ch => ch.file === currentFile);
-
-      if(currentIndex >= 0){
-        chapterSelect.value = chapters[currentIndex].file;
-
-        // Set Previous and Next buttons
-        if(lastBtn) lastBtn.href = currentIndex > 0 ? chapters[currentIndex-1].file : '#';
-        if(nextBtn) nextBtn.href = currentIndex < chapters.length-1 ? chapters[currentIndex+1].file : '#';
-
-        // Disable buttons if at start/end
-        if(currentIndex === 0 && lastBtn) lastBtn.style.pointerEvents = 'none';
-        if(currentIndex === chapters.length-1 && nextBtn) nextBtn.style.pointerEvents = 'none';
-      }
-
-      // Jump to chapter on select
-      if(chapterSelect){
-        chapterSelect.addEventListener('change', () => {
-          if(chapterSelect.value) window.location.href = chapterSelect.value;
-        });
-      }
-    })
-    .catch(err => console.error('Navigation fetch failed:', err));
-</script>
-
-<!-- Font size script -->
-<script>
-  const fontSizeSelect = document.getElementById('fontSizeSelect');
-  const chapterContent = document.querySelector('.chapter-content');
-
-  // Load saved font size
-  const savedFontSize = localStorage.getItem('chapterFontSize');
-  if(savedFontSize){
-    chapterContent.style.fontSize = savedFontSize;
-    fontSizeSelect.value = savedFontSize;
-  }
-
-  // Change font size
-  fontSizeSelect.addEventListener('change', () => {
-    const size = fontSizeSelect.value;
-    chapterContent.style.fontSize = size;
-    localStorage.setItem('chapterFontSize', size);
-  });
-</script>
+    // Change font size
+    fontSizeSelect.addEventListener('change', () => {
+      const size = fontSizeSelect.value;
+      chapterContent.style.fontSize = size;
+      localStorage.setItem('chapterFontSize', size);
+    });
+  </script>
 
 </body>
 </html>
