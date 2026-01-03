@@ -51,7 +51,7 @@
         if (!chapters || chapters.length === 0) return;
 
         // Start Reading → first chapter
-        startReadingBtn.href = chapters[0].file;
+        startReadingBtn.href = chapters[0].file || "#";
 
         // Generate chapter cards
         chapters.forEach((ch, index) => {
@@ -61,7 +61,7 @@
 
           a.innerHTML = `
             <span class="chapter-number">Chapter ${index + 1}</span>
-            <span class="chapter-title">${ch.name}</span>
+            <span class="chapter-title">${ch.title}</span>
           `;
 
           chapterGrid.appendChild(a);
@@ -74,5 +74,3 @@
 
 </body>
 </html>
-
-
