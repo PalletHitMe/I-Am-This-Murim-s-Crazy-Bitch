@@ -164,58 +164,32 @@
   <a href="chapter2.html" id="nextChapterBtn">Next Chapter ➡</a>
 </div>
   
-<!-- Fetch Navigation and Auto-set Chapter Buttons -->
+<!-- Fetch dynamic navigation.html -->
 <script>
 fetch('navigation.html')
   .then(res => res.text())
   .then(data => {
     document.getElementById('navigation').innerHTML = data;
-
-    const currentFile = window.location.pathname.split('/').pop();
-    const match = currentFile.match(/chapter(\d+)\.html/);
-
-    if(match){
-      const current = parseInt(match[1]);
-      const nextBtn = document.getElementById('nextChapterBtn');
-      const lastBtn = document.getElementById('lastChapterBtn');
-
-      if(nextBtn) nextBtn.href = `chapter${current + 1}.html`;
-      if(lastBtn) lastBtn.href = `chapter${current - 1}.html`;
-
-      if(current === 1 && lastBtn) lastBtn.style.pointerEvents = 'none';
-      if(current === 6 && nextBtn) nextBtn.style.pointerEvents = 'none';
-    }
   })
   .catch(err => console.error('Navigation fetch failed:', err));
 </script>
 
+<!-- Font size script -->
 <script>
-  const fontSizeSelect = document.getElementById('fontSizeSelect');
-  const chapterContent = document.querySelector('.chapter-content');
+const fontSizeSelect = document.getElementById('fontSizeSelect');
+const chapterContent = document.querySelector('.chapter-content');
 
-  // Load saved font size from localStorage if available
-  const savedFontSize = localStorage.getItem('chapterFontSize');
-  if (savedFontSize) {
-    chapterContent.style.fontSize = savedFontSize;
-    fontSizeSelect.value = savedFontSize;
-  }
+// Load saved font size
+const savedFontSize = localStorage.getItem('chapterFontSize');
+if(savedFontSize){
+  chapterContent.style.fontSize = savedFontSize;
+  fontSizeSelect.value = savedFontSize;
+}
 
-  // Change font size on user selection
-  fontSizeSelect.addEventListener('change', () => {
-    const size = fontSizeSelect.value;
-    chapterContent.style.fontSize = size;
-    localStorage.setItem('chapterFontSize', size); // Save preference
-  });
+// Change font size
+fontSizeSelect.addEventListener('change', () => {
+  const size = fontSizeSelect.value;
+  chapterContent.style.fontSize = size;
+  localStorage.setItem('chapterFontSize', size);
+});
 </script>
-
-</body>
-</html>
-
-
-
-
-
-
-
-
-
