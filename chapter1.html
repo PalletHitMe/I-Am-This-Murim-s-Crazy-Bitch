@@ -14,34 +14,6 @@
 <!-- Navigation -->
 <div id="navigation"></div>
 
-<script>
-  fetch('navigation.html')
-    .then(res => res.text())
-    .then(data => {
-      document.getElementById('navigation').innerHTML = data;
-
-      // Auto set Next and Last Chapter buttons
-      const currentFile = window.location.pathname.split('/').pop();
-      const match = currentFile.match(/chapter(\d+)\.html/);
-
-      if(match){
-        const current = parseInt(match[1]);
-        const nextBtn = document.getElementById('nextChapterBtn');
-        const lastBtn = document.getElementById('lastChapterBtn');
-
-        if(nextBtn) {
-          nextBtn.href = `chapter${current + 1}.html`;
-          if(current === 6) nextBtn.classList.add('disabled'); // max chapter
-        }
-
-        if(lastBtn) {
-          lastBtn.href = `chapter${current - 1}.html`;
-          if(current === 1) lastBtn.classList.add('disabled'); // first chapter
-        }
-      }
-    })
-    .catch(err => console.error('Navigation fetch failed:', err));
-</script>
 
 <!-- Chapter Navigation Buttons (only at top) -->
 <div class="chapter-nav">
@@ -67,5 +39,6 @@
 
 </body>
 </html>
+
 
 
