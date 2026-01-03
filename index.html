@@ -26,39 +26,9 @@
   <!-- Chapter List Section -->
   <section id="chapters" class="chapters-container">
     <h2>Chapters</h2>
-    
-<div class="chapter-grid">
-  <a href="chapter1.html" class="chapter-card">
-    <span class="chapter-number">Chapter 1</span>
-    <span class="chapter-title">The First Step into Murim</span>
-  </a>
-
-  <a href="chapter2.html" class="chapter-card">
-    <span class="chapter-number">Chapter 2</span>
-    <span class="chapter-title">A Day In The Life Of A Second-Year Martial Artist (1)</span>
-  </a>
-
-  <a href="chapter3.html" class="chapter-card">
-    <span class="chapter-number">Chapter 3</span>
-    <span class="chapter-title">A Day In The Life Of A Second-Year Martial Artist (2)</span>
-  </a>
-
-  <a href="chapter4.html" class="chapter-card">
-    <span class="chapter-number">Chapter 4</span>
-    <span class="chapter-title">A Day In The Life Of A Second-Year Martial Artist (3)</span>
-  </a>
-
-  <a href="chapter5.html" class="chapter-card">
-    <span class="chapter-number">Chapter 5</span>
-    <span class="chapter-title">Friend (1)</span>
-  </a>
-
-  <a href="chapter6.html" class="chapter-card">
-    <span class="chapter-number">Chapter 6</span>
-    <span class="chapter-title">Friend (2)</span>
-  </a>
-</div>
-
+    <div id="chapterGrid" class="chapter-grid">
+      <!-- JS will insert chapter cards here -->
+    </div>
   </section>
 
   <!-- Footer -->
@@ -66,7 +36,35 @@
     &copy; 2026 PalletHitMe. All rights reserved.
   </footer>
 
+  <!-- Auto-generate chapter cards via JS -->
+  <script>
+    // Add your chapter titles here in order
+    const chapters = [
+      "The First Step into Murim",
+      "A Day In The Life Of A Second-Year Martial Artist (1)",
+      "A Day In The Life Of A Second-Year Martial Artist (2)",
+      "A Day In The Life Of A Second-Year Martial Artist (3)",
+      "Friend (1)",
+      "Friend (2)"
+    ];
+
+    const chapterGrid = document.getElementById('chapterGrid');
+
+    chapters.forEach((title, index) => {
+      const chapterNumber = index + 1;
+
+      const card = document.createElement('a');
+      card.href = `chapter${chapterNumber}.html`;
+      card.className = 'chapter-card';
+
+      card.innerHTML = `
+        <span class="chapter-number">Chapter ${chapterNumber}</span><br>
+        <span class="chapter-title">${title}</span>
+      `;
+
+      chapterGrid.appendChild(card);
+    });
+  </script>
 </body>
 </html>
-
 
