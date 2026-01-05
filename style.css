@@ -139,7 +139,7 @@ body {
   color: #f1f1f1;
   border-radius: 15px;
   box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-  line-height: 1.9;
+  line-height: 1.6;
   font-size: 1.1rem;
   font-family: 'Sans', serif;
 }
@@ -147,6 +147,7 @@ body {
 .chapter-content h1 {
   font-family: 'Lora', serif;
   text-align: center;
+  line-height: 1.6;
   font-size: 2.2rem;
   margin-bottom: 1.5rem;
   color: #ff6b6b;
