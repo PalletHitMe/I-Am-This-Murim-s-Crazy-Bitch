@@ -22,8 +22,8 @@ const chapters = [
     },
     {
         "number": 1,
-        "title": "The Beginning",
-        "date": "2024-01-01"
+        "title": "The First Step Into Murim",
+        "date": "2026-02-17"
     },
     {
         "number": 0,
