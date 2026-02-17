@@ -203,12 +203,19 @@
         <button class="footer-btn save-btn" onclick="saveChapter()">Publish Chapter</button>
     </div>
 
+    <script src="config.js"></script>
     <script src="chapters.js"></script>
     <script>
         // Check login
         if (localStorage.getItem('admin_logged_in') !== 'true') {
             window.location.href = 'login.html';
         }
+        
+        // Configuration - loaded from config.js
+        const GITHUB_TOKEN = window.GITHUB_CONFIG.token;
+        const GITHUB_OWNER = window.GITHUB_CONFIG.owner;
+        const GITHUB_REPO = window.GITHUB_CONFIG.repo;
+        const GITHUB_BRANCH = window.GITHUB_CONFIG.branch;
         
         // Auto-save timer
         let saveTimeout;
@@ -239,7 +246,7 @@
             if (title || content) {
                 localStorage.setItem('auto_save_title', title);
                 localStorage.setItem('auto_save_content', content);
-                autoSave.textContent = '💾 Auto-saved';
+                autoSave.textContent = '💾 Auto-saved locally';
                 autoSave.style.color = '#666';
             }
         }
@@ -258,11 +265,22 @@
             
             if (editNum) {
                 document.querySelector('h1').textContent = `Edit Chapter ${editNum}`;
-                // Load chapter data (we'll implement this)
+                loadChapterForEdit(editNum);
             }
         };
         
-        function saveChapter() {
+        function loadChapterForEdit(chapterNum) {
+            // Find chapter in existing data
+            const chapter = getChapter(parseInt(chapterNum));
+            if (chapter) {
+                document.getElementById('chapterNumber').value = chapter.number;
+                document.getElementById('chapterTitle').value = chapter.title;
+                // Note: We don't have content in chapters.js yet
+                alert('Note: Chapter content would load here in a full implementation');
+            }
+        }
+        
+        async function saveChapter() {
             const number = parseInt(document.getElementById('chapterNumber').value);
             const title = document.getElementById('chapterTitle').value;
             const content = document.getElementById('chapterContent').value;
@@ -272,28 +290,103 @@
                 return;
             }
             
+            // Show saving status
+            autoSave.textContent = '⏳ Publishing to GitHub...';
+            autoSave.style.color = '#ff6b6b';
+            
             // Get today's date
             const today = new Date().toISOString().split('T')[0];
             
-            // Here you'll need to save to chapters.js
-            // For now, we'll show what would be saved
-            const newChapter = {
-                number: number,
-                title: title,
-                content: content,
-                date: today
-            };
-            
-            console.log('Saving chapter:', newChapter);
-            
-            // Clear auto-save
-            localStorage.removeItem('auto_save_title');
-            localStorage.removeItem('auto_save_content');
-            
-            alert(`Chapter ${number} would be saved! (Save functionality coming next)`);
-            
-            // Redirect back to admin
-            // window.location.href = 'admin.html';
+            try {
+                // 1. Get the current file info (to get SHA for updating)
+                const getUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js?ref=${GITHUB_BRANCH}`;
+                
+                const getResponse = await fetch(getUrl, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (!getResponse.ok) {
+                    throw new Error('Failed to get current file');
+                }
+                
+                const fileData = await getResponse.json();
+                const currentSha = fileData.sha;
+                
+                // 2. Decode the current content
+                const currentContent = decodeURIComponent(escape(atob(fileData.content)));
+                
+                // 3. Parse the chapters array and add new chapter
+                // Find the chapters array
+                const chaptersMatch = currentContent.match(/const chapters = \[([\s\S]*?)\];/);
+                if (!chaptersMatch) throw new Error('Could not parse chapters');
+                
+                // Create new chapter entry
+                const newChapter = `    { number: ${number}, title: "${title.replace(/"/g, '\\"')}", date: "${today}" }`;
+                
+                // Check if array is empty
+                const isArrayEmpty = chaptersMatch[1].trim() === '';
+                
+                // Insert at the beginning (newest first)
+                let updatedContent;
+                if (isArrayEmpty) {
+                    updatedContent = currentContent.replace(
+                        /const chapters = \[([\s\S]*?)\];/,
+                        `const chapters = [\n${newChapter}\n];`
+                    );
+                } else {
+                    updatedContent = currentContent.replace(
+                        /const chapters = \[([\s\S]*?)\];/,
+                        `const chapters = [\n${newChapter},\n$1\n];`
+                    );
+                }
+                
+                // 4. Encode for GitHub API
+                const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
+                
+                // 5. Create commit via API
+                const putUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js`;
+                
+                const putResponse = await fetch(putUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Add Chapter ${number}: ${title}`,
+                        content: encodedContent,
+                        sha: currentSha,
+                        branch: GITHUB_BRANCH
+                    })
+                });
+                
+                if (putResponse.ok) {
+                    autoSave.textContent = '✅ Published to GitHub!';
+                    autoSave.style.color = '#4CAF50';
+                    
+                    // Clear auto-save
+                    localStorage.removeItem('auto_save_title');
+                    localStorage.removeItem('auto_save_content');
+                    
+                    alert(`Chapter ${number} published successfully!`);
+                    
+                    // Redirect back to admin
+                    window.location.href = 'admin.html';
+                } else {
+                    const error = await putResponse.json();
+                    throw new Error(error.message || 'Failed to save');
+                }
+                
+            } catch (error) {
+                console.error('Save error:', error);
+                autoSave.textContent = '❌ Publish failed';
+                autoSave.style.color = '#ff6b6b';
+                alert('Failed to publish: ' + error.message);
+            }
         }
     </script>
 </body>
