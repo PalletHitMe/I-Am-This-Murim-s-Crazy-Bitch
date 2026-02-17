@@ -186,7 +186,7 @@
         
         <div class="chapter-number-input">
             <label>Chapter Number</label>
-            <input type="number" id="chapterNumber" min="1" value="11">
+            <input type="number" id="chapterNumber" min="1" value="12">
         </div>
         
         <div class="chapter-title-input">
@@ -269,14 +269,84 @@
             }
         };
         
-        function loadChapterForEdit(chapterNum) {
+        async function loadChapterForEdit(chapterNum) {
             // Find chapter in existing data
             const chapter = getChapter(parseInt(chapterNum));
             if (chapter) {
                 document.getElementById('chapterNumber').value = chapter.number;
                 document.getElementById('chapterTitle').value = chapter.title;
-                // Note: We don't have content in chapters.js yet
-                alert('Note: Chapter content would load here in a full implementation');
+                
+                // Load content from JSON file
+                try {
+                    const response = await fetch('chapters-content.json');
+                    const data = await response.json();
+                    const contentChapter = data.chapters.find(ch => ch.number === chapterNum);
+                    if (contentChapter) {
+                        document.getElementById('chapterContent').value = contentChapter.content;
+                    }
+                } catch (error) {
+                    console.error('Error loading content:', error);
+                }
+            }
+        }
+        
+        async function saveChapterContent(number, content) {
+            try {
+                // Get current content file
+                const getUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json?ref=${GITHUB_BRANCH}`;
+                
+                const getResponse = await fetch(getUrl, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (!getResponse.ok) {
+                    throw new Error('Failed to get content file');
+                }
+                
+                const fileData = await getResponse.json();
+                const currentSha = fileData.sha;
+                
+                // Parse current content
+                const currentContent = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+                
+                // Update or add chapter content
+                const chapterIndex = currentContent.chapters.findIndex(ch => ch.number === number);
+                
+                if (chapterIndex >= 0) {
+                    currentContent.chapters[chapterIndex].content = content;
+                } else {
+                    currentContent.chapters.push({ number, content });
+                }
+                
+                // Sort chapters by number (descending)
+                currentContent.chapters.sort((a, b) => b.number - a.number);
+                
+                // Encode and save
+                const updatedContent = JSON.stringify(currentContent, null, 2);
+                const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
+                
+                const putResponse = await fetch(getUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Update content for Chapter ${number}`,
+                        content: encodedContent,
+                        sha: currentSha,
+                        branch: GITHUB_BRANCH
+                    })
+                });
+                
+                return putResponse.ok;
+            } catch (error) {
+                console.error('Error saving content:', error);
+                return false;
             }
         }
         
@@ -298,7 +368,7 @@
             const today = new Date().toISOString().split('T')[0];
             
             try {
-                // 1. Get the current file info (to get SHA for updating)
+                // PART 1: Save to chapters.js (metadata)
                 const getUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js?ref=${GITHUB_BRANCH}`;
                 
                 const getResponse = await fetch(getUrl, {
@@ -309,17 +379,16 @@
                 });
                 
                 if (!getResponse.ok) {
-                    throw new Error('Failed to get current file');
+                    throw new Error('Failed to get chapters.js file');
                 }
                 
                 const fileData = await getResponse.json();
                 const currentSha = fileData.sha;
                 
-                // 2. Decode the current content
+                // Decode the current content
                 const currentContent = decodeURIComponent(escape(atob(fileData.content)));
                 
-                // 3. Parse the chapters array and add new chapter
-                // Find the chapters array
+                // Parse the chapters array and add new chapter
                 const chaptersMatch = currentContent.match(/const chapters = \[([\s\S]*?)\];/);
                 if (!chaptersMatch) throw new Error('Could not parse chapters');
                 
@@ -343,10 +412,10 @@
                     );
                 }
                 
-                // 4. Encode for GitHub API
+                // Encode for GitHub API
                 const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
                 
-                // 5. Create commit via API
+                // Create commit via API
                 const putUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js`;
                 
                 const putResponse = await fetch(putUrl, {
@@ -364,22 +433,29 @@
                     })
                 });
                 
-                if (putResponse.ok) {
-                    autoSave.textContent = '✅ Published to GitHub!';
-                    autoSave.style.color = '#4CAF50';
-                    
-                    // Clear auto-save
-                    localStorage.removeItem('auto_save_title');
-                    localStorage.removeItem('auto_save_content');
-                    
-                    alert(`Chapter ${number} published successfully!`);
-                    
-                    // Redirect back to admin
-                    window.location.href = 'admin.html';
-                } else {
+                if (!putResponse.ok) {
                     const error = await putResponse.json();
-                    throw new Error(error.message || 'Failed to save');
+                    throw new Error('Failed to save metadata: ' + error.message);
                 }
+                
+                // PART 2: Save to chapters-content.json (actual content)
+                const contentSaved = await saveChapterContent(number, content);
+                
+                if (!contentSaved) {
+                    throw new Error('Metadata saved but content failed to save');
+                }
+                
+                autoSave.textContent = '✅ Published to GitHub!';
+                autoSave.style.color = '#4CAF50';
+                
+                // Clear auto-save
+                localStorage.removeItem('auto_save_title');
+                localStorage.removeItem('auto_save_content');
+                
+                alert(`Chapter ${number} published successfully!`);
+                
+                // Redirect back to admin
+                window.location.href = 'admin.html';
                 
             } catch (error) {
                 console.error('Save error:', error);
