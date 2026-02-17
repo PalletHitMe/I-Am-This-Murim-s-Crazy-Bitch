@@ -53,14 +53,42 @@
             color: white;
         }
         
+        .admin-link {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9rem;
+            z-index: 1000;
+            background: #3a3a3a;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #444;
+        }
+        
+        .admin-link:hover {
+            color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+        
         .chapter-list {
             list-style: none;
+            margin-bottom: 2rem;
         }
         
         .chapter-item {
             margin-bottom: 1rem;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #444;
+            padding: 1rem;
+            background-color: #3a3a3a;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b6b;
+            transition: all 0.3s;
+        }
+        
+        .chapter-item:hover {
+            background-color: #444;
+            transform: translateX(5px);
         }
         
         .chapter-item a {
@@ -74,35 +102,21 @@
         
         .chapter-item a:hover {
             color: #ff6b6b;
-            padding-left: 10px;
         }
         
         .chapter-date {
-            color: #666;
+            color: #999;
             font-size: 0.9rem;
         }
         
         .stats {
-            margin-top: 3rem;
+            margin-top: 2rem;
             padding: 1rem;
             background-color: #3a3a3a;
             border-radius: 8px;
             text-align: center;
-            color: #ccc;
-        }
-        
-        .admin-link {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
-            color: #666;
-            text-decoration: none;
-            font-size: 0.9rem;
-            z-index: 1000;
-        }
-        
-        .admin-link:hover {
             color: #ff6b6b;
+            font-weight: bold;
         }
         
         .loading {
@@ -132,7 +146,6 @@
 
     <script src="chapters.js"></script>
     <script>
-        // Load all chapters (newest first)
         const allList = document.getElementById('allChapters');
         const statsDiv = document.getElementById('stats');
         
