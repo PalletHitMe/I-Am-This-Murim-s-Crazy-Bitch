@@ -24,6 +24,11 @@ const chapters = [
         "number": 1,
         "title": "The Beginning",
         "date": "2024-01-01"
+    },
+    {
+        "number": 0,
+        "title": "The First Step Into Murim",
+        "date": "2026-02-17"
     }
 ];
 
