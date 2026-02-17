@@ -82,6 +82,10 @@
             outline: none;
         }
         
+        .chapter-title-input input::placeholder {
+            color: #666;
+        }
+        
         .chapter-content-input {
             margin-bottom: 2rem;
         }
@@ -114,9 +118,20 @@
             border-top: 2px solid #ff6b6b;
             padding: 1rem 2rem;
             display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
             z-index: 1000;
+        }
+        
+        .footer-left {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .footer-right {
+            display: flex;
+            gap: 1rem;
         }
         
         .footer-btn {
@@ -126,6 +141,7 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
+            transition: all 0.3s;
         }
         
         .save-btn {
@@ -133,30 +149,79 @@
             color: white;
         }
         
+        .save-btn:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+        
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        
         .cancel-btn {
             background-color: #444;
             color: white;
         }
         
+        .cancel-btn:hover {
+            background-color: #555;
+        }
+        
         .word-count {
-            position: fixed;
-            top: 1rem;
-            right: 1rem;
             background-color: #ff6b6b;
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 20px;
             font-size: 0.9rem;
-            z-index: 1000;
+        }
+        
+        .auto-save-status {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .auto-save-status.saving {
+            color: #ff6b6b;
+        }
+        
+        .auto-save-status.saved {
+            color: #4CAF50;
+        }
+        
+        .status-message {
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .editor-footer {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .footer-left, .footer-right {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="word-count" id="wordCount">0 words</div>
-    
     <div class="editor-container">
         <div class="editor-header">
-            <h1>Write New Chapter</h1>
+            <h1 id="editorTitle">Write New Chapter</h1>
             <a href="admin.html" class="close-btn">✕</a>
         </div>
         
@@ -166,7 +231,7 @@
         </div>
         
         <div class="chapter-title-input">
-            <input type="text" id="chapterTitle" placeholder="Chapter Title">
+            <input type="text" id="chapterTitle" placeholder="Chapter Title (e.g., 'The Final Battle')">
         </div>
         
         <div class="chapter-content-input">
@@ -175,50 +240,375 @@
     </div>
     
     <div class="editor-footer">
-        <button class="footer-btn cancel-btn" onclick="window.location.href='admin.html'">Cancel</button>
-        <button class="footer-btn save-btn" onclick="saveChapter()">Save Chapter</button>
+        <div class="footer-left">
+            <span class="word-count" id="wordCount">0 words</span>
+            <span class="auto-save-status" id="autoSaveStatus">💾 Saved</span>
+        </div>
+        <div class="footer-right">
+            <button class="footer-btn cancel-btn" onclick="window.location.href='admin.html'">Cancel</button>
+            <button class="footer-btn delete-btn" id="deleteBtn" onclick="deleteChapter()" style="display: none;">Delete Chapter</button>
+            <button class="footer-btn save-btn" onclick="saveChapter()">Publish Chapter</button>
+        </div>
     </div>
 
+    <script src="config.js"></script>
     <script src="chapters.js"></script>
     <script>
+        // Check login
         if (localStorage.getItem('admin_logged_in') !== 'true') {
             window.location.href = 'login.html';
         }
         
-        const contentArea = document.getElementById('chapterContent');
-        const wordCount = document.getElementById('wordCount');
+        // Configuration
+        const GITHUB_TOKEN = window.GITHUB_CONFIG.token;
+        const GITHUB_OWNER = window.GITHUB_CONFIG.owner;
+        const GITHUB_REPO = window.GITHUB_CONFIG.repo;
+        const GITHUB_BRANCH = window.GITHUB_CONFIG.branch;
         
-        contentArea.addEventListener('input', function() {
+        // DOM elements
+        const chapterNumber = document.getElementById('chapterNumber');
+        const chapterTitle = document.getElementById('chapterTitle');
+        const chapterContent = document.getElementById('chapterContent');
+        const wordCount = document.getElementById('wordCount');
+        const autoSaveStatus = document.getElementById('autoSaveStatus');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const editorTitle = document.getElementById('editorTitle');
+        
+        // State
+        let saveTimeout;
+        let currentChapterNumber = null;
+        let isEditing = false;
+        
+        // Word counter
+        chapterContent.addEventListener('input', function() {
             const words = this.value.trim().split(/\s+/).filter(w => w.length > 0).length;
             wordCount.textContent = words + ' words';
+            triggerAutoSave();
         });
         
-        window.onload = function() {
+        chapterTitle.addEventListener('input', triggerAutoSave);
+        
+        function triggerAutoSave() {
+            autoSaveStatus.textContent = '⏳ Unsaved changes...';
+            autoSaveStatus.className = 'auto-save-status saving';
+            
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                autoSaveToLocal();
+            }, 2000);
+        }
+        
+        function autoSaveToLocal() {
+            const data = {
+                number: chapterNumber.value,
+                title: chapterTitle.value,
+                content: chapterContent.value,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('editor_autosave', JSON.stringify(data));
+            autoSaveStatus.textContent = '💾 Auto-saved locally';
+            autoSaveStatus.className = 'auto-save-status saved';
+        }
+        
+        // Load chapter for editing
+        window.onload = async function() {
             const urlParams = new URLSearchParams(window.location.search);
             const editNum = urlParams.get('edit');
             
-            if (editNum) {
-                document.querySelector('h1').textContent = `Edit Chapter ${editNum}`;
-                const chapter = getChapter(parseInt(editNum));
-                if (chapter) {
-                    document.getElementById('chapterNumber').value = chapter.number;
-                    document.getElementById('chapterTitle').value = chapter.title;
+            // Check for auto-save
+            const autoSave = localStorage.getItem('editor_autosave');
+            if (autoSave && !editNum) {
+                const data = JSON.parse(autoSave);
+                if (confirm('Found auto-saved draft. Load it?')) {
+                    chapterNumber.value = data.number;
+                    chapterTitle.value = data.title;
+                    chapterContent.value = data.content;
+                    updateWordCount();
+                    return;
                 }
+            }
+            
+            if (editNum) {
+                await loadChapterForEdit(parseInt(editNum));
             }
         };
         
-        function saveChapter() {
-            const number = document.getElementById('chapterNumber').value;
-            const title = document.getElementById('chapterTitle').value;
-            const content = document.getElementById('chapterContent').value;
+        async function loadChapterForEdit(num) {
+            isEditing = true;
+            currentChapterNumber = num;
+            editorTitle.textContent = `Edit Chapter ${num}`;
+            deleteBtn.style.display = 'inline-block';
+            
+            // Load metadata
+            const chapter = getChapter(num);
+            if (chapter) {
+                chapterNumber.value = chapter.number;
+                chapterTitle.value = chapter.title;
+            }
+            
+            // Load content
+            try {
+                const response = await fetch('chapters-content.json?t=' + Date.now());
+                const data = await response.json();
+                const contentChapter = data.chapters.find(ch => ch.number === num);
+                if (contentChapter) {
+                    chapterContent.value = contentChapter.content;
+                    updateWordCount();
+                }
+            } catch (error) {
+                console.error('Error loading content:', error);
+            }
+        }
+        
+        function updateWordCount() {
+            const words = chapterContent.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+            wordCount.textContent = words + ' words';
+        }
+        
+        async function saveChapter() {
+            const number = parseInt(chapterNumber.value);
+            const title = chapterTitle.value.trim();
+            const content = chapterContent.value.trim();
             
             if (!title || !content) {
-                alert('Please add both title and content');
+                alert('Please add both a title and content');
                 return;
             }
             
-            alert(`Chapter ${number} saved! (Note: This is a demo - actual GitHub saving would happen here)`);
-            window.location.href = 'admin.html';
+            autoSaveStatus.textContent = '⏳ Publishing to GitHub...';
+            autoSaveStatus.className = 'auto-save-status saving';
+            
+            const today = new Date().toISOString().split('T')[0];
+            
+            try {
+                // Save to chapters.js (metadata)
+                await saveMetadata(number, title, today);
+                
+                // Save to chapters-content.json (content)
+                await saveContent(number, content);
+                
+                // Clear auto-save
+                localStorage.removeItem('editor_autosave');
+                
+                autoSaveStatus.textContent = '✅ Published!';
+                autoSaveStatus.className = 'auto-save-status saved';
+                
+                alert(`Chapter ${number} published successfully!`);
+                window.location.href = 'admin.html';
+                
+            } catch (error) {
+                console.error('Save error:', error);
+                autoSaveStatus.textContent = '❌ Publish failed';
+                autoSaveStatus.className = 'auto-save-status saving';
+                alert('Failed to publish: ' + error.message);
+            }
+        }
+        
+        async function saveMetadata(number, title, date) {
+            // Get current chapters.js
+            const getUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js?ref=${GITHUB_BRANCH}`;
+            
+            const getResponse = await fetch(getUrl, {
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (!getResponse.ok) throw new Error('Failed to get chapters.js');
+            
+            const fileData = await getResponse.json();
+            const currentSha = fileData.sha;
+            const currentContent = decodeURIComponent(escape(atob(fileData.content)));
+            
+            // Parse and update chapters array
+            let chapters;
+            eval(currentContent.replace('const chapters = ', 'chapters = '));
+            
+            if (isEditing) {
+                // Update existing chapter
+                const index = chapters.findIndex(ch => ch.number === number);
+                if (index !== -1) {
+                    chapters[index] = { number, title, date };
+                }
+            } else {
+                // Add new chapter
+                chapters.unshift({ number, title, date });
+            }
+            
+            // Sort by number descending
+            chapters.sort((a, b) => b.number - a.number);
+            
+            // Generate new content
+            const newContent = '// chapters.js - Your novel chapters data\nconst chapters = ' + JSON.stringify(chapters, null, 4) + ';\n\n// Helper functions\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }';
+            
+            // Save to GitHub
+            const encodedContent = btoa(unescape(encodeURIComponent(newContent)));
+            
+            const putResponse = await fetch(getUrl, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: isEditing ? `Update Chapter ${number}: ${title}` : `Add Chapter ${number}: ${title}`,
+                    content: encodedContent,
+                    sha: currentSha,
+                    branch: GITHUB_BRANCH
+                })
+            });
+            
+            if (!putResponse.ok) throw new Error('Failed to save metadata');
+        }
+        
+        async function saveContent(number, content) {
+            // Get current content file
+            const getUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json?ref=${GITHUB_BRANCH}`;
+            
+            const getResponse = await fetch(getUrl, {
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (!getResponse.ok) throw new Error('Failed to get content file');
+            
+            const fileData = await getResponse.json();
+            const currentSha = fileData.sha;
+            const currentContent = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
+            
+            // Update or add chapter content
+            const index = currentContent.chapters.findIndex(ch => ch.number === number);
+            const newChapter = { number, content };
+            
+            if (index !== -1) {
+                currentContent.chapters[index] = newChapter;
+            } else {
+                currentContent.chapters.push(newChapter);
+            }
+            
+            // Sort by number descending
+            currentContent.chapters.sort((a, b) => b.number - a.number);
+            
+            // Save to GitHub
+            const updatedContent = JSON.stringify(currentContent, null, 2);
+            const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
+            
+            const putResponse = await fetch(getUrl, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: `Update content for Chapter ${number}`,
+                    content: encodedContent,
+                    sha: currentSha,
+                    branch: GITHUB_BRANCH
+                })
+            });
+            
+            if (!putResponse.ok) throw new Error('Failed to save content');
+        }
+        
+        async function deleteChapter() {
+            if (!isEditing || !currentChapterNumber) return;
+            
+            if (!confirm(`Are you sure you want to delete Chapter ${currentChapterNumber}? This cannot be undone!`)) {
+                return;
+            }
+            
+            autoSaveStatus.textContent = '⏳ Deleting...';
+            autoSaveStatus.className = 'auto-save-status saving';
+            
+            try {
+                // Delete from chapters.js
+                const getUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js?ref=${GITHUB_BRANCH}`;
+                
+                const getResponse = await fetch(getUrl, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                const fileData = await getResponse.json();
+                const currentSha = fileData.sha;
+                const currentContent = decodeURIComponent(escape(atob(fileData.content)));
+                
+                // Parse and remove chapter
+                let chapters;
+                eval(currentContent.replace('const chapters = ', 'chapters = '));
+                chapters = chapters.filter(ch => ch.number !== currentChapterNumber);
+                
+                // Generate new content
+                const newContent = '// chapters.js - Your novel chapters data\nconst chapters = ' + JSON.stringify(chapters, null, 4) + ';\n\n// Helper functions\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }';
+                
+                const encodedContent = btoa(unescape(encodeURIComponent(newContent)));
+                
+                await fetch(getUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Delete Chapter ${currentChapterNumber}`,
+                        content: encodedContent,
+                        sha: currentSha,
+                        branch: GITHUB_BRANCH
+                    })
+                });
+                
+                // Delete from chapters-content.json
+                const contentUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json?ref=${GITHUB_BRANCH}`;
+                
+                const contentResponse = await fetch(contentUrl, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                const contentFileData = await contentResponse.json();
+                const contentSha = contentFileData.sha;
+                const currentContent_json = JSON.parse(decodeURIComponent(escape(atob(contentFileData.content))));
+                
+                currentContent_json.chapters = currentContent_json.chapters.filter(ch => ch.number !== currentChapterNumber);
+                
+                const updatedContent = JSON.stringify(currentContent_json, null, 2);
+                const encodedContent_json = btoa(unescape(encodeURIComponent(updatedContent)));
+                
+                await fetch(contentUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Delete content for Chapter ${currentChapterNumber}`,
+                        content: encodedContent_json,
+                        sha: contentSha,
+                        branch: GITHUB_BRANCH
+                    })
+                });
+                
+                autoSaveStatus.textContent = '✅ Deleted!';
+                alert(`Chapter ${currentChapterNumber} deleted successfully!`);
+                window.location.href = 'admin.html';
+                
+            } catch (error) {
+                console.error('Delete error:', error);
+                autoSaveStatus.textContent = '❌ Delete failed';
+                alert('Failed to delete: ' + error.message);
+            }
         }
     </script>
 </body>
