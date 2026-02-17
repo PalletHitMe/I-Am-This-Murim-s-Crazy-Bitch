@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reading - I Am This Murim's Crazy Bitch</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <style>
         * {
             margin: 0;
@@ -138,62 +141,70 @@
         </div>
     </div>
 
-    <script src="chapters.js"></script>
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const chapterNum = parseInt(urlParams.get('id'));
+        function loadChaptersScript() {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'chapters.js?v=' + Date.now();
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
         
-        if (!chapterNum) {
-            window.location.href = 'chapters.html';
-        } else {
-            async function loadChapter() {
-                try {
-                    const chapter = getChapter(chapterNum);
-                    
-                    if (!chapter) {
-                        document.getElementById('chapterTitle').textContent = 'Chapter Not Found';
-                        document.getElementById('chapterContent').innerHTML = '<p>This chapter does not exist.</p>';
-                        return;
-                    }
-                    
-                    document.getElementById('chapterTitle').textContent = `Chapter ${chapter.number}: ${chapter.title}`;
-                    
-                    const response = await fetch('chapters-content.json');
-                    const data = await response.json();
-                    const contentChapter = data.chapters.find(ch => ch.number === chapterNum);
-                    
-                    if (contentChapter && contentChapter.content) {
-                        document.getElementById('chapterContent').innerHTML = contentChapter.content.replace(/\n/g, '<br>');
-                    } else {
-                        document.getElementById('chapterContent').innerHTML = '<p>No content available for this chapter yet.</p>';
-                    }
-                    
-                    const allChapters = getAllChapters();
-                    const currentIndex = allChapters.findIndex(ch => ch.number === chapterNum);
-                    
-                    const prevChapter = allChapters[currentIndex + 1];
-                    const nextChapter = allChapters[currentIndex - 1];
-                    
-                    document.getElementById('prevChapter').href = prevChapter ? `chapter.html?id=${prevChapter.number}` : '#';
-                    document.getElementById('nextChapter').href = nextChapter ? `chapter.html?id=${nextChapter.number}` : '#';
-                    
-                    document.getElementById('prevChapter').style.opacity = prevChapter ? '1' : '0.5';
-                    document.getElementById('prevChapter').style.pointerEvents = prevChapter ? 'auto' : 'none';
-                    
-                    document.getElementById('nextChapter').style.opacity = nextChapter ? '1' : '0.5';
-                    document.getElementById('nextChapter').style.pointerEvents = nextChapter ? 'auto' : 'none';
-                    
-                } catch (error) {
-                    document.getElementById('chapterContent').innerHTML = '<p>Error loading chapter</p>';
-                }
+        async function loadChapter() {
+            await loadChaptersScript();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const chapterNum = parseInt(urlParams.get('id'));
+            
+            if (!chapterNum) {
+                window.location.href = 'chapters.html';
+                return;
             }
             
-            loadChapter();
+            try {
+                const chapter = getChapter(chapterNum);
+                
+                if (!chapter) {
+                    document.getElementById('chapterTitle').textContent = 'Chapter Not Found';
+                    document.getElementById('chapterContent').innerHTML = '<p>This chapter does not exist.</p>';
+                    return;
+                }
+                
+                document.getElementById('chapterTitle').textContent = `Chapter ${chapter.number}: ${chapter.title}`;
+                
+                const response = await fetch('chapters-content.json?t=' + Date.now());
+                const data = await response.json();
+                const contentChapter = data.chapters.find(ch => ch.number === chapterNum);
+                
+                if (contentChapter && contentChapter.content) {
+                    document.getElementById('chapterContent').innerHTML = contentChapter.content.replace(/\n/g, '<br>');
+                } else {
+                    document.getElementById('chapterContent').innerHTML = '<p>No content available for this chapter yet.</p>';
+                }
+                
+                const allChapters = getAllChapters();
+                const currentIndex = allChapters.findIndex(ch => ch.number === chapterNum);
+                
+                const prevChapter = allChapters[currentIndex + 1];
+                const nextChapter = allChapters[currentIndex - 1];
+                
+                document.getElementById('prevChapter').href = prevChapter ? `chapter.html?id=${prevChapter.number}` : '#';
+                document.getElementById('nextChapter').href = nextChapter ? `chapter.html?id=${nextChapter.number}` : '#';
+                
+                document.getElementById('prevChapter').style.opacity = prevChapter ? '1' : '0.5';
+                document.getElementById('prevChapter').style.pointerEvents = prevChapter ? 'auto' : 'none';
+                
+                document.getElementById('nextChapter').style.opacity = nextChapter ? '1' : '0.5';
+                document.getElementById('nextChapter').style.pointerEvents = nextChapter ? 'auto' : 'none';
+                
+            } catch (error) {
+                document.getElementById('chapterContent').innerHTML = '<p>Error loading chapter</p>';
+            }
         }
+        
+        loadChapter();
     </script>
 </body>
 </html>
-
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
