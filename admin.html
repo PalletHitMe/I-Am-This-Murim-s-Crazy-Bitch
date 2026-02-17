@@ -198,9 +198,8 @@
         </div>
     </div>
 
-    <script src="chapters.js"></script>
+    <script src="chapters.js?v=<%= new Date().getTime() %>"></script>
     <script>
-        // Check login
         if (localStorage.getItem('admin_logged_in') !== 'true') {
             window.location.href = 'login.html';
         }
@@ -211,52 +210,45 @@
         }
         
         function loadChapters() {
-            const allChapters = getAllChapters();
-            const list = document.getElementById('chapterList');
-            const totalChapters = document.getElementById('totalChapters');
-            const totalWords = document.getElementById('totalWords');
-            const lastUpdated = document.getElementById('lastUpdated');
-            
-            // Update stats
-            totalChapters.textContent = allChapters.length;
-            
-            // Calculate total words (estimate)
-            const wordCount = allChapters.reduce((sum, ch) => {
-                const titleWords = ch.title.split(' ').length;
-                return sum + titleWords + 100; // Rough estimate
-            }, 0);
-            totalWords.textContent = wordCount;
-            
-            // Get last updated date
-            if (allChapters.length > 0) {
-                lastUpdated.textContent = allChapters[0].date;
-            }
-            
-            // Clear loading
-            list.innerHTML = `
-                <div class="chapter-header">
-                    <div>Number</div>
-                    <div>Title</div>
-                    <div>Date</div>
-                    <div>Actions</div>
-                </div>
-            `;
-            
-            // Add chapters
-            allChapters.forEach(ch => {
-                const div = document.createElement('div');
-                div.className = 'chapter-item';
-                div.innerHTML = `
-                    <div>${ch.number}</div>
-                    <div>${ch.title}</div>
-                    <div>${ch.date}</div>
-                    <div class="chapter-actions">
-                        <button class="action-btn edit-btn" onclick="editChapter(${ch.number})">Edit</button>
-                        <button class="action-btn delete-btn" onclick="deleteChapter(${ch.number})">Delete</button>
+            const script = document.createElement('script');
+            script.src = 'chapters.js?v=' + Date.now();
+            script.onload = function() {
+                const allChapters = getAllChapters();
+                const list = document.getElementById('chapterList');
+                const totalChapters = document.getElementById('totalChapters');
+                const lastUpdated = document.getElementById('lastUpdated');
+                
+                totalChapters.textContent = allChapters.length;
+                
+                if (allChapters.length > 0) {
+                    lastUpdated.textContent = allChapters[0].date;
+                }
+                
+                list.innerHTML = `
+                    <div class="chapter-header">
+                        <div>Number</div>
+                        <div>Title</div>
+                        <div>Date</div>
+                        <div>Actions</div>
                     </div>
                 `;
-                list.appendChild(div);
-            });
+                
+                allChapters.forEach(ch => {
+                    const div = document.createElement('div');
+                    div.className = 'chapter-item';
+                    div.innerHTML = `
+                        <div>${ch.number}</div>
+                        <div>${ch.title}</div>
+                        <div>${ch.date}</div>
+                        <div>
+                            <button class="action-btn edit-btn" onclick="editChapter(${ch.number})">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteChapter(${ch.number})">Delete</button>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+            };
+            document.head.appendChild(script);
         }
         
         function editChapter(number) {
@@ -264,8 +256,8 @@
         }
         
         function deleteChapter(number) {
-            if (confirm(`Delete Chapter ${number}? This cannot be undone.`)) {
-                alert('Delete functionality will be implemented in the next step!');
+            if (confirm(`Delete Chapter ${number}?`)) {
+                window.location.href = `editor.html?edit=${number}&delete=true`;
             }
         }
         
