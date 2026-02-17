@@ -221,6 +221,7 @@
                 `).join('');
             }
         } catch (error) {
+            console.error('Error:', error);
             recentList.innerHTML = '<li class="loading">Error loading chapters</li>';
         }
     </script>
