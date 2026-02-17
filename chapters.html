@@ -45,6 +45,7 @@
             padding: 8px 16px;
             border: 1px solid #ff6b6b;
             border-radius: 5px;
+            transition: all 0.3s;
         }
         
         .home-link:hover {
@@ -58,20 +59,27 @@
         
         .chapter-item {
             margin-bottom: 1rem;
+            padding: 0.5rem 0;
             border-bottom: 1px solid #444;
         }
         
         .chapter-item a {
             color: white;
             text-decoration: none;
-            font-size: 1.2rem;
-            padding: 1rem 0;
-            display: block;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .chapter-item a:hover {
             color: #ff6b6b;
             padding-left: 10px;
+        }
+        
+        .chapter-date {
+            color: #666;
+            font-size: 0.9rem;
         }
         
         .stats {
@@ -90,10 +98,17 @@
             color: #666;
             text-decoration: none;
             font-size: 0.9rem;
+            z-index: 1000;
         }
         
         .admin-link:hover {
             color: #ff6b6b;
+        }
+        
+        .loading {
+            color: #888;
+            text-align: center;
+            padding: 3rem;
         }
     </style>
 </head>
@@ -106,22 +121,43 @@
             <a href="index.html" class="home-link">← Back to Home</a>
         </div>
         
-        <ul class="chapter-list" id="chapterList">
-            <li class="chapter-item"><a href="#">Chapter 1: The Beginning</a></li>
-            <li class="chapter-item"><a href="#">Chapter 2: Awakening</a></li>
-            <li class="chapter-item"><a href="#">Chapter 3: First Steps</a></li>
-            <li class="chapter-item"><a href="#">Chapter 4: The Tournament</a></li>
-            <li class="chapter-item"><a href="#">Chapter 5: Secrets Revealed</a></li>
-            <li class="chapter-item"><a href="#">Chapter 6: The Final Battle</a></li>
-            <li class="chapter-item"><a href="#">Chapter 7: New Beginning</a></li>
-            <li class="chapter-item"><a href="#">Chapter 8: Allies and Enemies</a></li>
-            <li class="chapter-item"><a href="#">Chapter 9: The Prophecy</a></li>
-            <li class="chapter-item"><a href="#">Chapter 10: Darkness Falls</a></li>
+        <ul class="chapter-list" id="allChapters">
+            <li class="loading">Loading chapters...</li>
         </ul>
         
-        <div class="stats">
-            📚 10 chapters published
+        <div class="stats" id="stats">
+            Loading stats...
         </div>
     </div>
+
+    <script src="chapters.js"></script>
+    <script>
+        // Load all chapters (newest first)
+        const allList = document.getElementById('allChapters');
+        const statsDiv = document.getElementById('stats');
+        
+        try {
+            const allChapters = getAllChapters();
+            
+            if (allChapters.length === 0) {
+                allList.innerHTML = '<li class="loading">No chapters yet. Check back soon!</li>';
+                statsDiv.innerHTML = '📚 0 chapters published';
+            } else {
+                allList.innerHTML = allChapters.map(ch => `
+                    <li class="chapter-item">
+                        <a href="chapter.html?id=${ch.number}">
+                            <span>Chapter ${ch.number}: ${ch.title}</span>
+                            <span class="chapter-date">${ch.date}</span>
+                        </a>
+                    </li>
+                `).join('');
+                
+                statsDiv.innerHTML = `📚 ${allChapters.length} chapters published`;
+            }
+        } catch (error) {
+            allList.innerHTML = '<li class="loading">Error loading chapters</li>';
+            statsDiv.innerHTML = 'Error loading stats';
+        }
+    </script>
 </body>
 </html>
