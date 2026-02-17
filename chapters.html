@@ -146,31 +146,41 @@
 
     <script src="chapters.js"></script>
     <script>
-        const allList = document.getElementById('allChapters');
-        const statsDiv = document.getElementById('stats');
-        
-        try {
-            const allChapters = getAllChapters();
-            
-            if (allChapters.length === 0) {
-                allList.innerHTML = '<li class="loading">No chapters yet. Check back soon!</li>';
-                statsDiv.innerHTML = '📚 0 chapters published';
-            } else {
-                allList.innerHTML = allChapters.map(ch => `
-                    <li class="chapter-item">
-                        <a href="chapter.html?id=${ch.number}">
-                            <span>Chapter ${ch.number}: ${ch.title}</span>
-                            <span class="chapter-date">${ch.date}</span>
-                        </a>
-                    </li>
-                `).join('');
+        // Load chapters with cache buster
+        function loadChapters() {
+            const script = document.createElement('script');
+            script.src = 'chapters.js?v=' + Date.now();
+            script.onload = function() {
+                const allList = document.getElementById('allChapters');
+                const statsDiv = document.getElementById('stats');
                 
-                statsDiv.innerHTML = `📚 ${allChapters.length} chapters published`;
-            }
-        } catch (error) {
-            allList.innerHTML = '<li class="loading">Error loading chapters</li>';
-            statsDiv.innerHTML = 'Error loading stats';
+                try {
+                    const allChapters = getAllChapters();
+                    
+                    if (allChapters.length === 0) {
+                        allList.innerHTML = '<li class="loading">No chapters yet. Check back soon!</li>';
+                        statsDiv.innerHTML = '📚 0 chapters published';
+                    } else {
+                        allList.innerHTML = allChapters.map(ch => `
+                            <li class="chapter-item">
+                                <a href="chapter.html?id=${ch.number}">
+                                    <span>Chapter ${ch.number}: ${ch.title}</span>
+                                    <span class="chapter-date">${ch.date}</span>
+                                </a>
+                            </li>
+                        `).join('');
+                        
+                        statsDiv.innerHTML = `📚 ${allChapters.length} chapters published`;
+                    }
+                } catch (error) {
+                    allList.innerHTML = '<li class="loading">Error loading chapters</li>';
+                    statsDiv.innerHTML = 'Error loading stats';
+                }
+            };
+            document.head.appendChild(script);
         }
+        
+        loadChapters();
     </script>
 </body>
 </html>
