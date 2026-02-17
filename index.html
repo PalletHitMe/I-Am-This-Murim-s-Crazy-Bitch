@@ -22,8 +22,34 @@
         }
         
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
+        }
+        
+        /* New cover section with image and text side by side */
+        .cover-section {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+        
+        .cover-image {
+            flex: 0 0 300px;
+        }
+        
+        .cover-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ff6b6b;
+        }
+        
+        .cover-text {
+            flex: 1;
+            min-width: 300px;
         }
         
         h1 {
@@ -36,15 +62,15 @@
         .author {
             color: #ccc;
             font-style: italic;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             font-size: 1.1rem;
         }
         
         .description {
             color: #ddd;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             font-size: 1.2rem;
-            max-width: 600px;
+            line-height: 1.8;
         }
         
         .read-btn {
@@ -55,7 +81,6 @@
             padding: 12px 30px;
             border-radius: 5px;
             font-weight: bold;
-            margin-bottom: 3rem;
             transition: background-color 0.3s;
         }
         
@@ -97,10 +122,30 @@
             color: #666;
             text-decoration: none;
             font-size: 0.9rem;
+            z-index: 1000;
         }
         
         .admin-link:hover {
             color: #ff6b6b;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .cover-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+            }
+            
+            .cover-image {
+                flex: 0 0 auto;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
         }
     </style>
 </head>
@@ -108,12 +153,22 @@
     <a href="login.html" class="admin-link">Admin</a>
     
     <div class="container">
-        <h1>I Am This Murim's Crazy Bitch</h1>
-        <p class="author">By 정통무협조와요</p>
-        <p class="description">I became a female character in a martial arts game I've never played before. But I know nothing about martial arts.</p>
+        <!-- Cover section with image and text side by side -->
+        <div class="cover-section">
+            <div class="cover-image">
+                <img src="cover.jpg" alt="I Am This Murim's Crazy Bitch Cover">
+            </div>
+            
+            <div class="cover-text">
+                <h1>I Am This Murim's Crazy Bitch</h1>
+                <p class="author">By 정통무협조와요</p>
+                <p class="description">I became a female character in a martial arts game I've never played before. But I know nothing about martial arts.</p>
+                
+                <a href="chapters.html" class="read-btn">Start Reading</a>
+            </div>
+        </div>
         
-        <a href="chapters.html" class="read-btn">Start Reading</a>
-        
+        <!-- Recent Chapters Section -->
         <h2>Recent Chapters</h2>
         <ul class="chapters" id="chapters">
             <li><a href="#">No chapters yet. Check back soon!</a></li>
