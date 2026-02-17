@@ -34,11 +34,6 @@
             border-bottom: 2px solid #ff6b6b;
         }
         
-        h1 {
-            color: #ff6b6b;
-            font-size: 2rem;
-        }
-        
         .nav-links {
             display: flex;
             gap: 1rem;
@@ -84,24 +79,6 @@
             border-top: 1px solid #444;
         }
         
-        .debug-info {
-            margin-top: 2rem;
-            padding: 1rem;
-            background-color: #1e1e1e;
-            border: 1px solid #ff6b6b;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            color: #ff6b6b;
-            display: none;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: #666;
-        }
-        
         .admin-link {
             position: fixed;
             top: 1rem;
@@ -110,18 +87,21 @@
             text-decoration: none;
             font-size: 0.9rem;
             z-index: 1000;
+            background: #3a3a3a;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #444;
         }
         
         .admin-link:hover {
             color: #ff6b6b;
+            border-color: #ff6b6b;
         }
         
-        .error-message {
-            color: #ff6b6b;
-            padding: 2rem;
+        .loading {
             text-align: center;
-            background-color: #3a3a3a;
-            border-radius: 5px;
+            padding: 3rem;
+            color: #666;
         }
         
         @media (max-width: 768px) {
@@ -156,63 +136,40 @@
             <a href="#" id="prevChapter" class="nav-link">← Previous</a>
             <a href="#" id="nextChapter" class="nav-link">Next →</a>
         </div>
-        
-        <div class="debug-info" id="debugInfo">
-            Debug info will appear here
-        </div>
     </div>
 
     <script src="chapters.js"></script>
     <script>
-        // Show debug info
-        function showDebug(message) {
-            const debug = document.getElementById('debugInfo');
-            debug.style.display = 'block';
-            debug.innerHTML += '<br>' + message;
-        }
-        
-        // Get chapter number from URL
         const urlParams = new URLSearchParams(window.location.search);
         const chapterNum = parseInt(urlParams.get('id'));
         
-        showDebug('Chapter number from URL: ' + chapterNum);
-        
         if (!chapterNum) {
-            document.getElementById('chapterTitle').textContent = 'No Chapter Selected';
-            document.getElementById('chapterContent').innerHTML = '<div class="error-message">No chapter ID provided. <a href="chapters.html">Go to chapters list</a></div>';
+            window.location.href = 'chapters.html';
         } else {
-            // Load chapter data
             async function loadChapter() {
                 try {
-                    showDebug('Getting chapter metadata...');
                     const chapter = getChapter(chapterNum);
                     
                     if (!chapter) {
-                        showDebug('Chapter not found in metadata');
                         document.getElementById('chapterTitle').textContent = 'Chapter Not Found';
-                        document.getElementById('chapterContent').innerHTML = '<div class="error-message">Chapter ' + chapterNum + ' does not exist.</div>';
+                        document.getElementById('chapterContent').innerHTML = '<p>This chapter does not exist.</p>';
                         return;
                     }
                     
-                    showDebug('Found chapter: ' + chapter.title);
                     document.getElementById('chapterTitle').textContent = `Chapter ${chapter.number}: ${chapter.title}`;
                     
-                    // Load content from JSON
-                    showDebug('Fetching content from chapters-content.json...');
-                    const content = await getChapterContent(chapterNum);
-                    showDebug('Content received, length: ' + content.length);
+                    const response = await fetch('chapters-content.json');
+                    const data = await response.json();
+                    const contentChapter = data.chapters.find(ch => ch.number === chapterNum);
                     
-                    if (content && content !== 'Chapter content coming soon...' && content !== 'Error loading content. Please try again later.') {
-                        document.getElementById('chapterContent').innerHTML = content.replace(/\n/g, '<br>');
+                    if (contentChapter && contentChapter.content) {
+                        document.getElementById('chapterContent').innerHTML = contentChapter.content.replace(/\n/g, '<br>');
                     } else {
-                        document.getElementById('chapterContent').innerHTML = '<div class="error-message">No content available for this chapter yet. Please add content in the editor.</div>';
+                        document.getElementById('chapterContent').innerHTML = '<p>No content available for this chapter yet.</p>';
                     }
                     
-                    // Update navigation
                     const allChapters = getAllChapters();
                     const currentIndex = allChapters.findIndex(ch => ch.number === chapterNum);
-                    
-                    showDebug('Current index: ' + currentIndex);
                     
                     const prevChapter = allChapters[currentIndex + 1];
                     const nextChapter = allChapters[currentIndex - 1];
@@ -227,9 +184,7 @@
                     document.getElementById('nextChapter').style.pointerEvents = nextChapter ? 'auto' : 'none';
                     
                 } catch (error) {
-                    console.error('Error:', error);
-                    showDebug('ERROR: ' + error.message);
-                    document.getElementById('chapterContent').innerHTML = '<div class="error-message">Error loading chapter: ' + error.message + '</div>';
+                    document.getElementById('chapterContent').innerHTML = '<p>Error loading chapter</p>';
                 }
             }
             
