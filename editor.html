@@ -193,11 +193,6 @@
             color: #4CAF50;
         }
         
-        .status-message {
-            margin-left: 1rem;
-            font-size: 0.9rem;
-        }
-        
         .loading {
             text-align: center;
             padding: 3rem;
@@ -231,7 +226,7 @@
         </div>
         
         <div class="chapter-title-input">
-            <input type="text" id="chapterTitle" placeholder="Chapter Title (e.g., 'The Final Battle')">
+            <input type="text" id="chapterTitle" placeholder="Chapter Title">
         </div>
         
         <div class="chapter-content-input">
@@ -303,8 +298,7 @@
             const data = {
                 number: chapterNumber.value,
                 title: chapterTitle.value,
-                content: chapterContent.value,
-                timestamp: new Date().toISOString()
+                content: chapterContent.value
             };
             
             localStorage.setItem('editor_autosave', JSON.stringify(data));
@@ -333,7 +327,7 @@
             if (editNum) {
                 await loadChapterForEdit(parseInt(editNum));
             } else {
-                // Set next chapter number for new chapters
+                // Set next chapter number
                 const allChapters = getAllChapters();
                 if (allChapters.length > 0) {
                     chapterNumber.value = allChapters[0].number + 1;
@@ -389,160 +383,8 @@
             const today = new Date().toISOString().split('T')[0];
             
             try {
-                // Save to chapters.js (metadata)
-                await saveMetadata(number, title, today);
-                
-                // Save to chapters-content.json (content)
-                await saveContent(number, content);
-                
-                // Clear auto-save
-                localStorage.removeItem('editor_autosave');
-                
-                autoSaveStatus.textContent = '✅ Published!';
-                autoSaveStatus.className = 'auto-save-status saved';
-                
-                alert(`Chapter ${number} published successfully!`);
-                window.location.href = 'admin.html';
-                
-            } catch (error) {
-                console.error('Save error:', error);
-                autoSaveStatus.textContent = '❌ Publish failed';
-                autoSaveStatus.className = 'auto-save-status saving';
-                alert('Failed to publish: ' + error.message);
-            }
-        }
-        
-        async function saveMetadata(number, title, date) {
-            // Get current chapters.js
-            const getUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js?ref=${GITHUB_BRANCH}`;
-            
-            const getResponse = await fetch(getUrl, {
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            
-            if (!getResponse.ok) throw new Error('Failed to get chapters.js');
-            
-            const fileData = await getResponse.json();
-            const currentSha = fileData.sha;
-            const currentContent = decodeURIComponent(escape(atob(fileData.content)));
-            
-            // Parse and update chapters array
-            let chapters;
-            eval(currentContent.replace('const chapters = ', 'chapters = '));
-            
-            if (isEditing) {
-                // Update existing chapter
-                const index = chapters.findIndex(ch => ch.number === number);
-                if (index !== -1) {
-                    chapters[index] = { number, title, date };
-                }
-            } else {
-                // Add new chapter
-                chapters.unshift({ number, title, date });
-            }
-            
-            // Sort by number descending
-            chapters.sort((a, b) => b.number - a.number);
-            
-            // Generate new content
-            const newContent = '// chapters.js - Your novel chapters data\nconst chapters = ' + JSON.stringify(chapters, null, 4) + ';\n\n// Helper functions\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }';
-            
-            // Save to GitHub
-            const encodedContent = btoa(unescape(encodeURIComponent(newContent)));
-            
-            const putResponse = await fetch(getUrl, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: isEditing ? `Update Chapter ${number}: ${title}` : `Add Chapter ${number}: ${title}`,
-                    content: encodedContent,
-                    sha: currentSha,
-                    branch: GITHUB_BRANCH
-                })
-            });
-            
-            if (!putResponse.ok) throw new Error('Failed to save metadata');
-        }
-        
-        async function saveContent(number, content) {
-            // Get current content file
-            const getUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json?ref=${GITHUB_BRANCH}`;
-            
-            const getResponse = await fetch(getUrl, {
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            
-            if (!getResponse.ok) throw new Error('Failed to get content file');
-            
-            const fileData = await getResponse.json();
-            const currentSha = fileData.sha;
-            const currentContent = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-            
-            // Update or add chapter content
-            const index = currentContent.chapters.findIndex(ch => ch.number === number);
-            const newChapter = { number, content };
-            
-            if (index !== -1) {
-                currentContent.chapters[index] = newChapter;
-            } else {
-                currentContent.chapters.push(newChapter);
-            }
-            
-            // Sort by number descending
-            currentContent.chapters.sort((a, b) => b.number - a.number);
-            
-            // Save to GitHub
-            const updatedContent = JSON.stringify(currentContent, null, 2);
-            const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
-            
-            const putResponse = await fetch(getUrl, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: `Update content for Chapter ${number}`,
-                    content: encodedContent,
-                    sha: currentSha,
-                    branch: GITHUB_BRANCH
-                })
-            });
-            
-            if (!putResponse.ok) throw new Error('Failed to save content');
-        }
-        
-        async function deleteChapter() {
-            if (!isEditing || !currentChapterNumber) {
-                alert('No chapter selected for deletion');
-                return;
-            }
-            
-            const chapterToDelete = currentChapterNumber;
-            
-            if (!confirm(`⚠️ ARE YOU SURE?\n\nYou are about to delete Chapter ${chapterToDelete}.\n\nThis will permanently remove:\n- Chapter metadata from chapters.js\n- Chapter content from chapters-content.json\n\nThis action CANNOT be undone!`)) {
-                return;
-            }
-            
-            autoSaveStatus.textContent = '⏳ Deleting...';
-            autoSaveStatus.className = 'auto-save-status saving';
-            deleteBtn.disabled = true;
-            
-            try {
-                // Step 1: Delete from chapters.js
-                const chaptersUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js?ref=${GITHUB_BRANCH}`;
-                
+                // Get current chapters.js
+                const chaptersUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js`;
                 const chaptersResponse = await fetch(chaptersUrl, {
                     headers: {
                         'Authorization': `token ${GITHUB_TOKEN}`,
@@ -550,28 +392,37 @@
                     }
                 });
                 
-                if (!chaptersResponse.ok) throw new Error('Failed to fetch chapters.js');
+                if (!chaptersResponse.ok) {
+                    throw new Error('Failed to fetch chapters.js');
+                }
                 
                 const chaptersData = await chaptersResponse.json();
                 const chaptersSha = chaptersData.sha;
-                const chaptersContent = decodeURIComponent(escape(atob(chaptersData.content)));
+                const chaptersContent = atob(chaptersData.content);
                 
-                // Parse and remove chapter
-                let chapters;
-                eval(chaptersContent.replace('const chapters = ', 'chapters = '));
-                const originalLength = chapters.length;
-                chapters = chapters.filter(ch => ch.number !== chapterToDelete);
+                // Parse current chapters
+                let chaptersArray;
+                eval(chaptersContent.replace('const chapters = ', 'chaptersArray = '));
                 
-                if (chapters.length === originalLength) {
-                    throw new Error('Chapter not found in chapters.js');
+                if (isEditing) {
+                    // Update existing
+                    const index = chaptersArray.findIndex(ch => ch.number === number);
+                    if (index !== -1) {
+                        chaptersArray[index] = { number, title, date: today };
+                    }
+                } else {
+                    // Add new
+                    chaptersArray.unshift({ number, title, date: today });
                 }
                 
-                // Generate new content
-                const newChaptersContent = '// chapters.js - Your novel chapters data\nconst chapters = ' + JSON.stringify(chapters, null, 4) + ';\n\n// Helper functions\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }';
+                // Sort
+                chaptersArray.sort((a, b) => b.number - a.number);
                 
-                const encodedChapters = btoa(unescape(encodeURIComponent(newChaptersContent)));
+                // Create new content
+                const newChaptersContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chaptersArray, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
                 
-                const chaptersPutResponse = await fetch(chaptersUrl, {
+                // Save to GitHub
+                const saveChaptersResponse = await fetch(chaptersUrl, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `token ${GITHUB_TOKEN}`,
@@ -579,18 +430,19 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: `Delete Chapter ${chapterToDelete}`,
-                        content: encodedChapters,
+                        message: isEditing ? `Update Chapter ${number}` : `Add Chapter ${number}`,
+                        content: btoa(unescape(encodeURIComponent(newChaptersContent))),
                         sha: chaptersSha,
                         branch: GITHUB_BRANCH
                     })
                 });
                 
-                if (!chaptersPutResponse.ok) throw new Error('Failed to update chapters.js');
+                if (!saveChaptersResponse.ok) {
+                    throw new Error('Failed to save chapters.js');
+                }
                 
-                // Step 2: Delete from chapters-content.json
-                const contentUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json?ref=${GITHUB_BRANCH}`;
-                
+                // Now handle content
+                const contentUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json`;
                 const contentResponse = await fetch(contentUrl, {
                     headers: {
                         'Authorization': `token ${GITHUB_TOKEN}`,
@@ -598,20 +450,27 @@
                     }
                 });
                 
-                if (!contentResponse.ok) throw new Error('Failed to fetch chapters-content.json');
+                if (!contentResponse.ok) {
+                    throw new Error('Failed to fetch content file');
+                }
                 
                 const contentData = await contentResponse.json();
                 const contentSha = contentData.sha;
-                const contentJson = JSON.parse(decodeURIComponent(escape(atob(contentData.content))));
+                const contentJson = JSON.parse(atob(contentData.content));
                 
-                // Remove chapter content
-                contentJson.chapters = contentJson.chapters.filter(ch => ch.number !== chapterToDelete);
+                // Update content
+                const contentIndex = contentJson.chapters.findIndex(ch => ch.number === number);
+                if (contentIndex !== -1) {
+                    contentJson.chapters[contentIndex].content = content;
+                } else {
+                    contentJson.chapters.push({ number, content });
+                }
                 
-                // Save updated content
-                const updatedContent = JSON.stringify(contentJson, null, 2);
-                const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
+                // Sort
+                contentJson.chapters.sort((a, b) => b.number - a.number);
                 
-                const contentPutResponse = await fetch(contentUrl, {
+                // Save content
+                const saveContentResponse = await fetch(contentUrl, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `token ${GITHUB_TOKEN}`,
@@ -619,30 +478,114 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: `Delete content for Chapter ${chapterToDelete}`,
-                        content: encodedContent,
+                        message: `Update content for Chapter ${number}`,
+                        content: btoa(unescape(encodeURIComponent(JSON.stringify(contentJson, null, 2)))),
                         sha: contentSha,
                         branch: GITHUB_BRANCH
                     })
                 });
                 
-                if (!contentPutResponse.ok) throw new Error('Failed to update chapters-content.json');
+                if (!saveContentResponse.ok) {
+                    throw new Error('Failed to save content');
+                }
+                
+                localStorage.removeItem('editor_autosave');
+                autoSaveStatus.textContent = '✅ Published!';
+                alert(`Chapter ${number} published!`);
+                window.location.href = 'admin.html';
+                
+            } catch (error) {
+                console.error('Save error:', error);
+                autoSaveStatus.textContent = '❌ Failed';
+                alert('Error: ' + error.message);
+            }
+        }
+        
+        async function deleteChapter() {
+            if (!isEditing || !currentChapterNumber) {
+                alert('No chapter selected');
+                return;
+            }
+            
+            if (!confirm(`⚠️ Delete Chapter ${currentChapterNumber}? This cannot be undone!`)) {
+                return;
+            }
+            
+            autoSaveStatus.textContent = '⏳ Deleting...';
+            autoSaveStatus.className = 'auto-save-status saving';
+            
+            try {
+                // Delete from chapters.js
+                const chaptersUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js`;
+                const chaptersResponse = await fetch(chaptersUrl, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                const chaptersData = await chaptersResponse.json();
+                const chaptersSha = chaptersData.sha;
+                const chaptersContent = atob(chaptersData.content);
+                
+                let chaptersArray;
+                eval(chaptersContent.replace('const chapters = ', 'chaptersArray = '));
+                chaptersArray = chaptersArray.filter(ch => ch.number !== currentChapterNumber);
+                
+                const newChaptersContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chaptersArray, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
+                
+                await fetch(chaptersUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Delete Chapter ${currentChapterNumber}`,
+                        content: btoa(unescape(encodeURIComponent(newChaptersContent))),
+                        sha: chaptersSha,
+                        branch: GITHUB_BRANCH
+                    })
+                });
+                
+                // Delete from content
+                const contentUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json`;
+                const contentResponse = await fetch(contentUrl, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                const contentData = await contentResponse.json();
+                const contentSha = contentData.sha;
+                const contentJson = JSON.parse(atob(contentData.content));
+                contentJson.chapters = contentJson.chapters.filter(ch => ch.number !== currentChapterNumber);
+                
+                await fetch(contentUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Delete content for Chapter ${currentChapterNumber}`,
+                        content: btoa(unescape(encodeURIComponent(JSON.stringify(contentJson, null, 2)))),
+                        sha: contentSha,
+                        branch: GITHUB_BRANCH
+                    })
+                });
                 
                 autoSaveStatus.textContent = '✅ Deleted!';
-                autoSaveStatus.className = 'auto-save-status saved';
-                
-                // Clear auto-save
-                localStorage.removeItem('editor_autosave');
-                
-                alert(`✅ Chapter ${chapterToDelete} deleted successfully!`);
+                alert(`Chapter ${currentChapterNumber} deleted!`);
                 window.location.href = 'admin.html';
                 
             } catch (error) {
                 console.error('Delete error:', error);
-                autoSaveStatus.textContent = '❌ Delete failed';
-                autoSaveStatus.className = 'auto-save-status saving';
-                deleteBtn.disabled = false;
-                alert('Failed to delete: ' + error.message);
+                autoSaveStatus.textContent = '❌ Failed';
+                alert('Delete failed: ' + error.message);
             }
         }
     </script>
