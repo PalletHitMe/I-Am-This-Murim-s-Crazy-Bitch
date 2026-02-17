@@ -89,27 +89,71 @@
             color: #666;
         }
         
-        .chapter-content-input {
-            margin-bottom: 2rem;
+        /* Toolbar for formatting buttons */
+        .editor-toolbar {
+            background-color: #3a3a3a;
+            border: 1px solid #444;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            padding: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
         }
         
-        .chapter-content-input textarea {
+        .toolbar-btn {
+            background-color: #2c2c2c;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .toolbar-btn:hover {
+            background-color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+        
+        .toolbar-btn.active {
+            background-color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+        
+        /* Rich text editor area - replaces textarea */
+        .rich-editor {
             width: 100%;
             min-height: 60vh;
             padding: 1.5rem;
             background-color: #3a3a3a;
             border: 1px solid #444;
+            border-radius: 0 0 8px 8px;
             color: white;
             font-size: 1.2rem;
             line-height: 1.8;
             font-family: 'Georgia', serif;
-            resize: vertical;
             outline: none;
-            border-radius: 5px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
         
-        .chapter-content-input textarea:focus {
+        .rich-editor:focus {
             border-color: #ff6b6b;
+        }
+        
+        /* Style for formatted text */
+        .rich-editor b, .rich-editor strong {
+            color: #ff6b6b;
+        }
+        
+        .rich-editor i, .rich-editor em {
+            color: #ff9b9b;
+        }
+        
+        .rich-editor u {
+            text-decoration-color: #ff6b6b;
         }
         
         .editor-footer {
@@ -216,6 +260,10 @@
                 width: 100%;
                 justify-content: center;
             }
+            
+            .editor-toolbar {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
@@ -235,9 +283,19 @@
             <input type="text" id="chapterTitle" placeholder="Chapter Title">
         </div>
         
-        <div class="chapter-content-input">
-            <textarea id="chapterContent" placeholder="Write your chapter here..."></textarea>
+        <!-- Formatting Toolbar -->
+        <div class="editor-toolbar">
+            <button class="toolbar-btn" onclick="formatText('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
+            <button class="toolbar-btn" onclick="formatText('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
+            <button class="toolbar-btn" onclick="formatText('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
         </div>
+        
+        <!-- Rich Text Editor (replaces textarea) -->
+        <div
+            id="chapterContent"
+            class="rich-editor"
+            contenteditable="true"
+            data-placeholder="Write your chapter here..."></div>
         
         <div id="errorDisplay" class="error-message" style="display: none;"></div>
     </div>
@@ -286,6 +344,67 @@
         let currentChapterNumber = null;
         let isEditing = false;
         
+        // Format text function
+        function formatText(command) {
+            document.execCommand(command, false, null);
+            chapterContent.focus();
+            updateWordCount();
+            triggerAutoSave();
+        }
+        
+        // Handle keyboard shortcuts for formatting [citation:2]
+        chapterContent.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key.toLowerCase()) {
+                    case 'b':
+                        e.preventDefault();
+                        formatText('bold');
+                        break;
+                    case 'i':
+                        e.preventDefault();
+                        formatText('italic');
+                        break;
+                    case 'u':
+                        e.preventDefault();
+                        formatText('underline');
+                        break;
+                }
+            }
+        });
+        
+        // Handle paste to preserve formatting [citation:1]
+        chapterContent.addEventListener('paste', function(e) {
+            e.preventDefault();
+            
+            // Get HTML content from clipboard
+            const html = e.clipboardData.getData('text/html');
+            const text = e.clipboardData.getData('text/plain');
+            
+            if (html) {
+                // Insert HTML with formatting preserved
+                document.execCommand('insertHTML', false, html);
+            } else if (text) {
+                // Insert plain text if no HTML available
+                document.execCommand('insertText', false, text);
+            }
+            
+            updateWordCount();
+            triggerAutoSave();
+        });
+        
+        // Word counter (counts words in text content, ignoring HTML)
+        function updateWordCount() {
+            const text = chapterContent.innerText || chapterContent.textContent;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            wordCount.textContent = words + ' words';
+        }
+        
+        // Convert HTML to plain text for word count on input
+        chapterContent.addEventListener('input', function() {
+            updateWordCount();
+            triggerAutoSave();
+        });
+        
         function showError(msg) {
             errorDisplay.style.display = 'block';
             errorDisplay.textContent = msg;
@@ -293,16 +412,6 @@
                 errorDisplay.style.display = 'none';
             }, 5000);
         }
-        
-        // Word counter
-        chapterContent.addEventListener('input', function() {
-            const words = this.value.trim().split(/\s+/).filter(w => w.length > 0).length;
-            wordCount.textContent = words + ' words';
-            triggerAutoSave();
-        });
-        
-        chapterTitle.addEventListener('input', triggerAutoSave);
-        chapterNumber.addEventListener('input', triggerAutoSave);
         
         function triggerAutoSave() {
             autoSaveStatus.textContent = '⏳ Unsaved changes...';
@@ -318,7 +427,7 @@
             const data = {
                 number: chapterNumber.value,
                 title: chapterTitle.value,
-                content: chapterContent.value
+                content: chapterContent.innerHTML // Save HTML content
             };
             
             localStorage.setItem('editor_autosave', JSON.stringify(data));
@@ -349,7 +458,7 @@
                 if (confirm('Found auto-saved draft. Load it?')) {
                     chapterNumber.value = data.number;
                     chapterTitle.value = data.title;
-                    chapterContent.value = data.content;
+                    chapterContent.innerHTML = data.content; // Load HTML content
                     updateWordCount();
                     return;
                 }
@@ -382,7 +491,13 @@
                 const data = await response.json();
                 const contentChapter = data.chapters.find(ch => ch.number === num);
                 if (contentChapter) {
-                    chapterContent.value = contentChapter.content;
+                    // Check if content contains HTML
+                    const content = contentChapter.content;
+                    if (content.startsWith('<') && content.endsWith('>')) {
+                        chapterContent.innerHTML = content; // It's HTML
+                    } else {
+                        chapterContent.innerText = content; // It's plain text
+                    }
                     updateWordCount();
                 }
             } catch (error) {
@@ -390,17 +505,12 @@
             }
         }
         
-        function updateWordCount() {
-            const words = chapterContent.value.trim().split(/\s+/).filter(w => w.length > 0).length;
-            wordCount.textContent = words + ' words';
-        }
-        
         async function saveChapter() {
             const number = parseInt(chapterNumber.value);
             const title = chapterTitle.value.trim();
-            const content = chapterContent.value.trim();
+            const content = chapterContent.innerHTML.trim(); // Save HTML content
             
-            if (!title || !content) {
+            if (!title || !content || content === '<br>') {
                 alert('Please add both a title and content');
                 return;
             }
