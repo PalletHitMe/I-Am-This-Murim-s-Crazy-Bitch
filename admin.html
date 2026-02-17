@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Murim Novel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #2c2c2c;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #ff6b6b;
+        }
+        
+        h1 {
+            color: #ff6b6b;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            background-color: #3a3a3a;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: 1px solid #444;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background-color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+        
+        .btn-primary {
+            background-color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+        
+        .btn-primary:hover {
+            background-color: #ff5252;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: #3a3a3a;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            color: #ccc;
+            margin-top: 0.5rem;
+        }
+        
+        .chapter-list {
+            background-color: #3a3a3a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .chapter-header {
+            display: grid;
+            grid-template-columns: 80px 1fr 150px 100px;
+            padding: 1rem;
+            background-color: #2c2c2c;
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+        
+        .chapter-item {
+            display: grid;
+            grid-template-columns: 80px 1fr 150px 100px;
+            padding: 1rem;
+            border-bottom: 1px solid #444;
+            align-items: center;
+        }
+        
+        .chapter-item:hover {
+            background-color: #444;
+        }
+        
+        .chapter-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            padding: 0.25rem 0.5rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .edit-btn {
+            background-color: #4a90e2;
+            color: white;
+        }
+        
+        .delete-btn {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        
+        .logout {
+            color: #666;
+            text-decoration: none;
+        }
+        
+        .logout:hover {
+            color: #ff6b6b;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Admin Dashboard</h1>
+            <div class="nav-buttons">
+                <a href="editor.html" class="btn btn-primary">✏️ New Chapter</a>
+                <a href="index.html" class="btn">🏠 View Site</a>
+                <a href="#" onclick="logout()" class="btn logout">🚪 Logout</a>
+            </div>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalChapters">0</div>
+                <div class="stat-label">Total Chapters</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalWords">0</div>
+                <div class="stat-label">Total Words</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="lastUpdated">-</div>
+                <div class="stat-label">Last Updated</div>
+            </div>
+        </div>
+        
+        <h2 style="margin-bottom: 1rem; color: #ff6b6b;">Manage Chapters</h2>
+        
+        <div class="chapter-list" id="chapterList">
+            <div class="chapter-header">
+                <div>Number</div>
+                <div>Title</div>
+                <div>Date</div>
+                <div>Actions</div>
+            </div>
+            <div class="loading">Loading chapters...</div>
+        </div>
+    </div>
+
+    <script src="chapters.js"></script>
+    <script>
+        // Check login
+        if (localStorage.getItem('admin_logged_in') !== 'true') {
+            window.location.href = 'login.html';
+        }
+        
+        function logout() {
+            localStorage.removeItem('admin_logged_in');
+            window.location.href = 'index.html';
+        }
+        
+        function loadChapters() {
+            const allChapters = getAllChapters();
+            const list = document.getElementById('chapterList');
+            const totalChapters = document.getElementById('totalChapters');
+            const totalWords = document.getElementById('totalWords');
+            const lastUpdated = document.getElementById('lastUpdated');
+            
+            // Update stats
+            totalChapters.textContent = allChapters.length;
+            
+            // Calculate total words (estimate)
+            const wordCount = allChapters.reduce((sum, ch) => {
+                const titleWords = ch.title.split(' ').length;
+                return sum + titleWords + 100; // Rough estimate
+            }, 0);
+            totalWords.textContent = wordCount;
+            
+            // Get last updated date
+            if (allChapters.length > 0) {
+                lastUpdated.textContent = allChapters[0].date;
+            }
+            
+            // Clear loading
+            list.innerHTML = `
+                <div class="chapter-header">
+                    <div>Number</div>
+                    <div>Title</div>
+                    <div>Date</div>
+                    <div>Actions</div>
+                </div>
+            `;
+            
+            // Add chapters
+            allChapters.forEach(ch => {
+                const div = document.createElement('div');
+                div.className = 'chapter-item';
+                div.innerHTML = `
+                    <div>${ch.number}</div>
+                    <div>${ch.title}</div>
+                    <div>${ch.date}</div>
+                    <div class="chapter-actions">
+                        <button class="action-btn edit-btn" onclick="editChapter(${ch.number})">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteChapter(${ch.number})">Delete</button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+        
+        function editChapter(number) {
+            window.location.href = `editor.html?edit=${number}`;
+        }
+        
+        function deleteChapter(number) {
+            if (confirm(`Delete Chapter ${number}? This cannot be undone.`)) {
+                alert('Delete functionality will be implemented in the next step!');
+            }
+        }
+        
+        loadChapters();
+    </script>
+</body>
+</html>
