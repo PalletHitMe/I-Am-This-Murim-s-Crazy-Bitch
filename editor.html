@@ -109,6 +109,7 @@
             cursor: pointer;
             font-weight: bold;
             transition: all 0.2s;
+            min-width: 40px;
         }
         
         .toolbar-btn:hover {
@@ -121,7 +122,7 @@
             border-color: #ff6b6b;
         }
         
-        /* Rich text editor area - replaces textarea */
+        /* Rich text editor area */
         .rich-editor {
             width: 100%;
             min-height: 60vh;
@@ -143,13 +144,13 @@
             border-color: #ff6b6b;
         }
         
-        /* Style for formatted text */
+        /* Style for formatted text - italics now white, bold still red */
         .rich-editor b, .rich-editor strong {
             color: #ff6b6b;
         }
         
         .rich-editor i, .rich-editor em {
-            color: #ff9b9b;
+            color: white; /* Changed from #ff9b9b to white */
         }
         
         .rich-editor u {
@@ -290,12 +291,11 @@
             <button class="toolbar-btn" onclick="formatText('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
         </div>
         
-        <!-- Rich Text Editor (replaces textarea) -->
+        <!-- Rich Text Editor -->
         <div
             id="chapterContent"
             class="rich-editor"
-            contenteditable="true"
-            data-placeholder="Write your chapter here..."></div>
+            contenteditable="true"></div>
         
         <div id="errorDisplay" class="error-message" style="display: none;"></div>
     </div>
@@ -352,7 +352,7 @@
             triggerAutoSave();
         }
         
-        // Handle keyboard shortcuts for formatting [citation:2]
+        // Handle keyboard shortcuts
         chapterContent.addEventListener('keydown', function(e) {
             if (e.ctrlKey || e.metaKey) {
                 switch(e.key.toLowerCase()) {
@@ -372,19 +372,25 @@
             }
         });
         
-        // Handle paste to preserve formatting [citation:1]
+        // Handle paste to preserve formatting
         chapterContent.addEventListener('paste', function(e) {
             e.preventDefault();
             
-            // Get HTML content from clipboard
+            // Get clipboard data
             const html = e.clipboardData.getData('text/html');
             const text = e.clipboardData.getData('text/plain');
             
             if (html) {
-                // Insert HTML with formatting preserved
-                document.execCommand('insertHTML', false, html);
+                // Clean up Word/Google Docs HTML
+                const cleanedHtml = html
+                    .replace(/<!--[\s\S]*?-->/g, '') // Remove comments
+                    .replace(/<meta[\s\S]*?>/g, '') // Remove meta tags
+                    .replace(/<style[\s\S]*?<\/style>/g, '') // Remove styles
+                    .replace(/<link[\s\S]*?>/g, '') // Remove links
+                    .replace(/<o:p>[\s\S]*?<\/o:p>/g, ''); // Remove Word tags
+                
+                document.execCommand('insertHTML', false, cleanedHtml);
             } else if (text) {
-                // Insert plain text if no HTML available
                 document.execCommand('insertText', false, text);
             }
             
@@ -392,14 +398,13 @@
             triggerAutoSave();
         });
         
-        // Word counter (counts words in text content, ignoring HTML)
+        // Word counter
         function updateWordCount() {
             const text = chapterContent.innerText || chapterContent.textContent;
             const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
             wordCount.textContent = words + ' words';
         }
         
-        // Convert HTML to plain text for word count on input
         chapterContent.addEventListener('input', function() {
             updateWordCount();
             triggerAutoSave();
@@ -427,7 +432,7 @@
             const data = {
                 number: chapterNumber.value,
                 title: chapterTitle.value,
-                content: chapterContent.innerHTML // Save HTML content
+                content: chapterContent.innerHTML
             };
             
             localStorage.setItem('editor_autosave', JSON.stringify(data));
@@ -458,7 +463,7 @@
                 if (confirm('Found auto-saved draft. Load it?')) {
                     chapterNumber.value = data.number;
                     chapterTitle.value = data.title;
-                    chapterContent.innerHTML = data.content; // Load HTML content
+                    chapterContent.innerHTML = data.content;
                     updateWordCount();
                     return;
                 }
@@ -491,13 +496,7 @@
                 const data = await response.json();
                 const contentChapter = data.chapters.find(ch => ch.number === num);
                 if (contentChapter) {
-                    // Check if content contains HTML
-                    const content = contentChapter.content;
-                    if (content.startsWith('<') && content.endsWith('>')) {
-                        chapterContent.innerHTML = content; // It's HTML
-                    } else {
-                        chapterContent.innerText = content; // It's plain text
-                    }
+                    chapterContent.innerHTML = contentChapter.content;
                     updateWordCount();
                 }
             } catch (error) {
@@ -508,9 +507,9 @@
         async function saveChapter() {
             const number = parseInt(chapterNumber.value);
             const title = chapterTitle.value.trim();
-            const content = chapterContent.innerHTML.trim(); // Save HTML content
+            const content = chapterContent.innerHTML.trim();
             
-            if (!title || !content || content === '<br>') {
+            if (!title || !content || content === '<br>' || content === '<div><br></div>') {
                 alert('Please add both a title and content');
                 return;
             }
@@ -591,6 +590,7 @@
             if (!saveResponse.ok) throw new Error('Failed to save chapters.js');
         }
         
+        // FIXED: Properly saves HTML content to JSON
         async function saveToContentJson(number, content) {
             const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json`;
             const response = await fetch(url, {
@@ -606,7 +606,9 @@
             let contentJson;
             
             try {
-                contentJson = JSON.parse(atob(data.content));
+                // Decode the current content
+                const decodedContent = atob(data.content);
+                contentJson = JSON.parse(decodedContent);
             } catch (e) {
                 // If file is empty or invalid, initialize it
                 contentJson = { chapters: [] };
@@ -625,6 +627,12 @@
             // Sort by number descending
             contentJson.chapters.sort((a, b) => b.number - a.number);
             
+            // Convert to pretty JSON string
+            const jsonString = JSON.stringify(contentJson, null, 2);
+            
+            // Encode properly for GitHub API
+            const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
+            
             const saveResponse = await fetch(url, {
                 method: 'PUT',
                 headers: {
@@ -634,13 +642,16 @@
                 },
                 body: JSON.stringify({
                     message: `Update content for Chapter ${number}`,
-                    content: btoa(unescape(encodeURIComponent(JSON.stringify(contentJson, null, 2)))),
+                    content: encodedContent,
                     sha: data.sha,
                     branch: GITHUB_BRANCH
                 })
             });
             
-            if (!saveResponse.ok) throw new Error('Failed to save content file');
+            if (!saveResponse.ok) {
+                const errorData = await saveResponse.json();
+                throw new Error('Failed to save content: ' + (errorData.message || 'Unknown error'));
+            }
         }
         
         async function deleteChapter() {
@@ -735,6 +746,9 @@
             
             contentJson.chapters = contentJson.chapters.filter(ch => ch.number !== currentChapterNumber);
             
+            const jsonString = JSON.stringify(contentJson, null, 2);
+            const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
+            
             const saveResponse = await fetch(url, {
                 method: 'PUT',
                 headers: {
@@ -744,7 +758,7 @@
                 },
                 body: JSON.stringify({
                     message: `Delete content for Chapter ${currentChapterNumber}`,
-                    content: btoa(unescape(encodeURIComponent(JSON.stringify(contentJson, null, 2)))),
+                    content: encodedContent,
                     sha: data.sha,
                     branch: GITHUB_BRANCH
                 })
