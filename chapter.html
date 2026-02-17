@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Chapters - I Am This Murim's Crazy Bitch</title>
+    <title>Reading - I Am This Murim's Crazy Bitch</title>
     <style>
         * {
             margin: 0;
@@ -15,13 +15,13 @@
             background-color: #2c2c2c;
             color: white;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
+            line-height: 1.8;
             min-height: 100vh;
             padding: 2rem;
         }
         
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
         }
         
@@ -29,79 +29,65 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             padding-bottom: 1rem;
             border-bottom: 2px solid #ff6b6b;
         }
         
         h1 {
             color: #ff6b6b;
-            font-size: 2.5rem;
+            font-size: 2rem;
         }
         
-        .home-link {
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .nav-link {
             color: #ff6b6b;
             text-decoration: none;
-            padding: 8px 16px;
+            padding: 0.5rem 1rem;
             border: 1px solid #ff6b6b;
             border-radius: 5px;
             transition: all 0.3s;
         }
         
-        .home-link:hover {
+        .nav-link:hover {
             background-color: #ff6b6b;
             color: white;
         }
         
-        .chapter-list {
-            list-style: none;
+        .chapter-title {
+            font-size: 2.5rem;
+            color: #ff6b6b;
             margin-bottom: 2rem;
+            font-family: 'Georgia', serif;
         }
         
-        .chapter-item {
-            margin-bottom: 1rem;
-            padding: 1rem;
+        .chapter-content {
             background-color: #3a3a3a;
-            border-radius: 8px;
-            border-left: 4px solid #ff6b6b;
-            transition: all 0.3s;
-        }
-        
-        .chapter-item:hover {
-            background-color: #444;
-            transform: translateX(5px);
-        }
-        
-        .chapter-item a {
-            color: white;
-            text-decoration: none;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            white-space: pre-wrap;
             font-size: 1.1rem;
+            line-height: 1.8;
+            min-height: 50vh;
+        }
+        
+        .chapter-footer {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-        }
-        
-        .chapter-item a:hover {
-            color: #ff6b6b;
-        }
-        
-        .chapter-title {
-            flex: 1;
-        }
-        
-        .chapter-date {
-            color: #999;
-            font-size: 0.9rem;
-        }
-        
-        .stats {
             margin-top: 2rem;
-            padding: 1rem;
-            background-color: #3a3a3a;
-            border-radius: 8px;
+            padding-top: 1rem;
+            border-top: 1px solid #444;
+        }
+        
+        .loading {
             text-align: center;
-            color: #ff6b6b;
-            font-weight: bold;
+            padding: 3rem;
+            color: #666;
         }
         
         .admin-link {
@@ -118,10 +104,15 @@
             color: #ff6b6b;
         }
         
-        .loading {
-            color: #888;
-            text-align: center;
-            padding: 3rem;
+        @media (max-width: 768px) {
+            .chapter-title {
+                font-size: 2rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
         }
     </style>
 </head>
@@ -130,48 +121,73 @@
     
     <div class="container">
         <div class="header">
-            <h1>All Chapters</h1>
-            <a href="index.html" class="home-link">← Back to Home</a>
+            <h1 id="chapterTitle">Loading...</h1>
+            <div class="nav-links">
+                <a href="chapters.html" class="nav-link">📚 All Chapters</a>
+                <a href="index.html" class="nav-link">🏠 Home</a>
+            </div>
         </div>
         
-        <ul class="chapter-list" id="allChapters">
-            <li class="loading">Loading chapters...</li>
-        </ul>
+        <div id="chapterContent" class="chapter-content">
+            <div class="loading">Loading chapter content...</div>
+        </div>
         
-        <div class="stats" id="stats">
-            Loading stats...
+        <div class="chapter-footer" id="chapterNav">
+            <a href="#" id="prevChapter" class="nav-link">← Previous</a>
+            <a href="#" id="nextChapter" class="nav-link">Next →</a>
         </div>
     </div>
 
     <script src="chapters.js"></script>
     <script>
-        // Load all chapters
-        const allList = document.getElementById('allChapters');
-        const statsDiv = document.getElementById('stats');
+        // Get chapter number from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const chapterNum = parseInt(urlParams.get('id'));
         
-        try {
-            const allChapters = getAllChapters();
-            
-            if (allChapters.length === 0) {
-                allList.innerHTML = '<li class="loading">No chapters yet. Check back soon!</li>';
-                statsDiv.innerHTML = '📚 0 chapters published';
-            } else {
-                allList.innerHTML = allChapters.map(ch => `
-                    <li class="chapter-item">
-                        <a href="chapter.html?id=${ch.number}">
-                            <span class="chapter-title">Chapter ${ch.number}: ${ch.title}</span>
-                            <span class="chapter-date">${ch.date}</span>
-                        </a>
-                    </li>
-                `).join('');
-                
-                statsDiv.innerHTML = `📚 ${allChapters.length} chapters published`;
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            allList.innerHTML = '<li class="loading">Error loading chapters</li>';
-            statsDiv.innerHTML = 'Error loading stats';
+        if (!chapterNum) {
+            window.location.href = 'chapters.html';
         }
+        
+        // Load chapter data
+        async function loadChapter() {
+            try {
+                const chapter = getChapter(chapterNum);
+                
+                if (!chapter) {
+                    document.getElementById('chapterTitle').textContent = 'Chapter Not Found';
+                    document.getElementById('chapterContent').innerHTML = '<p>This chapter does not exist.</p>';
+                    return;
+                }
+                
+                document.getElementById('chapterTitle').textContent = `Chapter ${chapter.number}: ${chapter.title}`;
+                
+                // Load content from JSON
+                const content = await getChapterContent(chapterNum);
+                document.getElementById('chapterContent').innerHTML = content.replace(/\n/g, '<br>');
+                
+                // Update navigation
+                const allChapters = getAllChapters();
+                const currentIndex = allChapters.findIndex(ch => ch.number === chapterNum);
+                
+                const prevChapter = allChapters[currentIndex + 1];
+                const nextChapter = allChapters[currentIndex - 1];
+                
+                document.getElementById('prevChapter').href = prevChapter ? `chapter.html?id=${prevChapter.number}` : '#';
+                document.getElementById('nextChapter').href = nextChapter ? `chapter.html?id=${nextChapter.number}` : '#';
+                
+                document.getElementById('prevChapter').style.opacity = prevChapter ? '1' : '0.5';
+                document.getElementById('prevChapter').style.pointerEvents = prevChapter ? 'auto' : 'none';
+                
+                document.getElementById('nextChapter').style.opacity = nextChapter ? '1' : '0.5';
+                document.getElementById('nextChapter').style.pointerEvents = nextChapter ? 'auto' : 'none';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('chapterContent').innerHTML = '<p>Error loading chapter</p>';
+            }
+        }
+        
+        loadChapter();
     </script>
 </body>
 </html>
