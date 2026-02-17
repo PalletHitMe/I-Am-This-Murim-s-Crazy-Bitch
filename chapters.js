@@ -1,5 +1,7 @@
 // chapters.js - Automatically manages your novel chapters
 const chapters = [
+    { number: 11, title: "asdf", date: "2026-02-17" },
+
     { number: 1, title: "The Beginning", date: "2024-01-01" },
     { number: 2, title: "Awakening", date: "2024-01-05" },
     { number: 3, title: "First Steps", date: "2024-01-10" },
@@ -10,6 +12,7 @@ const chapters = [
     { number: 8, title: "Allies and Enemies", date: "2024-02-05" },
     { number: 9, title: "The Prophecy", date: "2024-02-10" },
     { number: 10, title: "Darkness Falls", date: "2024-02-15" }
+
 ];
 
 // Don't edit below this line - it handles the display automatically
