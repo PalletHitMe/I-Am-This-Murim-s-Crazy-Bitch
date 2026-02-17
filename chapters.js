@@ -1,9 +1,5 @@
 // chapters.js - Your novel chapters data
-// Edit this file only to add/update chapter metadata
-
 const chapters = [
-    { number: 11, title: "asdf", date: "2026-02-17" },
-
     { number: 11, title: "asdf", date: "2026-02-17" },
     { number: 10, title: "Darkness Falls", date: "2024-02-15" },
     { number: 9, title: "The Prophecy", date: "2024-02-10" },
@@ -15,33 +11,12 @@ const chapters = [
     { number: 3, title: "First Steps", date: "2024-01-10" },
     { number: 2, title: "Awakening", date: "2024-01-05" },
     { number: 1, title: "The Beginning", date: "2024-01-01" }
-
 ];
 
-// Helper functions - use these in your HTML files
-function getRecentChapters(count = 5) {
-    // Return the most recent chapters (they're already in newest-first order)
-    return chapters.slice(0, count);
-}
-
 function getAllChapters() {
-    // Return all chapters in newest-first order
     return chapters;
 }
 
 function getChapter(number) {
     return chapters.find(ch => ch.number === number);
-}
-
-// For loading chapter content from JSON
-async function getChapterContent(number) {
-    try {
-        const response = await fetch('chapters-content.json');
-        const data = await response.json();
-        const chapter = data.chapters.find(ch => ch.number === number);
-        return chapter ? chapter.content : 'Chapter content coming soon...';
-    } catch (error) {
-        console.error('Error loading chapter content:', error);
-        return 'Error loading content. Please try again later.';
-    }
 }
