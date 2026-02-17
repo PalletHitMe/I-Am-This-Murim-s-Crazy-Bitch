@@ -212,26 +212,35 @@
 
     <script src="chapters.js?v=<%= new Date().getTime() %>"></script>
     <script>
-        const recentList = document.getElementById('recentChapters');
-        
-        try {
-            const allChapters = getAllChapters();
-            const recentChapters = allChapters.slice(0, 5);
-            
-            if (recentChapters.length === 0) {
-                recentList.innerHTML = '<li class="loading">No chapters yet. Check back soon!</li>';
-            } else {
-                recentList.innerHTML = recentChapters.map(ch => `
-                    <li class="chapter-item">
-                        <a href="chapter.html?id=${ch.number}">
-                            Chapter ${ch.number}: ${ch.title}
-                        </a>
-                    </li>
-                `).join('');
-            }
-        } catch (error) {
-            recentList.innerHTML = '<li class="loading">Error loading chapters</li>';
+        // Load chapters with cache buster
+        function loadChapters() {
+            const script = document.createElement('script');
+            script.src = 'chapters.js?v=' + Date.now();
+            script.onload = function() {
+                const recentList = document.getElementById('recentChapters');
+                try {
+                    const allChapters = getAllChapters();
+                    const recentChapters = allChapters.slice(0, 5);
+                    
+                    if (recentChapters.length === 0) {
+                        recentList.innerHTML = '<li class="loading">No chapters yet. Check back soon!</li>';
+                    } else {
+                        recentList.innerHTML = recentChapters.map(ch => `
+                            <li class="chapter-item">
+                                <a href="chapter.html?id=${ch.number}">
+                                    Chapter ${ch.number}: ${ch.title}
+                                </a>
+                            </li>
+                        `).join('');
+                    }
+                } catch (error) {
+                    recentList.innerHTML = '<li class="loading">Error loading chapters</li>';
+                }
+            };
+            document.head.appendChild(script);
         }
+        
+        loadChapters();
     </script>
 </body>
 </html>
