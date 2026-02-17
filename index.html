@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I Am This Murim's Crazy Bitch</title>
     <style>
-        /* Your colors: #2c2c2c background, #ff6b6b accent */
         * {
             margin: 0;
             padding: 0;
@@ -26,7 +25,6 @@
             margin: 0 auto;
         }
         
-        /* New cover section with image and text side by side */
         .cover-section {
             display: flex;
             gap: 3rem;
@@ -82,37 +80,57 @@
             border-radius: 5px;
             font-weight: bold;
             transition: background-color 0.3s;
+            margin-bottom: 2rem;
         }
         
         .read-btn:hover {
             background-color: #ff5252;
         }
         
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #ff6b6b;
+            padding-bottom: 0.5rem;
+        }
+        
         h2 {
             color: #ff6b6b;
-            margin-bottom: 1.5rem;
             font-size: 2rem;
         }
         
-        .chapters {
+        .view-all {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        
+        .view-all:hover {
+            text-decoration: underline;
+        }
+        
+        .chapter-list {
             list-style: none;
         }
         
-        .chapters li {
+        .chapter-item {
             margin-bottom: 1rem;
             padding: 0.5rem 0;
             border-bottom: 1px solid #444;
         }
         
-        .chapters a {
+        .chapter-item a {
             color: white;
             text-decoration: none;
             font-size: 1.1rem;
             display: block;
         }
         
-        .chapters a:hover {
+        .chapter-item a:hover {
             color: #ff6b6b;
+            padding-left: 10px;
         }
         
         .admin-link {
@@ -129,7 +147,6 @@
             color: #ff6b6b;
         }
         
-        /* Responsive design */
         @media (max-width: 768px) {
             .cover-section {
                 flex-direction: column;
@@ -138,8 +155,7 @@
             }
             
             .cover-image {
-                flex: 0 0 auto;
-                max-width: 300px;
+                max-width: 250px;
                 margin: 0 auto;
             }
             
@@ -153,7 +169,7 @@
     <a href="login.html" class="admin-link">Admin</a>
     
     <div class="container">
-        <!-- Cover section with image and text side by side -->
+        <!-- Cover section -->
         <div class="cover-section">
             <div class="cover-image">
                 <img src="cover.jpg" alt="I Am This Murim's Crazy Bitch Cover">
@@ -169,9 +185,17 @@
         </div>
         
         <!-- Recent Chapters Section -->
-        <h2>Recent Chapters</h2>
-        <ul class="chapters" id="chapters">
-            <li><a href="#">No chapters yet. Check back soon!</a></li>
+        <div class="section-header">
+            <h2>Recent Chapters</h2>
+            <a href="chapters.html" class="view-all">View All →</a>
+        </div>
+        
+        <ul class="chapter-list">
+            <li class="chapter-item"><a href="#">Chapter 1: The Beginning</a></li>
+            <li class="chapter-item"><a href="#">Chapter 2: Awakening</a></li>
+            <li class="chapter-item"><a href="#">Chapter 3: First Steps</a></li>
+            <li class="chapter-item"><a href="#">Chapter 4: The Tournament</a></li>
+            <li class="chapter-item"><a href="#">Chapter 5: Secrets Revealed</a></li>
         </ul>
     </div>
 </body>
