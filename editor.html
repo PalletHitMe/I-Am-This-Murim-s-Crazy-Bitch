@@ -193,10 +193,13 @@
             color: #4CAF50;
         }
         
-        .loading {
+        .error-message {
+            color: #ff6b6b;
             text-align: center;
-            padding: 3rem;
-            color: #666;
+            padding: 1rem;
+            background: #3a3a3a;
+            border-radius: 5px;
+            margin-top: 1rem;
         }
         
         @media (max-width: 768px) {
@@ -232,6 +235,8 @@
         <div class="chapter-content-input">
             <textarea id="chapterContent" placeholder="Write your chapter here..."></textarea>
         </div>
+        
+        <div id="errorDisplay" class="error-message" style="display: none;"></div>
     </div>
     
     <div class="editor-footer">
@@ -261,7 +266,7 @@
         const GITHUB_BRANCH = window.GITHUB_CONFIG?.branch || 'main';
         
         if (!GITHUB_TOKEN) {
-            alert('GitHub token not found! Please check config.js');
+            showError('GitHub token not found! Please check config.js');
         }
         
         // DOM elements
@@ -272,11 +277,20 @@
         const autoSaveStatus = document.getElementById('autoSaveStatus');
         const deleteBtn = document.getElementById('deleteBtn');
         const editorTitle = document.getElementById('editorTitle');
+        const errorDisplay = document.getElementById('errorDisplay');
         
         // State
         let saveTimeout;
         let currentChapterNumber = null;
         let isEditing = false;
+        
+        function showError(msg) {
+            errorDisplay.style.display = 'block';
+            errorDisplay.textContent = msg;
+            setTimeout(() => {
+                errorDisplay.style.display = 'none';
+            }, 5000);
+        }
         
         // Word counter
         chapterContent.addEventListener('input', function() {
@@ -390,7 +404,7 @@
                 window.location.href = 'admin.html';
                 
             } catch (error) {
-                alert('Error: ' + error.message);
+                showError('Error: ' + error.message);
                 autoSaveStatus.textContent = '❌ Failed';
             }
         }
@@ -404,25 +418,37 @@
                 }
             });
             
+            if (!response.ok) throw new Error('Failed to fetch chapters.js');
+            
             const data = await response.json();
             const content = atob(data.content);
-            const match = content.match(/const chapters = (\[[\s\S]*?\]);/);
-            let chapters = eval('(' + match[1] + ')');
+            
+            // Parse the chapters array
+            const chaptersMatch = content.match(/const chapters = (\[[\s\S]*?\]);/);
+            if (!chaptersMatch) throw new Error('Could not parse chapters.js');
+            
+            let chapters = eval('(' + chaptersMatch[1] + ')');
             
             const today = new Date().toISOString().split('T')[0];
+            const newChapter = { number, title, date: today };
             
             if (isEditing) {
                 const index = chapters.findIndex(ch => ch.number === number);
-                if (index !== -1) chapters[index] = { number, title, date: today };
+                if (index !== -1) {
+                    chapters[index] = newChapter;
+                } else {
+                    chapters.push(newChapter);
+                }
             } else {
-                chapters.unshift({ number, title, date: today });
+                chapters.push(newChapter);
             }
             
+            // Sort by number descending
             chapters.sort((a, b) => b.number - a.number);
             
             const newContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chapters, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
             
-            await fetch(url, {
+            const saveResponse = await fetch(url, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `token ${GITHUB_TOKEN}`,
@@ -436,6 +462,8 @@
                     branch: GITHUB_BRANCH
                 })
             });
+            
+            if (!saveResponse.ok) throw new Error('Failed to save chapters.js');
         }
         
         async function saveToContentJson(number, content) {
@@ -447,8 +475,20 @@
                 }
             });
             
+            if (!response.ok) throw new Error('Failed to fetch content file');
+            
             const data = await response.json();
-            const contentJson = JSON.parse(atob(data.content));
+            let contentJson;
+            
+            try {
+                contentJson = JSON.parse(atob(data.content));
+            } catch (e) {
+                // If file is empty or invalid, initialize it
+                contentJson = { chapters: [] };
+            }
+            
+            // Ensure chapters array exists
+            if (!contentJson.chapters) contentJson.chapters = [];
             
             const index = contentJson.chapters.findIndex(ch => ch.number === number);
             if (index !== -1) {
@@ -457,9 +497,10 @@
                 contentJson.chapters.push({ number, content });
             }
             
+            // Sort by number descending
             contentJson.chapters.sort((a, b) => b.number - a.number);
             
-            await fetch(url, {
+            const saveResponse = await fetch(url, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `token ${GITHUB_TOKEN}`,
@@ -473,6 +514,8 @@
                     branch: GITHUB_BRANCH
                 })
             });
+            
+            if (!saveResponse.ok) throw new Error('Failed to save content file');
         }
         
         async function deleteChapter() {
@@ -489,12 +532,10 @@
                 await deleteFromContentJson();
                 
                 alert(`Chapter ${currentChapterNumber} deleted!`);
-                
-                // Add cache buster to force reload
                 window.location.href = 'admin.html?t=' + Date.now();
                 
             } catch (error) {
-                alert('Delete failed: ' + error.message);
+                showError('Delete failed: ' + error.message);
                 autoSaveStatus.textContent = '❌ Failed';
             }
         }
@@ -508,12 +549,17 @@
                 }
             });
             
+            if (!response.ok) throw new Error('Failed to fetch chapters.js');
+            
             const data = await response.json();
             const content = atob(data.content);
-            const match = content.match(/const chapters = (\[[\s\S]*?\]);/);
-            let chapters = eval('(' + match[1] + ')');
+            const chaptersMatch = content.match(/const chapters = (\[[\s\S]*?\]);/);
             
+            if (!chaptersMatch) throw new Error('Could not parse chapters.js');
+            
+            let chapters = eval('(' + chaptersMatch[1] + ')');
             const originalLength = chapters.length;
+            
             chapters = chapters.filter(ch => ch.number !== currentChapterNumber);
             
             if (chapters.length === originalLength) {
@@ -537,9 +583,7 @@
                 })
             });
             
-            if (!saveResponse.ok) {
-                throw new Error('Failed to save chapters.js');
-            }
+            if (!saveResponse.ok) throw new Error('Failed to save chapters.js');
         }
         
         async function deleteFromContentJson() {
@@ -551,16 +595,20 @@
                 }
             });
             
+            if (!response.ok) throw new Error('Failed to fetch content file');
+            
             const data = await response.json();
-            const contentJson = JSON.parse(atob(data.content));
+            let contentJson;
             
-            const originalLength = contentJson.chapters.length;
-            contentJson.chapters = contentJson.chapters.filter(ch => ch.number !== currentChapterNumber);
-            
-            if (contentJson.chapters.length === originalLength) {
-                console.log('Chapter not found in content file, skipping...');
-                return; // Not in content file, that's okay
+            try {
+                contentJson = JSON.parse(atob(data.content));
+            } catch (e) {
+                return; // File doesn't exist or is invalid, nothing to delete
             }
+            
+            if (!contentJson.chapters) return;
+            
+            contentJson.chapters = contentJson.chapters.filter(ch => ch.number !== currentChapterNumber);
             
             const saveResponse = await fetch(url, {
                 method: 'PUT',
@@ -577,9 +625,7 @@
                 })
             });
             
-            if (!saveResponse.ok) {
-                throw new Error('Failed to save content file');
-            }
+            if (!saveResponse.ok) throw new Error('Failed to save content file');
         }
     </script>
 </body>
