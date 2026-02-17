@@ -147,6 +147,12 @@
             color: #ff6b6b;
         }
         
+        .loading {
+            color: #888;
+            text-align: center;
+            padding: 2rem;
+        }
+        
         @media (max-width: 768px) {
             .cover-section {
                 flex-direction: column;
@@ -190,13 +196,33 @@
             <a href="chapters.html" class="view-all">View All →</a>
         </div>
         
-        <ul class="chapter-list">
-            <li class="chapter-item"><a href="#">Chapter 1: The Beginning</a></li>
-            <li class="chapter-item"><a href="#">Chapter 2: Awakening</a></li>
-            <li class="chapter-item"><a href="#">Chapter 3: First Steps</a></li>
-            <li class="chapter-item"><a href="#">Chapter 4: The Tournament</a></li>
-            <li class="chapter-item"><a href="#">Chapter 5: Secrets Revealed</a></li>
+        <ul class="chapter-list" id="recentChapters">
+            <li class="loading">Loading chapters...</li>
         </ul>
     </div>
+
+    <script src="chapters.js"></script>
+    <script>
+        // Load recent chapters automatically (newest first)
+        const recentList = document.getElementById('recentChapters');
+        
+        try {
+            const recentChapters = getRecentChapters(5);
+            
+            if (recentChapters.length === 0) {
+                recentList.innerHTML = '<li class="loading">No chapters yet. Check back soon!</li>';
+            } else {
+                recentList.innerHTML = recentChapters.map(ch => `
+                    <li class="chapter-item">
+                        <a href="chapter.html?id=${ch.number}">
+                            Chapter ${ch.number}: ${ch.title}
+                        </a>
+                    </li>
+                `).join('');
+            }
+        } catch (error) {
+            recentList.innerHTML = '<li class="loading">Error loading chapters</li>';
+        }
+    </script>
 </body>
 </html>
