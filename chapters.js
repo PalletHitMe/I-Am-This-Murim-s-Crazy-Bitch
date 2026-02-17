@@ -1,11 +1,6 @@
 // chapters.js - Your novel chapters data
 const chapters = [
     {
-        "number": 8,
-        "title": "Allies and Enemies",
-        "date": "2024-02-05"
-    },
-    {
         "number": 7,
         "title": "New Beginning",
         "date": "2024-02-01"
