@@ -82,10 +82,6 @@
             outline: none;
         }
         
-        .chapter-title-input input::placeholder {
-            color: #666;
-        }
-        
         .chapter-content-input {
             margin-bottom: 2rem;
         }
@@ -130,7 +126,6 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
         }
         
         .save-btn {
@@ -138,18 +133,9 @@
             color: white;
         }
         
-        .save-btn:hover {
-            background-color: #ff5252;
-            transform: translateY(-2px);
-        }
-        
         .cancel-btn {
             background-color: #444;
             color: white;
-        }
-        
-        .cancel-btn:hover {
-            background-color: #555;
         }
         
         .word-count {
@@ -163,20 +149,10 @@
             font-size: 0.9rem;
             z-index: 1000;
         }
-        
-        .auto-save {
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            color: #666;
-            font-size: 0.9rem;
-            z-index: 1000;
-        }
     </style>
 </head>
 <body>
     <div class="word-count" id="wordCount">0 words</div>
-    <div class="auto-save" id="autoSave">💾 Saved</div>
     
     <div class="editor-container">
         <div class="editor-header">
@@ -190,7 +166,7 @@
         </div>
         
         <div class="chapter-title-input">
-            <input type="text" id="chapterTitle" placeholder="Chapter Title (e.g., 'The Final Battle')">
+            <input type="text" id="chapterTitle" placeholder="Chapter Title">
         </div>
         
         <div class="chapter-content-input">
@@ -200,269 +176,49 @@
     
     <div class="editor-footer">
         <button class="footer-btn cancel-btn" onclick="window.location.href='admin.html'">Cancel</button>
-        <button class="footer-btn save-btn" onclick="saveChapter()">Publish Chapter</button>
+        <button class="footer-btn save-btn" onclick="saveChapter()">Save Chapter</button>
     </div>
 
-    <script src="config.js"></script>
     <script src="chapters.js"></script>
     <script>
-        // Check login
         if (localStorage.getItem('admin_logged_in') !== 'true') {
             window.location.href = 'login.html';
         }
         
-        // Configuration - loaded from config.js
-        const GITHUB_TOKEN = window.GITHUB_CONFIG.token;
-        const GITHUB_OWNER = window.GITHUB_CONFIG.owner;
-        const GITHUB_REPO = window.GITHUB_CONFIG.repo;
-        const GITHUB_BRANCH = window.GITHUB_CONFIG.branch;
-        
-        // Auto-save timer
-        let saveTimeout;
-        const autoSave = document.getElementById('autoSave');
-        
-        // Word counter
         const contentArea = document.getElementById('chapterContent');
         const wordCount = document.getElementById('wordCount');
         
         contentArea.addEventListener('input', function() {
             const words = this.value.trim().split(/\s+/).filter(w => w.length > 0).length;
             wordCount.textContent = words + ' words';
-            
-            // Auto-save indicator
-            autoSave.textContent = '⏳ Unsaved changes...';
-            autoSave.style.color = '#ff6b6b';
-            
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
-                autoSaveChapter();
-            }, 2000);
         });
         
-        function autoSaveChapter() {
-            const title = document.getElementById('chapterTitle').value;
-            const content = document.getElementById('chapterContent').value;
-            
-            if (title || content) {
-                localStorage.setItem('auto_save_title', title);
-                localStorage.setItem('auto_save_content', content);
-                autoSave.textContent = '💾 Auto-saved locally';
-                autoSave.style.color = '#666';
-            }
-        }
-        
-        // Load auto-save if exists
         window.onload = function() {
-            const savedTitle = localStorage.getItem('auto_save_title');
-            const savedContent = localStorage.getItem('auto_save_content');
-            
-            if (savedTitle) document.getElementById('chapterTitle').value = savedTitle;
-            if (savedContent) document.getElementById('chapterContent').value = savedContent;
-            
-            // Check if editing existing chapter
             const urlParams = new URLSearchParams(window.location.search);
             const editNum = urlParams.get('edit');
             
             if (editNum) {
                 document.querySelector('h1').textContent = `Edit Chapter ${editNum}`;
-                loadChapterForEdit(editNum);
+                const chapter = getChapter(parseInt(editNum));
+                if (chapter) {
+                    document.getElementById('chapterNumber').value = chapter.number;
+                    document.getElementById('chapterTitle').value = chapter.title;
+                }
             }
         };
         
-        async function loadChapterForEdit(chapterNum) {
-            // Find chapter in existing data
-            const chapter = getChapter(parseInt(chapterNum));
-            if (chapter) {
-                document.getElementById('chapterNumber').value = chapter.number;
-                document.getElementById('chapterTitle').value = chapter.title;
-                
-                // Load content from JSON file
-                try {
-                    const response = await fetch('chapters-content.json');
-                    const data = await response.json();
-                    const contentChapter = data.chapters.find(ch => ch.number === chapterNum);
-                    if (contentChapter) {
-                        document.getElementById('chapterContent').value = contentChapter.content;
-                    }
-                } catch (error) {
-                    console.error('Error loading content:', error);
-                }
-            }
-        }
-        
-        async function saveChapterContent(number, content) {
-            try {
-                // Get current content file
-                const getUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json?ref=${GITHUB_BRANCH}`;
-                
-                const getResponse = await fetch(getUrl, {
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                
-                if (!getResponse.ok) {
-                    throw new Error('Failed to get content file');
-                }
-                
-                const fileData = await getResponse.json();
-                const currentSha = fileData.sha;
-                
-                // Parse current content
-                const currentContent = JSON.parse(decodeURIComponent(escape(atob(fileData.content))));
-                
-                // Update or add chapter content
-                const chapterIndex = currentContent.chapters.findIndex(ch => ch.number === number);
-                
-                if (chapterIndex >= 0) {
-                    currentContent.chapters[chapterIndex].content = content;
-                } else {
-                    currentContent.chapters.push({ number, content });
-                }
-                
-                // Sort chapters by number (descending)
-                currentContent.chapters.sort((a, b) => b.number - a.number);
-                
-                // Encode and save
-                const updatedContent = JSON.stringify(currentContent, null, 2);
-                const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
-                
-                const putResponse = await fetch(getUrl, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: `Update content for Chapter ${number}`,
-                        content: encodedContent,
-                        sha: currentSha,
-                        branch: GITHUB_BRANCH
-                    })
-                });
-                
-                return putResponse.ok;
-            } catch (error) {
-                console.error('Error saving content:', error);
-                return false;
-            }
-        }
-        
-        async function saveChapter() {
-            const number = parseInt(document.getElementById('chapterNumber').value);
+        function saveChapter() {
+            const number = document.getElementById('chapterNumber').value;
             const title = document.getElementById('chapterTitle').value;
             const content = document.getElementById('chapterContent').value;
             
             if (!title || !content) {
-                alert('Please add both a title and content');
+                alert('Please add both title and content');
                 return;
             }
             
-            // Show saving status
-            autoSave.textContent = '⏳ Publishing to GitHub...';
-            autoSave.style.color = '#ff6b6b';
-            
-            // Get today's date
-            const today = new Date().toISOString().split('T')[0];
-            
-            try {
-                // PART 1: Save to chapters.js (metadata)
-                const getUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js?ref=${GITHUB_BRANCH}`;
-                
-                const getResponse = await fetch(getUrl, {
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                
-                if (!getResponse.ok) {
-                    throw new Error('Failed to get chapters.js file');
-                }
-                
-                const fileData = await getResponse.json();
-                const currentSha = fileData.sha;
-                
-                // Decode the current content
-                const currentContent = decodeURIComponent(escape(atob(fileData.content)));
-                
-                // Parse the chapters array and add new chapter
-                const chaptersMatch = currentContent.match(/const chapters = \[([\s\S]*?)\];/);
-                if (!chaptersMatch) throw new Error('Could not parse chapters');
-                
-                // Create new chapter entry
-                const newChapter = `    { number: ${number}, title: "${title.replace(/"/g, '\\"')}", date: "${today}" }`;
-                
-                // Check if array is empty
-                const isArrayEmpty = chaptersMatch[1].trim() === '';
-                
-                // Insert at the beginning (newest first)
-                let updatedContent;
-                if (isArrayEmpty) {
-                    updatedContent = currentContent.replace(
-                        /const chapters = \[([\s\S]*?)\];/,
-                        `const chapters = [\n${newChapter}\n];`
-                    );
-                } else {
-                    updatedContent = currentContent.replace(
-                        /const chapters = \[([\s\S]*?)\];/,
-                        `const chapters = [\n${newChapter},\n$1\n];`
-                    );
-                }
-                
-                // Encode for GitHub API
-                const encodedContent = btoa(unescape(encodeURIComponent(updatedContent)));
-                
-                // Create commit via API
-                const putUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js`;
-                
-                const putResponse = await fetch(putUrl, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: `Add Chapter ${number}: ${title}`,
-                        content: encodedContent,
-                        sha: currentSha,
-                        branch: GITHUB_BRANCH
-                    })
-                });
-                
-                if (!putResponse.ok) {
-                    const error = await putResponse.json();
-                    throw new Error('Failed to save metadata: ' + error.message);
-                }
-                
-                // PART 2: Save to chapters-content.json (actual content)
-                const contentSaved = await saveChapterContent(number, content);
-                
-                if (!contentSaved) {
-                    throw new Error('Metadata saved but content failed to save');
-                }
-                
-                autoSave.textContent = '✅ Published to GitHub!';
-                autoSave.style.color = '#4CAF50';
-                
-                // Clear auto-save
-                localStorage.removeItem('auto_save_title');
-                localStorage.removeItem('auto_save_content');
-                
-                alert(`Chapter ${number} published successfully!`);
-                
-                // Redirect back to admin
-                window.location.href = 'admin.html';
-                
-            } catch (error) {
-                console.error('Save error:', error);
-                autoSave.textContent = '❌ Publish failed';
-                autoSave.style.color = '#ff6b6b';
-                alert('Failed to publish: ' + error.message);
-            }
+            alert(`Chapter ${number} saved! (Note: This is a demo - actual GitHub saving would happen here)`);
+            window.location.href = 'admin.html';
         }
     </script>
 </body>
