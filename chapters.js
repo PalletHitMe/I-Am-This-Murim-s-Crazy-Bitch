@@ -2,6 +2,8 @@
 // Edit this file only to add/update chapter metadata
 
 const chapters = [
+    { number: 12, title: "asd", date: "2026-02-17" },
+
     { number: 10, title: "Darkness Falls", date: "2026-02-17" },
 
     { number: 11, title: "asdf", date: "2026-02-17" },
@@ -15,6 +17,7 @@ const chapters = [
     { number: 3, title: "First Steps", date: "2024-01-10" },
     { number: 2, title: "Awakening", date: "2024-01-05" },
     { number: 1, title: "The Beginning", date: "2024-01-01" }
+
 
 ];
 
