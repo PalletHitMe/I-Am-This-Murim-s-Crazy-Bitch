@@ -1,0 +1,11 @@
+# Ignore config file with sensitive data
+config.js
+
+# Ignore local editor backups
+*.swp
+*.swo
+*~
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
