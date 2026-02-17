@@ -117,8 +117,16 @@
         
         .chapter-item {
             margin-bottom: 1rem;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #444;
+            padding: 0.75rem 1rem;
+            background-color: #3a3a3a;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b6b;
+            transition: all 0.3s;
+        }
+        
+        .chapter-item:hover {
+            background-color: #444;
+            transform: translateX(5px);
         }
         
         .chapter-item a {
@@ -130,7 +138,6 @@
         
         .chapter-item a:hover {
             color: #ff6b6b;
-            padding-left: 10px;
         }
         
         .admin-link {
@@ -141,10 +148,15 @@
             text-decoration: none;
             font-size: 0.9rem;
             z-index: 1000;
+            background: #3a3a3a;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #444;
         }
         
         .admin-link:hover {
             color: #ff6b6b;
+            border-color: #ff6b6b;
         }
         
         .loading {
@@ -175,7 +187,6 @@
     <a href="login.html" class="admin-link">Admin</a>
     
     <div class="container">
-        <!-- Cover section -->
         <div class="cover-section">
             <div class="cover-image">
                 <img src="cover.jpg" alt="I Am This Murim's Crazy Bitch Cover">
@@ -185,12 +196,10 @@
                 <h1>I Am This Murim's Crazy Bitch</h1>
                 <p class="author">By 정통무협조와요</p>
                 <p class="description">I became a female character in a martial arts game I've never played before. But I know nothing about martial arts.</p>
-                
                 <a href="chapters.html" class="read-btn">Start Reading</a>
             </div>
         </div>
         
-        <!-- Recent Chapters Section -->
         <div class="section-header">
             <h2>Recent Chapters</h2>
             <a href="chapters.html" class="view-all">View All →</a>
@@ -203,11 +212,11 @@
 
     <script src="chapters.js"></script>
     <script>
-        // Load recent chapters automatically (newest first)
         const recentList = document.getElementById('recentChapters');
         
         try {
-            const recentChapters = getRecentChapters(5);
+            const allChapters = getAllChapters();
+            const recentChapters = allChapters.slice(0, 5);
             
             if (recentChapters.length === 0) {
                 recentList.innerHTML = '<li class="loading">No chapters yet. Check back soon!</li>';
@@ -221,7 +230,6 @@
                 `).join('');
             }
         } catch (error) {
-            console.error('Error:', error);
             recentList.innerHTML = '<li class="loading">Error loading chapters</li>';
         }
     </script>
