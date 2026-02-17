@@ -383,7 +383,8 @@
             const today = new Date().toISOString().split('T')[0];
             
             try {
-                // Get current chapters.js
+                // First, get the current chapters from the API
+                console.log('Fetching chapters.js...');
                 const chaptersUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js`;
                 const chaptersResponse = await fetch(chaptersUrl, {
                     headers: {
@@ -393,35 +394,50 @@
                 });
                 
                 if (!chaptersResponse.ok) {
-                    throw new Error('Failed to fetch chapters.js');
+                    const errorText = await chaptersResponse.text();
+                    console.error('GitHub API error:', chaptersResponse.status, errorText);
+                    throw new Error(`GitHub API error: ${chaptersResponse.status}`);
                 }
                 
                 const chaptersData = await chaptersResponse.json();
                 const chaptersSha = chaptersData.sha;
+                
+                // Decode the content
                 const chaptersContent = atob(chaptersData.content);
+                console.log('Successfully fetched chapters.js');
                 
-                // Parse current chapters
+                // Parse the chapters array using regex (safer than eval)
+                const chaptersMatch = chaptersContent.match(/const chapters = (\[[\s\S]*?\]);/);
+                if (!chaptersMatch) {
+                    throw new Error('Could not parse chapters array');
+                }
+                
+                // Safely parse the JSON-like string
                 let chaptersArray;
-                eval(chaptersContent.replace('const chapters = ', 'chaptersArray = '));
+                try {
+                    chaptersArray = eval('(' + chaptersMatch[1] + ')');
+                } catch (e) {
+                    throw new Error('Failed to parse chapters data');
+                }
                 
+                // Update or add chapter
                 if (isEditing) {
-                    // Update existing
                     const index = chaptersArray.findIndex(ch => ch.number === number);
                     if (index !== -1) {
                         chaptersArray[index] = { number, title, date: today };
                     }
                 } else {
-                    // Add new
                     chaptersArray.unshift({ number, title, date: today });
                 }
                 
                 // Sort
                 chaptersArray.sort((a, b) => b.number - a.number);
                 
-                // Create new content
+                // Create new file content
                 const newChaptersContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chaptersArray, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
                 
                 // Save to GitHub
+                console.log('Saving chapters.js...');
                 const saveChaptersResponse = await fetch(chaptersUrl, {
                     method: 'PUT',
                     headers: {
@@ -430,7 +446,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: isEditing ? `Update Chapter ${number}` : `Add Chapter ${number}`,
+                        message: isEditing ? `Update Chapter ${number}: ${title}` : `Add Chapter ${number}: ${title}`,
                         content: btoa(unescape(encodeURIComponent(newChaptersContent))),
                         sha: chaptersSha,
                         branch: GITHUB_BRANCH
@@ -438,10 +454,12 @@
                 });
                 
                 if (!saveChaptersResponse.ok) {
-                    throw new Error('Failed to save chapters.js');
+                    const error = await saveChaptersResponse.json();
+                    throw new Error(`Failed to save chapters.js: ${error.message}`);
                 }
                 
                 // Now handle content
+                console.log('Fetching chapters-content.json...');
                 const contentUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json`;
                 const contentResponse = await fetch(contentUrl, {
                     headers: {
@@ -470,6 +488,7 @@
                 contentJson.chapters.sort((a, b) => b.number - a.number);
                 
                 // Save content
+                console.log('Saving chapters-content.json...');
                 const saveContentResponse = await fetch(contentUrl, {
                     method: 'PUT',
                     headers: {
@@ -491,7 +510,7 @@
                 
                 localStorage.removeItem('editor_autosave');
                 autoSaveStatus.textContent = '✅ Published!';
-                alert(`Chapter ${number} published!`);
+                alert(`Chapter ${number} published successfully!`);
                 window.location.href = 'admin.html';
                 
             } catch (error) {
@@ -515,7 +534,7 @@
             autoSaveStatus.className = 'auto-save-status saving';
             
             try {
-                // Delete from chapters.js
+                console.log('Fetching chapters.js for deletion...');
                 const chaptersUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js`;
                 const chaptersResponse = await fetch(chaptersUrl, {
                     headers: {
@@ -524,16 +543,39 @@
                     }
                 });
                 
+                if (!chaptersResponse.ok) {
+                    throw new Error('Failed to fetch chapters.js');
+                }
+                
                 const chaptersData = await chaptersResponse.json();
                 const chaptersSha = chaptersData.sha;
                 const chaptersContent = atob(chaptersData.content);
                 
+                // Parse using regex
+                const chaptersMatch = chaptersContent.match(/const chapters = (\[[\s\S]*?\]);/);
+                if (!chaptersMatch) {
+                    throw new Error('Could not parse chapters array');
+                }
+                
                 let chaptersArray;
-                eval(chaptersContent.replace('const chapters = ', 'chaptersArray = '));
+                try {
+                    chaptersArray = eval('(' + chaptersMatch[1] + ')');
+                } catch (e) {
+                    throw new Error('Failed to parse chapters data');
+                }
+                
+                // Remove chapter
+                const originalLength = chaptersArray.length;
                 chaptersArray = chaptersArray.filter(ch => ch.number !== currentChapterNumber);
                 
+                if (chaptersArray.length === originalLength) {
+                    throw new Error('Chapter not found');
+                }
+                
+                // Create new content
                 const newChaptersContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chaptersArray, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
                 
+                console.log('Saving chapters.js after deletion...');
                 await fetch(chaptersUrl, {
                     method: 'PUT',
                     headers: {
@@ -550,6 +592,7 @@
                 });
                 
                 // Delete from content
+                console.log('Fetching content file for deletion...');
                 const contentUrl = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json`;
                 const contentResponse = await fetch(contentUrl, {
                     headers: {
@@ -563,6 +606,7 @@
                 const contentJson = JSON.parse(atob(contentData.content));
                 contentJson.chapters = contentJson.chapters.filter(ch => ch.number !== currentChapterNumber);
                 
+                console.log('Saving content file after deletion...');
                 await fetch(contentUrl, {
                     method: 'PUT',
                     headers: {
@@ -579,7 +623,7 @@
                 });
                 
                 autoSaveStatus.textContent = '✅ Deleted!';
-                alert(`Chapter ${currentChapterNumber} deleted!`);
+                alert(`Chapter ${currentChapterNumber} deleted successfully!`);
                 window.location.href = 'admin.html';
                 
             } catch (error) {
