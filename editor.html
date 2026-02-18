@@ -117,11 +117,6 @@
             border-color: #ff6b6b;
         }
         
-        .toolbar-btn.active {
-            background-color: #ff6b6b;
-            border-color: #ff6b6b;
-        }
-        
         /* Rich text editor area */
         .rich-editor {
             width: 100%;
@@ -144,13 +139,13 @@
             border-color: #ff6b6b;
         }
         
-        /* Style for formatted text - italics now white, bold still red */
+        /* Style for formatted text */
         .rich-editor b, .rich-editor strong {
             color: #ff6b6b;
         }
         
         .rich-editor i, .rich-editor em {
-            color: white; /* Changed from #ff9b9b to white */
+            color: white;
         }
         
         .rich-editor u {
@@ -248,6 +243,17 @@
             background: #3a3a3a;
             border-radius: 5px;
             margin-top: 1rem;
+            display: none;
+        }
+        
+        .warning-message {
+            color: #ff6b6b;
+            text-align: center;
+            padding: 1rem;
+            background: #3a3a3a;
+            border-radius: 5px;
+            margin-top: 1rem;
+            display: none;
         }
         
         @media (max-width: 768px) {
@@ -292,12 +298,10 @@
         </div>
         
         <!-- Rich Text Editor -->
-        <div
-            id="chapterContent"
-            class="rich-editor"
-            contenteditable="true"></div>
+        <div id="chapterContent" class="rich-editor" contenteditable="true"></div>
         
-        <div id="errorDisplay" class="error-message" style="display: none;"></div>
+        <div id="errorDisplay" class="error-message"></div>
+        <div id="warningDisplay" class="warning-message"></div>
     </div>
     
     <div class="editor-footer">
@@ -312,21 +316,32 @@
         </div>
     </div>
 
-    <script src="config.js"></script>
     <script>
-        // Check login
-        if (localStorage.getItem('admin_logged_in') !== 'true') {
-            window.location.href = 'login.html';
-        }
+        // Configuration - will be populated from config.js if available
+        let GITHUB_TOKEN = null;
+        let GITHUB_OWNER = 'PalletHitMe';
+        let GITHUB_REPO = 'I-Am-This-Murim-s-Crazy-Bitch';
+        let GITHUB_BRANCH = 'main';
         
-        // Configuration
-        const GITHUB_TOKEN = window.GITHUB_CONFIG?.token;
-        const GITHUB_OWNER = window.GITHUB_CONFIG?.owner;
-        const GITHUB_REPO = window.GITHUB_CONFIG?.repo;
-        const GITHUB_BRANCH = window.GITHUB_CONFIG?.branch || 'main';
-        
-        if (!GITHUB_TOKEN) {
-            showError('GitHub token not found! Please check config.js');
+        // Try to load config.js (it's okay if it 404s - that means no token)
+        try {
+            const script = document.createElement('script');
+            script.src = 'config.js';
+            script.onload = function() {
+                if (window.GITHUB_CONFIG) {
+                    GITHUB_TOKEN = window.GITHUB_CONFIG.token;
+                    GITHUB_OWNER = window.GITHUB_CONFIG.owner || GITHUB_OWNER;
+                    GITHUB_REPO = window.GITHUB_CONFIG.repo || GITHUB_REPO;
+                    GITHUB_BRANCH = window.GITHUB_CONFIG.branch || GITHUB_BRANCH;
+                    showWarning('GitHub connected - changes will save');
+                }
+            };
+            script.onerror = function() {
+                showWarning('Running in local mode - changes will NOT save to GitHub');
+            };
+            document.head.appendChild(script);
+        } catch (e) {
+            showWarning('Running in local mode - changes will NOT save to GitHub');
         }
         
         // DOM elements
@@ -338,56 +353,63 @@
         const deleteBtn = document.getElementById('deleteBtn');
         const editorTitle = document.getElementById('editorTitle');
         const errorDisplay = document.getElementById('errorDisplay');
+        const warningDisplay = document.getElementById('warningDisplay');
         
         // State
         let saveTimeout;
         let currentChapterNumber = null;
         let isEditing = false;
         
+        // Check login
+        if (localStorage.getItem('admin_logged_in') !== 'true') {
+            window.location.href = 'login.html';
+        }
+        
+        function showError(msg) {
+            errorDisplay.style.display = 'block';
+            errorDisplay.textContent = '❌ ' + msg;
+            setTimeout(() => {
+                errorDisplay.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showWarning(msg) {
+            warningDisplay.style.display = 'block';
+            warningDisplay.textContent = '⚠️ ' + msg;
+            setTimeout(() => {
+                warningDisplay.style.display = 'none';
+            }, 5000);
+        }
+        
         // Format text function
-        function formatText(command) {
+        window.formatText = function(command) {
             document.execCommand(command, false, null);
             chapterContent.focus();
             updateWordCount();
             triggerAutoSave();
-        }
+        };
         
-        // Handle keyboard shortcuts
-        chapterContent.addEventListener('keydown', function(e) {
-            if (e.ctrlKey || e.metaKey) {
-                switch(e.key.toLowerCase()) {
-                    case 'b':
-                        e.preventDefault();
-                        formatText('bold');
-                        break;
-                    case 'i':
-                        e.preventDefault();
-                        formatText('italic');
-                        break;
-                    case 'u':
-                        e.preventDefault();
-                        formatText('underline');
-                        break;
-                }
-            }
-        });
+        // Word counter
+        function updateWordCount() {
+            const text = chapterContent.innerText || chapterContent.textContent;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            wordCount.textContent = words + ' words';
+        }
         
         // Handle paste to preserve formatting
         chapterContent.addEventListener('paste', function(e) {
             e.preventDefault();
             
-            // Get clipboard data
             const html = e.clipboardData.getData('text/html');
             const text = e.clipboardData.getData('text/plain');
             
             if (html) {
-                // Clean up Word/Google Docs HTML
                 const cleanedHtml = html
-                    .replace(/<!--[\s\S]*?-->/g, '') // Remove comments
-                    .replace(/<meta[\s\S]*?>/g, '') // Remove meta tags
-                    .replace(/<style[\s\S]*?<\/style>/g, '') // Remove styles
-                    .replace(/<link[\s\S]*?>/g, '') // Remove links
-                    .replace(/<o:p>[\s\S]*?<\/o:p>/g, ''); // Remove Word tags
+                    .replace(/<!--[\s\S]*?-->/g, '')
+                    .replace(/<meta[\s\S]*?>/g, '')
+                    .replace(/<style[\s\S]*?<\/style>/g, '')
+                    .replace(/<link[\s\S]*?>/g, '')
+                    .replace(/<o:p>[\s\S]*?<\/o:p>/g, '');
                 
                 document.execCommand('insertHTML', false, cleanedHtml);
             } else if (text) {
@@ -398,25 +420,13 @@
             triggerAutoSave();
         });
         
-        // Word counter
-        function updateWordCount() {
-            const text = chapterContent.innerText || chapterContent.textContent;
-            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
-            wordCount.textContent = words + ' words';
-        }
-        
         chapterContent.addEventListener('input', function() {
             updateWordCount();
             triggerAutoSave();
         });
         
-        function showError(msg) {
-            errorDisplay.style.display = 'block';
-            errorDisplay.textContent = msg;
-            setTimeout(() => {
-                errorDisplay.style.display = 'none';
-            }, 5000);
-        }
+        chapterTitle.addEventListener('input', triggerAutoSave);
+        chapterNumber.addEventListener('input', triggerAutoSave);
         
         function triggerAutoSave() {
             autoSaveStatus.textContent = '⏳ Unsaved changes...';
@@ -505,22 +515,24 @@
         }
         
         async function saveChapter() {
+            if (!GITHUB_TOKEN) {
+                showError('No GitHub token - cannot save to GitHub');
+                return;
+            }
+            
             const number = parseInt(chapterNumber.value);
             const title = chapterTitle.value.trim();
             const content = chapterContent.innerHTML.trim();
             
             if (!title || !content || content === '<br>' || content === '<div><br></div>') {
-                alert('Please add both a title and content');
+                showError('Please add both a title and content');
                 return;
             }
             
             autoSaveStatus.textContent = '⏳ Publishing...';
             
             try {
-                // Save to chapters.js
                 await saveToChaptersJs(number, title);
-                
-                // Save to chapters-content.json
                 await saveToContentJson(number, content);
                 
                 localStorage.removeItem('editor_autosave');
@@ -547,7 +559,6 @@
             const data = await response.json();
             const content = atob(data.content);
             
-            // Parse the chapters array
             const chaptersMatch = content.match(/const chapters = (\[[\s\S]*?\]);/);
             if (!chaptersMatch) throw new Error('Could not parse chapters.js');
             
@@ -567,7 +578,6 @@
                 chapters.push(newChapter);
             }
             
-            // Sort by number descending
             chapters.sort((a, b) => b.number - a.number);
             
             const newContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chapters, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
@@ -590,7 +600,6 @@
             if (!saveResponse.ok) throw new Error('Failed to save chapters.js');
         }
         
-        // FIXED: Properly saves HTML content to JSON
         async function saveToContentJson(number, content) {
             const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json`;
             const response = await fetch(url, {
@@ -606,15 +615,11 @@
             let contentJson;
             
             try {
-                // Decode the current content
-                const decodedContent = atob(data.content);
-                contentJson = JSON.parse(decodedContent);
+                contentJson = JSON.parse(atob(data.content));
             } catch (e) {
-                // If file is empty or invalid, initialize it
                 contentJson = { chapters: [] };
             }
             
-            // Ensure chapters array exists
             if (!contentJson.chapters) contentJson.chapters = [];
             
             const index = contentJson.chapters.findIndex(ch => ch.number === number);
@@ -624,13 +629,9 @@
                 contentJson.chapters.push({ number, content });
             }
             
-            // Sort by number descending
             contentJson.chapters.sort((a, b) => b.number - a.number);
             
-            // Convert to pretty JSON string
             const jsonString = JSON.stringify(contentJson, null, 2);
-            
-            // Encode properly for GitHub API
             const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
             
             const saveResponse = await fetch(url, {
@@ -656,15 +657,16 @@
         
         async function deleteChapter() {
             if (!isEditing || !currentChapterNumber) return;
+            if (!GITHUB_TOKEN) {
+                showError('No GitHub token - cannot delete');
+                return;
+            }
             if (!confirm(`⚠️ Permanently delete Chapter ${currentChapterNumber}?`)) return;
             
             autoSaveStatus.textContent = '⏳ Deleting...';
             
             try {
-                // Delete from chapters.js
                 await deleteFromChaptersJs();
-                
-                // Delete from chapters-content.json
                 await deleteFromContentJson();
                 
                 alert(`Chapter ${currentChapterNumber} deleted!`);
@@ -694,13 +696,7 @@
             if (!chaptersMatch) throw new Error('Could not parse chapters.js');
             
             let chapters = eval('(' + chaptersMatch[1] + ')');
-            const originalLength = chapters.length;
-            
             chapters = chapters.filter(ch => ch.number !== currentChapterNumber);
-            
-            if (chapters.length === originalLength) {
-                throw new Error('Chapter not found in chapters.js');
-            }
             
             const newContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chapters, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
             
@@ -739,7 +735,7 @@
             try {
                 contentJson = JSON.parse(atob(data.content));
             } catch (e) {
-                return; // File doesn't exist or is invalid, nothing to delete
+                return;
             }
             
             if (!contentJson.chapters) return;
