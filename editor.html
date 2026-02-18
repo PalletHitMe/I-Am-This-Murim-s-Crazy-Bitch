@@ -89,7 +89,6 @@
             color: #666;
         }
         
-        /* Toolbar for formatting buttons */
         .editor-toolbar {
             background-color: #3a3a3a;
             border: 1px solid #444;
@@ -117,7 +116,6 @@
             border-color: #ff6b6b;
         }
         
-        /* Rich text editor area */
         .rich-editor {
             width: 100%;
             min-height: 60vh;
@@ -139,7 +137,6 @@
             border-color: #ff6b6b;
         }
         
-        /* Style for formatted text */
         .rich-editor b, .rich-editor strong {
             color: #ff6b6b;
         }
@@ -290,14 +287,12 @@
             <input type="text" id="chapterTitle" placeholder="Chapter Title">
         </div>
         
-        <!-- Formatting Toolbar -->
         <div class="editor-toolbar">
             <button class="toolbar-btn" onclick="formatText('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
             <button class="toolbar-btn" onclick="formatText('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
             <button class="toolbar-btn" onclick="formatText('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
         </div>
         
-        <!-- Rich Text Editor -->
         <div id="chapterContent" class="rich-editor" contenteditable="true"></div>
         
         <div id="messageDisplay" class="error-message"></div>
@@ -316,10 +311,8 @@
     </div>
 
     <script>
-        // Configuration - Cloudflare Worker URL (NO TOKEN NEEDED!)
+        // Configuration
         const WORKER_URL = 'https://murim-novel-proxy.shreyasranjan00.workers.dev';
-        const GITHUB_OWNER = 'PalletHitMe';
-        const GITHUB_REPO = 'I-Am-This-Murim-s-Crazy-Bitch';
         
         // DOM elements
         const chapterNumber = document.getElementById('chapterNumber');
@@ -350,7 +343,6 @@
             }, 3000);
         }
         
-        // Format text function
         window.formatText = function(command) {
             document.execCommand(command, false, null);
             chapterContent.focus();
@@ -358,14 +350,12 @@
             triggerAutoSave();
         };
         
-        // Word counter
         function updateWordCount() {
             const text = chapterContent.innerText || chapterContent.textContent;
             const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
             wordCount.textContent = words + ' words';
         }
         
-        // Handle paste to preserve formatting
         chapterContent.addEventListener('paste', function(e) {
             e.preventDefault();
             
@@ -419,7 +409,6 @@
             autoSaveStatus.className = 'auto-save-status saved';
         }
         
-        // Load chapters.js with cache buster
         function loadChaptersScript() {
             return new Promise((resolve, reject) => {
                 const script = document.createElement('script');
@@ -496,10 +485,7 @@
             autoSaveStatus.textContent = '⏳ Publishing...';
             
             try {
-                // Save to chapters.js via Cloudflare Worker
                 await saveToChaptersJs(number, title);
-                
-                // Save to chapters-content.json via Cloudflare Worker
                 await saveToContentJson(number, content);
                 
                 localStorage.removeItem('editor_autosave');
@@ -515,11 +501,16 @@
         }
         
         async function saveToChaptersJs(number, title) {
-            // First, get the current file via worker
+            // Fix: Use the correct path /chapters.js
             const getUrl = `${WORKER_URL}/chapters.js`;
+            console.log('Fetching from:', getUrl);
+            
             const getResponse = await fetch(getUrl);
             
-            if (!getResponse.ok) throw new Error('Failed to fetch chapters.js');
+            if (!getResponse.ok) {
+                const error = await getResponse.json();
+                throw new Error(error.error || 'Failed to fetch chapters.js');
+            }
             
             const data = await getResponse.json();
             const content = atob(data.content);
@@ -547,7 +538,6 @@
             
             const newContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chapters, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
             
-            // Save via worker
             const putResponse = await fetch(getUrl, {
                 method: 'PUT',
                 headers: {
@@ -568,10 +558,14 @@
         }
         
         async function saveToContentJson(number, content) {
+            // Fix: Use the correct path /chapters-content.json
             const url = `${WORKER_URL}/chapters-content.json`;
             const getResponse = await fetch(url);
             
-            if (!getResponse.ok) throw new Error('Failed to fetch content file');
+            if (!getResponse.ok) {
+                const error = await getResponse.json();
+                throw new Error(error.error || 'Failed to fetch content file');
+            }
             
             const data = await getResponse.json();
             let contentJson;
