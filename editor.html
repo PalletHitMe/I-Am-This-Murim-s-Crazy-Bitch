@@ -311,9 +311,8 @@
     </div>
 
     <script>
-        // Configuration
+        // Configuration - ONLY the worker URL, NO TOKEN!
         const WORKER_URL = 'https://murim-novel-proxy.shreyasranjan00.workers.dev';
-        const GITHUB_TOKEN = 'ghp_your_token_here'; // You'll need to add this back temporarily
         
         // DOM elements
         const chapterNumber = document.getElementById('chapterNumber');
@@ -486,7 +485,10 @@
             autoSaveStatus.textContent = '⏳ Publishing...';
             
             try {
+                // Save metadata to chapters.js
                 await saveToChaptersJs(number, title);
+                
+                // Save content to chapters-content.json
                 await saveToContentJson(number, content);
                 
                 localStorage.removeItem('editor_autosave');
@@ -504,13 +506,13 @@
         async function saveToChaptersJs(number, title) {
             const url = `${WORKER_URL}/chapters.js`;
             
-            // Get the current file content as text
+            // Get current file content
             const getResponse = await fetch(url);
             if (!getResponse.ok) throw new Error('Failed to fetch chapters.js');
             
             const content = await getResponse.text();
             
-            // Parse the chapters array from the JavaScript file
+            // Parse the chapters array
             const chaptersMatch = content.match(/const chapters = (\[[\s\S]*?\]);/);
             if (!chaptersMatch) throw new Error('Could not parse chapters.js');
             
@@ -536,34 +538,18 @@
                 chapters.push(newChapter);
             }
             
+            // Sort by newest first
             chapters.sort((a, b) => b.number - a.number);
             
             const newContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chapters, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
             
-            // First, get the current file's SHA from GitHub API directly
-            const shaUrl = `https://api.github.com/repos/PalletHitMe/I-Am-This-Murim-s-Crazy-Bitch/contents/chapters.js`;
-            const shaResponse = await fetch(shaUrl, {
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            
-            if (!shaResponse.ok) throw new Error('Failed to get file SHA');
-            
-            const shaData = await shaResponse.json();
-            
-            // Now save via worker
+            // Save via worker (worker handles SHA automatically)
             const putResponse = await fetch(url, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: isEditing ? `Update Chapter ${number}` : `Add Chapter ${number}`,
-                    content: btoa(unescape(encodeURIComponent(newContent))),
-                    sha: shaData.sha,
-                    branch: 'main'
+                    content: btoa(unescape(encodeURIComponent(newContent)))
                 })
             });
             
@@ -576,31 +562,15 @@
         async function saveToContentJson(number, content) {
             const url = `${WORKER_URL}/chapters-content.json`;
             
-            // Get current content
-            const getResponse = await fetch(url);
+            // Get current content or create new
             let contentJson = { chapters: [] };
-            let currentSha = null;
+            const getResponse = await fetch(url);
             
             if (getResponse.ok) {
-                const fileContent = await getResponse.text();
                 try {
-                    contentJson = JSON.parse(fileContent);
+                    contentJson = await getResponse.json();
                 } catch (e) {
-                    // If file is invalid, start fresh
                     contentJson = { chapters: [] };
-                }
-                
-                // Get SHA for update
-                const shaUrl = `https://api.github.com/repos/PalletHitMe/I-Am-This-Murim-s-Crazy-Bitch/contents/chapters-content.json`;
-                const shaResponse = await fetch(shaUrl, {
-                    headers: {
-                        'Authorization': `token ${GITHUB_TOKEN}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-                if (shaResponse.ok) {
-                    const shaData = await shaResponse.json();
-                    currentSha = shaData.sha;
                 }
             }
             
@@ -615,19 +585,13 @@
             
             contentJson.chapters.sort((a, b) => b.number - a.number);
             
-            const jsonString = JSON.stringify(contentJson, null, 2);
-            const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
-            
+            // Save via worker
             const putResponse = await fetch(url, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: `Update content for Chapter ${number}`,
-                    content: encodedContent,
-                    sha: currentSha,
-                    branch: 'main'
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(contentJson, null, 2))))
                 })
             });
             
@@ -674,28 +638,13 @@
             
             const newContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chapters, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
             
-            // Get SHA
-            const shaUrl = `https://api.github.com/repos/PalletHitMe/I-Am-This-Murim-s-Crazy-Bitch/contents/chapters.js`;
-            const shaResponse = await fetch(shaUrl, {
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            if (!shaResponse.ok) throw new Error('Failed to get file SHA');
-            
-            const shaData = await shaResponse.json();
-            
+            // Save via worker
             const putResponse = await fetch(url, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: `Delete Chapter ${currentChapterNumber}`,
-                    content: btoa(unescape(encodeURIComponent(newContent))),
-                    sha: shaData.sha,
-                    branch: 'main'
+                    content: btoa(unescape(encodeURIComponent(newContent)))
                 })
             });
             
@@ -714,31 +663,13 @@
             
             contentJson.chapters = contentJson.chapters.filter(ch => ch.number !== currentChapterNumber);
             
-            // Get SHA
-            const shaUrl = `https://api.github.com/repos/PalletHitMe/I-Am-This-Murim-s-Crazy-Bitch/contents/chapters-content.json`;
-            const shaResponse = await fetch(shaUrl, {
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            if (!shaResponse.ok) throw new Error('Failed to get file SHA');
-            
-            const shaData = await shaResponse.json();
-            
-            const jsonString = JSON.stringify(contentJson, null, 2);
-            const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
-            
+            // Save via worker
             const putResponse = await fetch(url, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: `Delete content for Chapter ${currentChapterNumber}`,
-                    content: encodedContent,
-                    sha: shaData.sha,
-                    branch: 'main'
+                    content: btoa(unescape(encodeURIComponent(JSON.stringify(contentJson, null, 2))))
                 })
             });
             
