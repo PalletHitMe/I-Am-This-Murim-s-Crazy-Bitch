@@ -313,6 +313,7 @@
     <script>
         // Configuration
         const WORKER_URL = 'https://murim-novel-proxy.shreyasranjan00.workers.dev';
+        const GITHUB_TOKEN = 'ghp_your_token_here'; // You'll need to add this back temporarily
         
         // DOM elements
         const chapterNumber = document.getElementById('chapterNumber');
@@ -501,24 +502,25 @@
         }
         
         async function saveToChaptersJs(number, title) {
-            // Fix: Use the correct path /chapters.js
-            const getUrl = `${WORKER_URL}/chapters.js`;
-            console.log('Fetching from:', getUrl);
+            const url = `${WORKER_URL}/chapters.js`;
             
-            const getResponse = await fetch(getUrl);
+            // Get the current file content as text
+            const getResponse = await fetch(url);
+            if (!getResponse.ok) throw new Error('Failed to fetch chapters.js');
             
-            if (!getResponse.ok) {
-                const error = await getResponse.json();
-                throw new Error(error.error || 'Failed to fetch chapters.js');
-            }
+            const content = await getResponse.text();
             
-            const data = await getResponse.json();
-            const content = atob(data.content);
-            
+            // Parse the chapters array from the JavaScript file
             const chaptersMatch = content.match(/const chapters = (\[[\s\S]*?\]);/);
             if (!chaptersMatch) throw new Error('Could not parse chapters.js');
             
-            let chapters = eval('(' + chaptersMatch[1] + ')');
+            // Safely evaluate the array
+            let chapters;
+            try {
+                chapters = eval('(' + chaptersMatch[1] + ')');
+            } catch (e) {
+                throw new Error('Failed to parse chapters data');
+            }
             
             const today = new Date().toISOString().split('T')[0];
             const newChapter = { number, title, date: today };
@@ -538,7 +540,21 @@
             
             const newContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chapters, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
             
-            const putResponse = await fetch(getUrl, {
+            // First, get the current file's SHA from GitHub API directly
+            const shaUrl = `https://api.github.com/repos/PalletHitMe/I-Am-This-Murim-s-Crazy-Bitch/contents/chapters.js`;
+            const shaResponse = await fetch(shaUrl, {
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            
+            if (!shaResponse.ok) throw new Error('Failed to get file SHA');
+            
+            const shaData = await shaResponse.json();
+            
+            // Now save via worker
+            const putResponse = await fetch(url, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -546,7 +562,7 @@
                 body: JSON.stringify({
                     message: isEditing ? `Update Chapter ${number}` : `Add Chapter ${number}`,
                     content: btoa(unescape(encodeURIComponent(newContent))),
-                    sha: data.sha,
+                    sha: shaData.sha,
                     branch: 'main'
                 })
             });
@@ -558,22 +574,34 @@
         }
         
         async function saveToContentJson(number, content) {
-            // Fix: Use the correct path /chapters-content.json
             const url = `${WORKER_URL}/chapters-content.json`;
+            
+            // Get current content
             const getResponse = await fetch(url);
+            let contentJson = { chapters: [] };
+            let currentSha = null;
             
-            if (!getResponse.ok) {
-                const error = await getResponse.json();
-                throw new Error(error.error || 'Failed to fetch content file');
-            }
-            
-            const data = await getResponse.json();
-            let contentJson;
-            
-            try {
-                contentJson = JSON.parse(atob(data.content));
-            } catch (e) {
-                contentJson = { chapters: [] };
+            if (getResponse.ok) {
+                const fileContent = await getResponse.text();
+                try {
+                    contentJson = JSON.parse(fileContent);
+                } catch (e) {
+                    // If file is invalid, start fresh
+                    contentJson = { chapters: [] };
+                }
+                
+                // Get SHA for update
+                const shaUrl = `https://api.github.com/repos/PalletHitMe/I-Am-This-Murim-s-Crazy-Bitch/contents/chapters-content.json`;
+                const shaResponse = await fetch(shaUrl, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_TOKEN}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                if (shaResponse.ok) {
+                    const shaData = await shaResponse.json();
+                    currentSha = shaData.sha;
+                }
             }
             
             if (!contentJson.chapters) contentJson.chapters = [];
@@ -598,7 +626,7 @@
                 body: JSON.stringify({
                     message: `Update content for Chapter ${number}`,
                     content: encodedContent,
-                    sha: data.sha,
+                    sha: currentSha,
                     branch: 'main'
                 })
             });
@@ -632,20 +660,31 @@
         
         async function deleteFromChaptersJs() {
             const url = `${WORKER_URL}/chapters.js`;
-            const getResponse = await fetch(url);
             
+            // Get current content
+            const getResponse = await fetch(url);
             if (!getResponse.ok) throw new Error('Failed to fetch chapters.js');
             
-            const data = await getResponse.json();
-            const content = atob(data.content);
+            const content = await getResponse.text();
             const chaptersMatch = content.match(/const chapters = (\[[\s\S]*?\]);/);
-            
             if (!chaptersMatch) throw new Error('Could not parse chapters.js');
             
             let chapters = eval('(' + chaptersMatch[1] + ')');
             chapters = chapters.filter(ch => ch.number !== currentChapterNumber);
             
             const newContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chapters, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
+            
+            // Get SHA
+            const shaUrl = `https://api.github.com/repos/PalletHitMe/I-Am-This-Murim-s-Crazy-Bitch/contents/chapters.js`;
+            const shaResponse = await fetch(shaUrl, {
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            if (!shaResponse.ok) throw new Error('Failed to get file SHA');
+            
+            const shaData = await shaResponse.json();
             
             const putResponse = await fetch(url, {
                 method: 'PUT',
@@ -655,7 +694,7 @@
                 body: JSON.stringify({
                     message: `Delete Chapter ${currentChapterNumber}`,
                     content: btoa(unescape(encodeURIComponent(newContent))),
-                    sha: data.sha,
+                    sha: shaData.sha,
                     branch: 'main'
                 })
             });
@@ -665,22 +704,27 @@
         
         async function deleteFromContentJson() {
             const url = `${WORKER_URL}/chapters-content.json`;
+            
+            // Get current content
             const getResponse = await fetch(url);
+            if (!getResponse.ok) return;
             
-            if (!getResponse.ok) throw new Error('Failed to fetch content file');
-            
-            const data = await getResponse.json();
-            let contentJson;
-            
-            try {
-                contentJson = JSON.parse(atob(data.content));
-            } catch (e) {
-                return;
-            }
-            
+            const contentJson = await getResponse.json();
             if (!contentJson.chapters) return;
             
             contentJson.chapters = contentJson.chapters.filter(ch => ch.number !== currentChapterNumber);
+            
+            // Get SHA
+            const shaUrl = `https://api.github.com/repos/PalletHitMe/I-Am-This-Murim-s-Crazy-Bitch/contents/chapters-content.json`;
+            const shaResponse = await fetch(shaUrl, {
+                headers: {
+                    'Authorization': `token ${GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+            if (!shaResponse.ok) throw new Error('Failed to get file SHA');
+            
+            const shaData = await shaResponse.json();
             
             const jsonString = JSON.stringify(contentJson, null, 2);
             const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
@@ -693,7 +737,7 @@
                 body: JSON.stringify({
                     message: `Delete content for Chapter ${currentChapterNumber}`,
                     content: encodedContent,
-                    sha: data.sha,
+                    sha: shaData.sha,
                     branch: 'main'
                 })
             });
