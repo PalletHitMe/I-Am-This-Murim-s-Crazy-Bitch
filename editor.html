@@ -237,20 +237,20 @@
         }
         
         .error-message {
-            color: #ff6b6b;
+            color: white;
             text-align: center;
             padding: 1rem;
-            background: #3a3a3a;
+            background: #dc3545;
             border-radius: 5px;
             margin-top: 1rem;
             display: none;
         }
         
-        .warning-message {
-            color: #ff6b6b;
+        .success-message {
+            color: white;
             text-align: center;
             padding: 1rem;
-            background: #3a3a3a;
+            background: #28a745;
             border-radius: 5px;
             margin-top: 1rem;
             display: none;
@@ -300,8 +300,7 @@
         <!-- Rich Text Editor -->
         <div id="chapterContent" class="rich-editor" contenteditable="true"></div>
         
-        <div id="errorDisplay" class="error-message"></div>
-        <div id="warningDisplay" class="warning-message"></div>
+        <div id="messageDisplay" class="error-message"></div>
     </div>
     
     <div class="editor-footer">
@@ -317,32 +316,10 @@
     </div>
 
     <script>
-        // Configuration - will be populated from config.js if available
-        let GITHUB_TOKEN = null;
-        let GITHUB_OWNER = 'PalletHitMe';
-        let GITHUB_REPO = 'I-Am-This-Murim-s-Crazy-Bitch';
-        let GITHUB_BRANCH = 'main';
-        
-        // Try to load config.js (it's okay if it 404s - that means no token)
-        try {
-            const script = document.createElement('script');
-            script.src = 'config.js';
-            script.onload = function() {
-                if (window.GITHUB_CONFIG) {
-                    GITHUB_TOKEN = window.GITHUB_CONFIG.token;
-                    GITHUB_OWNER = window.GITHUB_CONFIG.owner || GITHUB_OWNER;
-                    GITHUB_REPO = window.GITHUB_CONFIG.repo || GITHUB_REPO;
-                    GITHUB_BRANCH = window.GITHUB_CONFIG.branch || GITHUB_BRANCH;
-                    showWarning('GitHub connected - changes will save');
-                }
-            };
-            script.onerror = function() {
-                showWarning('Running in local mode - changes will NOT save to GitHub');
-            };
-            document.head.appendChild(script);
-        } catch (e) {
-            showWarning('Running in local mode - changes will NOT save to GitHub');
-        }
+        // Configuration - Cloudflare Worker URL (NO TOKEN NEEDED!)
+        const WORKER_URL = 'https://murim-novel-proxy.shreyasranjan00.workers.dev';
+        const GITHUB_OWNER = 'PalletHitMe';
+        const GITHUB_REPO = 'I-Am-This-Murim-s-Crazy-Bitch';
         
         // DOM elements
         const chapterNumber = document.getElementById('chapterNumber');
@@ -352,8 +329,7 @@
         const autoSaveStatus = document.getElementById('autoSaveStatus');
         const deleteBtn = document.getElementById('deleteBtn');
         const editorTitle = document.getElementById('editorTitle');
-        const errorDisplay = document.getElementById('errorDisplay');
-        const warningDisplay = document.getElementById('warningDisplay');
+        const messageDisplay = document.getElementById('messageDisplay');
         
         // State
         let saveTimeout;
@@ -365,20 +341,13 @@
             window.location.href = 'login.html';
         }
         
-        function showError(msg) {
-            errorDisplay.style.display = 'block';
-            errorDisplay.textContent = '❌ ' + msg;
+        function showMessage(msg, isError = true) {
+            messageDisplay.style.display = 'block';
+            messageDisplay.className = isError ? 'error-message' : 'success-message';
+            messageDisplay.textContent = msg;
             setTimeout(() => {
-                errorDisplay.style.display = 'none';
-            }, 5000);
-        }
-        
-        function showWarning(msg) {
-            warningDisplay.style.display = 'block';
-            warningDisplay.textContent = '⚠️ ' + msg;
-            setTimeout(() => {
-                warningDisplay.style.display = 'none';
-            }, 5000);
+                messageDisplay.style.display = 'none';
+            }, 3000);
         }
         
         // Format text function
@@ -515,48 +484,44 @@
         }
         
         async function saveChapter() {
-            if (!GITHUB_TOKEN) {
-                showError('No GitHub token - cannot save to GitHub');
-                return;
-            }
-            
             const number = parseInt(chapterNumber.value);
             const title = chapterTitle.value.trim();
             const content = chapterContent.innerHTML.trim();
             
             if (!title || !content || content === '<br>' || content === '<div><br></div>') {
-                showError('Please add both a title and content');
+                showMessage('Please add both a title and content');
                 return;
             }
             
             autoSaveStatus.textContent = '⏳ Publishing...';
             
             try {
+                // Save to chapters.js via Cloudflare Worker
                 await saveToChaptersJs(number, title);
+                
+                // Save to chapters-content.json via Cloudflare Worker
                 await saveToContentJson(number, content);
                 
                 localStorage.removeItem('editor_autosave');
-                alert(`Chapter ${number} published!`);
-                window.location.href = 'admin.html?t=' + Date.now();
+                showMessage(`Chapter ${number} published!`, false);
+                setTimeout(() => {
+                    window.location.href = 'admin.html?t=' + Date.now();
+                }, 1500);
                 
             } catch (error) {
-                showError('Error: ' + error.message);
+                showMessage('Error: ' + error.message);
                 autoSaveStatus.textContent = '❌ Failed';
             }
         }
         
         async function saveToChaptersJs(number, title) {
-            const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js`;
-            const response = await fetch(url, {
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
+            // First, get the current file via worker
+            const getUrl = `${WORKER_URL}/chapters.js`;
+            const getResponse = await fetch(getUrl);
             
-            if (!response.ok) throw new Error('Failed to fetch chapters.js');
+            if (!getResponse.ok) throw new Error('Failed to fetch chapters.js');
             
-            const data = await response.json();
+            const data = await getResponse.json();
             const content = atob(data.content);
             
             const chaptersMatch = content.match(/const chapters = (\[[\s\S]*?\]);/);
@@ -582,36 +547,33 @@
             
             const newContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chapters, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
             
-            const saveResponse = await fetch(url, {
+            // Save via worker
+            const putResponse = await fetch(getUrl, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     message: isEditing ? `Update Chapter ${number}` : `Add Chapter ${number}`,
                     content: btoa(unescape(encodeURIComponent(newContent))),
                     sha: data.sha,
-                    branch: GITHUB_BRANCH
+                    branch: 'main'
                 })
             });
             
-            if (!saveResponse.ok) throw new Error('Failed to save chapters.js');
+            if (!putResponse.ok) {
+                const error = await putResponse.json();
+                throw new Error(error.message || 'Failed to save chapters.js');
+            }
         }
         
         async function saveToContentJson(number, content) {
-            const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json`;
-            const response = await fetch(url, {
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
+            const url = `${WORKER_URL}/chapters-content.json`;
+            const getResponse = await fetch(url);
             
-            if (!response.ok) throw new Error('Failed to fetch content file');
+            if (!getResponse.ok) throw new Error('Failed to fetch content file');
             
-            const data = await response.json();
+            const data = await getResponse.json();
             let contentJson;
             
             try {
@@ -634,33 +596,27 @@
             const jsonString = JSON.stringify(contentJson, null, 2);
             const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
             
-            const saveResponse = await fetch(url, {
+            const putResponse = await fetch(url, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     message: `Update content for Chapter ${number}`,
                     content: encodedContent,
                     sha: data.sha,
-                    branch: GITHUB_BRANCH
+                    branch: 'main'
                 })
             });
             
-            if (!saveResponse.ok) {
-                const errorData = await saveResponse.json();
-                throw new Error('Failed to save content: ' + (errorData.message || 'Unknown error'));
+            if (!putResponse.ok) {
+                const error = await putResponse.json();
+                throw new Error(error.message || 'Failed to save content');
             }
         }
         
         async function deleteChapter() {
             if (!isEditing || !currentChapterNumber) return;
-            if (!GITHUB_TOKEN) {
-                showError('No GitHub token - cannot delete');
-                return;
-            }
             if (!confirm(`⚠️ Permanently delete Chapter ${currentChapterNumber}?`)) return;
             
             autoSaveStatus.textContent = '⏳ Deleting...';
@@ -669,27 +625,24 @@
                 await deleteFromChaptersJs();
                 await deleteFromContentJson();
                 
-                alert(`Chapter ${currentChapterNumber} deleted!`);
-                window.location.href = 'admin.html?t=' + Date.now();
+                showMessage(`Chapter ${currentChapterNumber} deleted!`, false);
+                setTimeout(() => {
+                    window.location.href = 'admin.html?t=' + Date.now();
+                }, 1500);
                 
             } catch (error) {
-                showError('Delete failed: ' + error.message);
+                showMessage('Delete failed: ' + error.message);
                 autoSaveStatus.textContent = '❌ Failed';
             }
         }
         
         async function deleteFromChaptersJs() {
-            const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters.js`;
-            const response = await fetch(url, {
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
+            const url = `${WORKER_URL}/chapters.js`;
+            const getResponse = await fetch(url);
             
-            if (!response.ok) throw new Error('Failed to fetch chapters.js');
+            if (!getResponse.ok) throw new Error('Failed to fetch chapters.js');
             
-            const data = await response.json();
+            const data = await getResponse.json();
             const content = atob(data.content);
             const chaptersMatch = content.match(/const chapters = (\[[\s\S]*?\]);/);
             
@@ -700,36 +653,29 @@
             
             const newContent = `// chapters.js - Your novel chapters data\nconst chapters = ${JSON.stringify(chapters, null, 4)};\n\nfunction getAllChapters() { return chapters; }\nfunction getChapter(number) { return chapters.find(ch => ch.number === number); }`;
             
-            const saveResponse = await fetch(url, {
+            const putResponse = await fetch(url, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     message: `Delete Chapter ${currentChapterNumber}`,
                     content: btoa(unescape(encodeURIComponent(newContent))),
                     sha: data.sha,
-                    branch: GITHUB_BRANCH
+                    branch: 'main'
                 })
             });
             
-            if (!saveResponse.ok) throw new Error('Failed to save chapters.js');
+            if (!putResponse.ok) throw new Error('Failed to save chapters.js');
         }
         
         async function deleteFromContentJson() {
-            const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/chapters-content.json`;
-            const response = await fetch(url, {
-                headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
+            const url = `${WORKER_URL}/chapters-content.json`;
+            const getResponse = await fetch(url);
             
-            if (!response.ok) throw new Error('Failed to fetch content file');
+            if (!getResponse.ok) throw new Error('Failed to fetch content file');
             
-            const data = await response.json();
+            const data = await getResponse.json();
             let contentJson;
             
             try {
@@ -745,22 +691,20 @@
             const jsonString = JSON.stringify(contentJson, null, 2);
             const encodedContent = btoa(unescape(encodeURIComponent(jsonString)));
             
-            const saveResponse = await fetch(url, {
+            const putResponse = await fetch(url, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `token ${GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     message: `Delete content for Chapter ${currentChapterNumber}`,
                     content: encodedContent,
                     sha: data.sha,
-                    branch: GITHUB_BRANCH
+                    branch: 'main'
                 })
             });
             
-            if (!saveResponse.ok) throw new Error('Failed to save content file');
+            if (!putResponse.ok) throw new Error('Failed to save content file');
         }
     </script>
 </body>
