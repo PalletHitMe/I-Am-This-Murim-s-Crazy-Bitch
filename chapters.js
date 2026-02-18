@@ -1,14 +1,11 @@
 // chapters.js - Your novel chapters data
-// Check if chapters already exists to avoid redeclaration
-if (typeof window.chapters === 'undefined') {
-    window.chapters = [
-        { number: 5, title: "Secrets Revealed", date: "2024-01-20" },
-        { number: 4, title: "The Tournament", date: "2024-01-15" },
-        { number: 3, title: "First Steps", date: "2024-01-10" },
-        { number: 2, title: "Awakening", date: "2024-01-05" },
-        { number: 1, title: "The Beginning", date: "2024-01-01" }
-    ];
-}
+window.chapters = [
+    { number: 5, title: "Secrets Revealed", date: "2024-01-20" },
+    { number: 4, title: "The Tournament", date: "2024-01-15" },
+    { number: 3, title: "First Steps", date: "2024-01-10" },
+    { number: 2, title: "Awakening", date: "2024-01-05" },
+    { number: 1, title: "The Beginning", date: "2024-01-01" }
+];
 
 function getAllChapters() {
     return window.chapters;
